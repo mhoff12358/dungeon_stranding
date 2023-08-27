@@ -1,6 +1,11 @@
 use ds_lib::cli_args::CliArgs;
+use ds_lib::game_state::state_updates::update_algos::check_invariants;
+use ds_lib::input::keycode::KeyCode;
+use ds_lib::log;
 use godot::engine::{Node, NodeVirtual};
 use godot::prelude::*;
+
+use crate::godot_utils::set_logger;
 
 #[derive(GodotClass)]
 #[class(base=Node)]
@@ -17,6 +22,8 @@ pub struct App {
 impl NodeVirtual for App {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         godot::engine::utilities::print("Creating App".to_variant(), &[]);
+        set_logger();
+        log!("Creating App");
 
         let args = CliArgs::default();
 
@@ -41,6 +48,19 @@ impl App {
 
     pub fn get_name(&self) -> &GodotString {
         return &self.name;
+    }
+
+    pub fn handle_keypress(&mut self) {
+        ds_lib::handle_keypress(KeyCode::Char('a'), &mut self.app);
+        check_invariants(&mut self.app);
+    }
+
+    pub fn get_app(&self) -> &ds_lib::app::App {
+        return &self.app;
+    }
+
+    pub fn get_app_mut(&mut self) -> &mut ds_lib::app::App {
+        return &mut self.app;
     }
 }
 

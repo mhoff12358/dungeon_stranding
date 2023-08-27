@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://d3h1eupfohnd1"]
+[gd_scene load_steps=2 format=3 uid="uid://d3h1eupfohnd1"]
+
+[ext_resource type="Script" path="res://scripts/game_state_input.gd" id="1_waheq"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -12,5 +14,8 @@ grow_vertical = 2
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="Node" type="Node" parent="GameState"]
+script = ExtResource("1_waheq")
 
 [node name="App" type="App" parent="."]
