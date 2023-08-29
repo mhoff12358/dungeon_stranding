@@ -56,10 +56,10 @@ impl GameStateViz {
         };
 
         let key_code = match gd_input {
-            GodotInput::Direction(Direction::Right) => KeyCode::Char('D'),
-            GodotInput::Direction(Direction::Up) => KeyCode::Char('W'),
-            GodotInput::Direction(Direction::Left) => KeyCode::Char('A'),
-            GodotInput::Direction(Direction::Down) => KeyCode::Char('S'),
+            GodotInput::Direction(Direction::Right) => KeyCode::Char('d'),
+            GodotInput::Direction(Direction::Up) => KeyCode::Char('w'),
+            GodotInput::Direction(Direction::Left) => KeyCode::Char('a'),
+            GodotInput::Direction(Direction::Down) => KeyCode::Char('s'),
             GodotInput::Number(i) => match i {
                 1..=10 => KeyCode::Char(('1' as u8 + (i - 1)) as char),
                 _ => {
@@ -76,8 +76,6 @@ impl GameStateViz {
             let app = app_bind.get_app_mut();
             ds_lib::handle_keypress(key_code, app);
             ds_lib::game_state::state_updates::update_algos::check_invariants(app);
-
-            ds_lib::log!("EMITTING SIGNAL");
         }
         this.emit_signal("updated_state".into(), &[]);
     }

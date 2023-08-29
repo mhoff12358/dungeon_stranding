@@ -1,8 +1,6 @@
-use std::borrow::Borrow;
-
-use ds_lib::{game_state::game_state::GameState, party_state::inventory::ItemInfo};
+use ds_lib::party_state::inventory::ItemInfo;
 use godot::{
-    engine::{item_list, Control, ControlVirtual},
+    engine::{Control, ControlVirtual},
     prelude::*,
 };
 
