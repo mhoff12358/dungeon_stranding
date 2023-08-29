@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://d3h1eupfohnd1"]
+[gd_scene load_steps=4 format=3 uid="uid://d3h1eupfohnd1"]
 
 [ext_resource type="Script" path="res://scripts/game_state_input.gd" id="1_waheq"]
+[ext_resource type="Script" path="res://scripts/out_of_dungeon_connections.gd" id="2_1rkja"]
+[ext_resource type="Script" path="res://scripts/out_of_dungeon_printer.gd" id="2_y2bac"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -10,12 +12,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GameState" type="GameState" parent="."]
+[node name="GameState" type="GameStateViz" parent="."]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Node" type="Node" parent="GameState"]
+[node name="Input" type="Node" parent="GameState"]
 script = ExtResource("1_waheq")
 
+[node name="OutOfDungeonViz" type="OutOfDungeonViz" parent="GameState"]
+layout_mode = 0
+offset_right = 958.0
+offset_bottom = 532.0
+script = ExtResource("2_1rkja")
+
+[node name="ShopText" type="Label" parent="GameState/OutOfDungeonViz"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+script = ExtResource("2_y2bac")
+
 [node name="App" type="App" parent="."]
+
+[connection signal="updated_state" from="GameState/OutOfDungeonViz" to="GameState/OutOfDungeonViz/ShopText" method="_on_out_of_dungeon_viz_updated_state"]

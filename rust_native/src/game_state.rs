@@ -1,13 +1,17 @@
-use crate::app::App;
+use std::cell::Ref;
+use std::ops::Deref;
+
+use crate::{app::App, my_gd_ref::MyGdRef};
 use ds_lib::directions::Direction;
-use ds_lib::handle_keypress;
+use ds_lib::game_state::game_state::GameState;
 use ds_lib::input::keycode::KeyCode;
 use godot::engine::{Control, ControlVirtual};
 use godot::prelude::*;
+use owning_ref::OwningHandle;
 
 #[derive(GodotClass)]
 #[class(base=Control)]
-pub struct GameState {
+pub struct GameStateViz {
     app: Option<Gd<App>>,
 
     #[base]
@@ -22,9 +26,12 @@ enum GodotInput {
 }
 
 #[godot_api]
-impl GameState {
+impl GameStateViz {
+    #[signal]
+    fn updated_state();
+
     #[func]
-    fn handle_input(&mut self, input: i32) {
+    fn handle_input(mut this: Gd<GameStateViz>, input: i32) {
         let gd_input = match input {
             0 => GodotInput::Quit,
             1 => GodotInput::Number(1),
@@ -63,26 +70,77 @@ impl GameState {
             GodotInput::Quit => KeyCode::Esc,
         };
 
-        let mut app_bind = self.app.as_mut().unwrap().bind_mut();
-        let app = app_bind.get_app_mut();
-        handle_keypress(key_code, app);
+        {
+            let mut this = this.bind_mut();
+            let mut app_bind = this.app.as_mut().unwrap().bind_mut();
+            let app = app_bind.get_app_mut();
+            ds_lib::handle_keypress(key_code, app);
+            ds_lib::game_state::state_updates::update_algos::check_invariants(app);
+
+            ds_lib::log!("EMITTING SIGNAL");
+        }
+        this.emit_signal("updated_state".into(), &[]);
     }
 }
 
-#[godot_api]
-impl ControlVirtual for GameState {
-    fn init(base: godot::obj::Base<Self::Base>) -> Self {
-        gd_log!("Creating GameState");
+impl GameStateViz {
+    pub fn borrow_game_state<'a>(&'a self) -> impl Deref<Target = GameState> + 'a {
+        OwningHandle::new_with_fn(
+            MyGdRef::new(self.app.as_ref().unwrap().bind()),
+            |it: *const App| -> Ref<'a, GameState> {
+                let it = unsafe { &*it };
+                it.get_app().game_state.borrow()
+            },
+        )
+    }
+}
 
+pub fn borrow_game_state<'a>(
+    game_state: &'a Gd<GameStateViz>,
+) -> impl Deref<Target = GameState> + 'a {
+    fn internal_borrow<'b>(it: *const GameStateViz) -> impl Deref<Target = GameState> + 'b {
+        fn internal_borrow<'c>(it: *const App) -> impl Deref<Target = GameState> + 'c {
+            let it = unsafe { &*it };
+            it.get_app().game_state.borrow()
+        }
+        let it = unsafe { &*it };
+        OwningHandle::new_with_fn(
+            MyGdRef::new(it.app.as_ref().unwrap().bind()),
+            /*|it: *const App| -> Ref<'b, GameState> {
+                let it = unsafe { &*it };
+                it.get_app().game_state.borrow()
+            },*/
+            &internal_borrow,
+        )
+    }
+    OwningHandle::new_with_fn(
+        MyGdRef::new(game_state.bind()),
+        /*|it: *const GameStateViz| -> OwningHandle<MyGdRef<'a, App>, Ref<'a, GameState>> {
+            let it = unsafe { &*it };
+            OwningHandle::new_with_fn(
+                MyGdRef::new(it.app.as_ref().unwrap().bind()),
+                |it: *const App| -> Ref<'a, GameState> {
+                    let it = unsafe { &*it };
+                    it.get_app().game_state.borrow()
+                },
+            )
+        },*/
+        &internal_borrow,
+    )
+}
+
+#[godot_api]
+impl ControlVirtual for GameStateViz {
+    fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self { base, app: None }
     }
 
     fn ready(&mut self) {
         self.app = Some(App::find_app(&self.base.share().upcast()));
-        gd_log!(
-            "GameState found app: {}",
-            self.app.as_ref().unwrap().bind().get_name()
-        );
+
+        //let mut base = self.base.share();
+        //drop(self);
+        //self.base.emit_signal("updated_state".into(), &[]);
     }
 
     fn to_string(&self) -> godot::builtin::GodotString {
