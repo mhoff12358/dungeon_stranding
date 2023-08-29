@@ -7,7 +7,7 @@ use ds_lib::game_state::game_state::GameState;
 use ds_lib::input::keycode::KeyCode;
 use godot::engine::{Control, ControlVirtual};
 use godot::prelude::*;
-use owning_ref::OwningHandle;
+use owning_ref::{OwningHandle, StableAddress};
 
 #[derive(GodotClass)]
 #[class(base=Control)]
@@ -95,36 +95,23 @@ impl GameStateViz {
 
 pub fn borrow_game_state<'a>(
     game_state: &'a Gd<GameStateViz>,
-) -> impl Deref<Target = GameState> + 'a {
-    fn internal_borrow<'b>(it: *const GameStateViz) -> impl Deref<Target = GameState> + 'b {
-        fn internal_borrow<'c>(it: *const App) -> impl Deref<Target = GameState> + 'c {
+) -> impl Deref<Target = GameState> + StableAddress + 'a {
+    fn internal_borrow<'b>(
+        it: *const GameStateViz,
+    ) -> impl Deref<Target = GameState> + StableAddress + 'b {
+        fn internal_borrow<'c>(
+            it: *const App,
+        ) -> impl Deref<Target = GameState> + StableAddress + 'c {
             let it = unsafe { &*it };
             it.get_app().game_state.borrow()
         }
         let it = unsafe { &*it };
         OwningHandle::new_with_fn(
             MyGdRef::new(it.app.as_ref().unwrap().bind()),
-            /*|it: *const App| -> Ref<'b, GameState> {
-                let it = unsafe { &*it };
-                it.get_app().game_state.borrow()
-            },*/
             &internal_borrow,
         )
     }
-    OwningHandle::new_with_fn(
-        MyGdRef::new(game_state.bind()),
-        /*|it: *const GameStateViz| -> OwningHandle<MyGdRef<'a, App>, Ref<'a, GameState>> {
-            let it = unsafe { &*it };
-            OwningHandle::new_with_fn(
-                MyGdRef::new(it.app.as_ref().unwrap().bind()),
-                |it: *const App| -> Ref<'a, GameState> {
-                    let it = unsafe { &*it };
-                    it.get_app().game_state.borrow()
-                },
-            )
-        },*/
-        &internal_borrow,
-    )
+    OwningHandle::new_with_fn(MyGdRef::new(game_state.bind()), &internal_borrow)
 }
 
 #[godot_api]
