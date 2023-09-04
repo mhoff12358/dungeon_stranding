@@ -341,7 +341,6 @@ checksum = "8e4afd9ad95555081e109fe1d21f2a30c691b5f0919c67dfa690a2e1eb6bd51c"
 [[package]]
 name = "godot"
 version = "0.1.0"
-source = "git+https://github.com/godot-rust/gdext?branch=master#b4e6fd6c9c23e0fd3a124c2893a9592c861ab780"
 dependencies = [
  "godot-core",
  "godot-macros",
@@ -350,7 +349,6 @@ dependencies = [
 [[package]]
 name = "godot-bindings"
 version = "0.1.0"
-source = "git+https://github.com/godot-rust/gdext?branch=master#b4e6fd6c9c23e0fd3a124c2893a9592c861ab780"
 dependencies = [
  "godot4-prebuilt",
 ]
@@ -358,7 +356,6 @@ dependencies = [
 [[package]]
 name = "godot-codegen"
 version = "0.1.0"
-source = "git+https://github.com/godot-rust/gdext?branch=master#b4e6fd6c9c23e0fd3a124c2893a9592c861ab780"
 dependencies = [
  "godot-bindings",
  "godot-fmt",
@@ -372,7 +369,6 @@ dependencies = [
 [[package]]
 name = "godot-core"
 version = "0.1.0"
-source = "git+https://github.com/godot-rust/gdext?branch=master#b4e6fd6c9c23e0fd3a124c2893a9592c861ab780"
 dependencies = [
  "glam",
  "godot-bindings",
@@ -383,7 +379,6 @@ dependencies = [
 [[package]]
 name = "godot-ffi"
 version = "0.1.0"
-source = "git+https://github.com/godot-rust/gdext?branch=master#b4e6fd6c9c23e0fd3a124c2893a9592c861ab780"
 dependencies = [
  "godot-bindings",
  "godot-codegen",
@@ -393,7 +388,6 @@ dependencies = [
 [[package]]
 name = "godot-fmt"
 version = "0.1.0"
-source = "git+https://github.com/godot-rust/gdext?branch=master#b4e6fd6c9c23e0fd3a124c2893a9592c861ab780"
 dependencies = [
  "proc-macro2",
 ]
@@ -401,7 +395,6 @@ dependencies = [
 [[package]]
 name = "godot-macros"
 version = "0.1.0"
-source = "git+https://github.com/godot-rust/gdext?branch=master#b4e6fd6c9c23e0fd3a124c2893a9592c861ab780"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -411,7 +404,7 @@ dependencies = [
 [[package]]
 name = "godot4-prebuilt"
 version = "0.0.0"
-source = "git+https://github.com/godot-rust/godot4-prebuilt?branch=4.1#23477b8096a90c3798ab3558b776e9743e59ea2a"
+source = "git+https://github.com/godot-rust/godot4-prebuilt?branch=4.1.1#fca6897dbfb1a2d9387f81491acd77f6f091b8c4"
 
 [[package]]
 name = "heck"

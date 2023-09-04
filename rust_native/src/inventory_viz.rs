@@ -5,12 +5,15 @@ use ds_lib::{
     party_state::inventory::{Inventory, ItemInfo},
 };
 use godot::{
-    engine::{display_server::ExWindowSetInputEventCallback, Control, ControlVirtual},
+    engine::{Control, ControlVirtual},
     prelude::*,
 };
 use owning_ref::OwningHandle;
 
-use crate::game_state::{borrow_game_state, GameStateViz};
+use crate::{
+    game_state_viz::{borrow_game_state, GameStateViz},
+    tree_utils::walk_parents_for,
+};
 
 #[derive(GodotClass)]
 #[class(base=Control)]
@@ -39,6 +42,11 @@ impl InventoryViz {
 
 #[godot_api]
 impl InventoryViz {
+    #[func]
+    pub fn game_state(&self) -> Gd<GameStateViz> {
+        self.game_state.as_ref().unwrap().share()
+    }
+
     #[func]
     pub fn money(&self) -> i32 {
         self.inventory().get_cash()
@@ -97,6 +105,6 @@ impl ControlVirtual for InventoryViz {
     }
 
     fn enter_tree(&mut self) {
-        self.game_state = Some(self.base.get_parent().unwrap().cast());
+        self.game_state = Some(walk_parents_for(&self.base));
     }
 }

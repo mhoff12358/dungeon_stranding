@@ -30,8 +30,9 @@ impl GameStateViz {
     #[signal]
     fn updated_state();
 
-    #[func]
+    #[func(gd_self)]
     fn handle_input(mut this: Gd<GameStateViz>, input: i32) {
+        println!("HAND INPUT");
         let gd_input = match input {
             0 => GodotInput::Quit,
             1 => GodotInput::Number(1),
@@ -77,7 +78,9 @@ impl GameStateViz {
             ds_lib::handle_keypress(key_code, app);
             ds_lib::game_state::state_updates::update_algos::check_invariants(app);
         }
+        println!("HAND INPUT2");
         this.emit_signal("updated_state".into(), &[]);
+        println!("HAND INPUT3");
     }
 }
 

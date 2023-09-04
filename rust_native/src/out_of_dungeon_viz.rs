@@ -4,7 +4,7 @@ use godot::{
     prelude::*,
 };
 
-use crate::game_state::{borrow_game_state, GameStateViz};
+use crate::game_state_viz::{borrow_game_state, GameStateViz};
 
 #[derive(GodotClass)]
 #[class(base=Control)]
@@ -18,31 +18,21 @@ pub struct OutOfDungeonViz {
 #[godot_api]
 impl OutOfDungeonViz {
     #[func]
+    pub fn game_state(&self) -> Gd<GameStateViz> {
+        self.game_state.as_ref().unwrap().share()
+    }
+
+    #[func(gd_self)]
+    pub fn is_out_of_dungeon(this: Gd<Self>) -> bool {
+        let _self = this.bind();
+        let game_state = borrow_game_state(&_self.game_state.as_ref().unwrap());
+        return game_state.is_out_of_dungeon();
+    }
+    /*#[func]
     pub fn is_out_of_dungeon(&self) -> bool {
         let game_state = borrow_game_state(&self.game_state.as_ref().unwrap());
         return game_state.is_out_of_dungeon();
-    }
-
-    #[func]
-    pub fn shop_list(&self) -> GodotString {
-        let mut results = Vec::new();
-
-        let game_state = borrow_game_state(&self.game_state.as_ref().unwrap());
-        if game_state.is_out_of_dungeon() {
-            let shop = &game_state.unwrap_out_of_dungeon().shop;
-            let num_items = shop.display_order().len();
-            for item_index in 0..num_items {
-                let item_for_sale = shop.get_item(item_index).unwrap();
-                results.push(format!(
-                    "{} | {}",
-                    item_for_sale.price,
-                    item_for_sale.item.name()
-                ));
-            }
-        }
-
-        return results.join("\n").into();
-    }
+    }*/
 }
 
 #[godot_api]
