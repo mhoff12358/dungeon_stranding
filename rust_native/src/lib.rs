@@ -4,6 +4,7 @@ use godot::prelude::*;
 pub mod godot_utils;
 
 pub mod app;
+pub mod floor_viz;
 pub mod game_state_viz;
 pub mod in_dungeon_viz;
 pub mod inventory_viz;
