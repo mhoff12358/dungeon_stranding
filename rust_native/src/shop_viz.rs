@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use ds_lib::{
     game_state::game_state::GameState,
-    party_state::inventory::{Inventory, InventoryItem, ItemInfo},
+    party_state::inventory::{InventoryItem, ItemInfo},
     shop::{shop::Shop, shop_interface::ShopInterface},
 };
 use godot::{

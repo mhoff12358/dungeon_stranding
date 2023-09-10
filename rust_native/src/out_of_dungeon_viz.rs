@@ -1,4 +1,3 @@
-use ds_lib::party_state::inventory::ItemInfo;
 use godot::{
     engine::{Control, ControlVirtual},
     prelude::*,

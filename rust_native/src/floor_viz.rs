@@ -1,22 +1,14 @@
-use std::ops::Deref;
-
 use ds_lib::{
     coord::Coord,
     dungeon_state::tile_state::{OpenType, SpecificTS, TileState},
-    game_state::game_state::{GameState, InDungeon},
-    party_state::inventory::{Inventory, ItemInfo},
+    game_state::game_state::InDungeon,
 };
 use godot::{
     engine::{Control, ControlVirtual, TileMap},
     prelude::*,
 };
-use owning_ref::OwningHandle;
 
-use crate::{
-    game_state_viz::{borrow_game_state, GameStateViz},
-    in_dungeon_viz::InDungeonViz,
-    tree_utils::walk_parents_for,
-};
+use crate::{in_dungeon_viz::InDungeonViz, tree_utils::walk_parents_for};
 
 #[derive(GodotClass)]
 #[class(base=Control)]

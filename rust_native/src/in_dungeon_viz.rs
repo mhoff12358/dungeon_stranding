@@ -3,7 +3,6 @@ use std::ops::Deref;
 use ds_lib::{
     dungeon_state::floor_layout::FloorLayout,
     game_state::game_state::{GameState, InDungeon},
-    party_state::inventory::ItemInfo,
 };
 use godot::{
     engine::{Control, ControlVirtual},
