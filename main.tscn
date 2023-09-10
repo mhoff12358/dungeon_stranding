@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://d3h1eupfohnd1"]
+[gd_scene load_steps=21 format=3 uid="uid://d3h1eupfohnd1"]
 
 [ext_resource type="Script" path="res://scripts/game_state_input.gd" id="1_waheq"]
 [ext_resource type="Script" path="res://scripts/out_of_dungeon_connections.gd" id="2_1rkja"]
@@ -62,6 +62,9 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
+
+[sub_resource type="LabelSettings" id="LabelSettings_gxwih"]
+font_color = Color(0, 0, 0, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -369,7 +372,7 @@ script = ExtResource("10_50krv")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.3
-anchor_bottom = 1.0
+anchor_bottom = 0.7
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("4_gkaxy")
@@ -487,6 +490,70 @@ grow_horizontal = 2
 grow_vertical = 2
 autowrap_mode = 2
 script = ExtResource("7_yyt8n")
+
+[node name="AvailableInteractionsViz" type="AvailableInteractionsViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI" node_paths=PackedStringArray("interactions_label")]
+interactions_label = NodePath("ColorRect/Options")
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.7
+anchor_right = 0.3
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0.239216, 1)
+
+[node name="Title" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect"]
+layout_mode = 0
+offset_right = 328.0
+offset_bottom = 42.0
+text = "Available interactions:"
+
+[node name="Options" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.062
+anchor_top = 0.134
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.399994
+offset_bottom = -0.397583
+
+[node name="InteractionViz" type="InteractionViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI" node_paths=PackedStringArray("interaction_options_label")]
+interaction_options_label = NodePath("ColorRect/Options")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.721569, 1, 1)
+
+[node name="Options" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("LabelSettings_gxwih")
 
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Counts/Label" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Gear/VBoxContainer/Control/Gear" method="_on_inventory_panel_updated_state" flags=18]
