@@ -48,48 +48,14 @@ impl InDungeonViz {
     pub fn _on_game_state_updated(mut this: Gd<InDungeonViz>) {
         let is_in_dungeon;
         {
-            println!("A");
             let mut _self = this.bind_mut();
-            println!("B");
             is_in_dungeon = _self.is_in_dungeon();
-            println!("C");
             _self.base.set_visible(is_in_dungeon);
-            println!("D");
         }
         if is_in_dungeon {
-            println!("E");
             this.emit_signal("updated_state".into(), &[]);
-            println!("F");
         }
     }
-    /*pub fn _on_game_state_updated(&mut self) {}
-    pub fn _on_game_state_updated(&mut self) {
-        let is_in_dungeon = self.is_in_dungeon();
-        self.base.set_visible(is_in_dungeon);
-        if is_in_dungeon {
-            self.base.emit_signal("updated_state".into(), &[]);
-        }
-    }*/
-    //pub fn _on_game_state_updated(mut this: Gd<InDungeonViz>) {
-    /*
-    let is_in_dungeon;
-    {
-        println!("A");
-        let mut _self = this.bind_mut();
-        println!("B");
-        is_in_dungeon = _self.is_in_dungeon();
-        println!("C");
-        _self.base.set_visible(is_in_dungeon);
-        println!("D");
-    }
-    if is_in_dungeon {
-        println!("E");
-        this.emit_signal("updated_state".into(), &[]);
-        println!("F");
-    }
-    println!("G");
-    */
-    //}
 }
 
 impl InDungeonViz {
