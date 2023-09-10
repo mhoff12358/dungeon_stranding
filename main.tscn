@@ -337,6 +337,34 @@ position = Vector2(8.26666, 8.66398)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_xu6xp")
 
+[node name="FightViz" type="FightViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI" node_paths=PackedStringArray("fight_description_label")]
+fight_description_label = NodePath("Label")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0196078, 0.0196078, 0.0196078, 1)
+
+[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("10_50krv")
+
 [node name="InventoryPanel" type="InventoryViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI"]
 layout_mode = 1
 anchors_preset = -1
