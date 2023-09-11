@@ -37,3 +37,5 @@ func _input(event):
                 self.game_state.handle_input(14)
             if key_event.key_label == KEY_SPACE:
                 self.game_state.handle_input(15)
+            if key_event.key_label == KEY_Q:
+                self.game_state.handle_input(16)

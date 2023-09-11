@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://d3h1eupfohnd1"]
+[gd_scene load_steps=22 format=3 uid="uid://d3h1eupfohnd1"]
 
 [ext_resource type="Script" path="res://scripts/game_state_input.gd" id="1_waheq"]
 [ext_resource type="Script" path="res://scripts/out_of_dungeon_connections.gd" id="2_1rkja"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/visualizers/CombatEquipment.gd" id="7_yyt8n"]
 [ext_resource type="Script" path="res://SelectedItem.gd" id="9_mks4e"]
 [ext_resource type="Script" path="res://Tiles.gd" id="10_50krv"]
+[ext_resource type="Script" path="res://scripts/MapControls.gd" id="10_ih4l5"]
 [ext_resource type="TileSet" uid="uid://de08x02s8201g" path="res://dungeon_tileset.tres" id="11_ngbcr"]
 [ext_resource type="Texture2D" uid="uid://bgruuywc6agcg" path="res://art_assets/Blue_witch/B_witch_idle.png" id="12_25s31"]
 
@@ -73,13 +74,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="App" type="App" parent="."]
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
-layout_mode = 0
-offset_right = 1152.0
-offset_bottom = 648.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 ratio = 1.7778
 
 [node name="GameStateViz" type="GameStateViz" parent="AspectRatioContainer"]
@@ -295,8 +301,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="FloorViz" type="FloorViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI" node_paths=PackedStringArray("tile_map", "player")]
-tile_map = NodePath("TileMap")
-player = NodePath("TileMap/PlayerEntity")
+tile_map = NodePath("MapControls/TileMap")
+player = NodePath("MapControls/TileMap/PlayerEntity")
 wall_atlas_coord = Vector2i(6, 17)
 hallway_atlas_coord = Vector2i(1, 25)
 room_atlas_coord = Vector2i(8, 20)
@@ -321,21 +327,28 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.109804, 0.109804, 0.109804, 1)
 
-[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-script = ExtResource("10_50krv")
+[node name="MapControls" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz" node_paths=PackedStringArray("map", "in_dungeon_viz")]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_force_pass_scroll_events = false
+script = ExtResource("10_ih4l5")
+map = NodePath("TileMap")
+in_dungeon_viz = NodePath("../..")
 
-[node name="TileMap" type="TileMap" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz"]
+[node name="TileMap" type="TileMap" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls"]
 scale = Vector2(1.5, 1.5)
 tile_set = ExtResource("11_ngbcr")
 format = 2
 layer_0/tile_data = PackedInt32Array(655369, 0, 11, 720905, 0, 11, 786442, 0, 11, 851978, 0, 11, 917514, 0, 11, 983051, 0, 11, 1048587, 0, 11, 1114123, 0, 11, 1179660, 0, 11, 1245197, 0, 11, 1245198, 0, 11, 1245199, 0, 11, 1245200, 0, 11, 1179665, 0, 11, 1179666, 0, 11, 1179667, 0, 11, 1114132, 0, 11, 1048596, 0, 11, 983060, 0, 11, 917524, 0, 11, 851988, 0, 11, 786451, 0, 11, 720915, 0, 11, 655379, 0, 11, 589842, 0, 11, 524306, 0, 11, 458770, 0, 11, 393234, 0, 11, 327698, 0, 11, 262162, 0, 11, 262161, 0, 11, 262160, 0, 11, 262159, 0, 11, 262158, 0, 11, 262157, 0, 11, 262156, 0, 11, 262155, 0, 11, 262154, 0, 11, 262153, 0, 11, 327688, 0, 11, 393223, 0, 11, 458758, 0, 11, 524293, 0, 11, 589829, 0, 11, 655365, 0, 11, 720901, 0, 11, 786438, 0, 11, 851974, 0, 11, 917511, 0, 11, 983048, 0, 11, 983049, 0, 11, 1048586, 0, 11, 1048588, 0, 11, 1114125, 0, 11, 1114126, 0, 11, 1114127, 0, 11, 1114128, 0, 11, 1179668, 0, 11, 1179669, 0, 11, 1179670, 0, 11, 1179671, 0, 11, 1179672, 0, 11, 1114136, 0, 11, 1048600, 0, 11, 1048601, 0, 11, 983065, 0, 11, 917530, 0, 11, 851995, 0, 11, 786459, 0, 11, 720923, 0, 11, 655387, 0, 11, 655386, 0, 11, 589850, 0, 11, 589849, 0, 11, 524312, 0, 11, 524311, 0, 11, 458774, 0, 11, 458773, 0, 11, 393236, 0, 11, 393235, 0, 11, 327697, 0, 11, 327696, 0, 11, 0, 0, 11, 1, 0, 11, 65537, 0, 11, 65538, 0, 11, 131075, 0, 11, 196611, 0, 11, 196612, 0, 11)
 
-[node name="PlayerEntity" type="Node2D" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/TileMap"]
+[node name="PlayerEntity" type="Node2D" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls/TileMap"]
 
-[node name="Sprite" type="AnimatedSprite2D" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/TileMap/PlayerEntity"]
+[node name="Sprite" type="AnimatedSprite2D" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls/TileMap/PlayerEntity"]
 position = Vector2(8.26666, 8.66398)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_xu6xp")

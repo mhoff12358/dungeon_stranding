@@ -23,6 +23,7 @@ enum GodotInput {
     Direction(Direction),
     Number(u8),
     Select,
+    Cancel,
 }
 
 #[godot_api]
@@ -49,6 +50,7 @@ impl GameStateViz {
             13 => GodotInput::Direction(Direction::Left),
             14 => GodotInput::Direction(Direction::Down),
             15 => GodotInput::Select,
+            16 => GodotInput::Cancel,
 
             _ => {
                 panic!("Invalid input");
@@ -67,6 +69,7 @@ impl GameStateViz {
                 }
             },
             GodotInput::Select => KeyCode::Char(' '),
+            GodotInput::Cancel => KeyCode::Char('q'),
             GodotInput::Quit => KeyCode::Esc,
         };
 

@@ -17,6 +17,9 @@ use crate::game_state_viz::{borrow_game_state, GameStateViz};
 pub struct InDungeonViz {
     game_state: Option<Gd<GameStateViz>>,
 
+    #[export]
+    map_controlable: bool,
+
     #[base]
     base: Base<Control>,
 }
@@ -66,6 +69,7 @@ impl InDungeonViz {
                     is_interaction = event.is_interaction();
                 }
             }
+            _self.map_controlable = is_in_dungeon && !is_fight && !is_interaction;
         }
         if is_in_dungeon {
             this.emit_signal("updated_state".into(), &[]);
@@ -106,6 +110,7 @@ impl ControlVirtual for InDungeonViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             game_state: None,
+            map_controlable: false,
             base,
         }
     }
