@@ -60,7 +60,7 @@ impl InteractionViz {
             }
             OngoingInteraction::Camp { amount } => {
                 format!(
-                    "How much food to spend camping? (A & D to change)\n{} food\n\nF to finalize, Q to quit",
+                    "How much food to spend camping? (A & D to change)\n{} food\n\nSpace to finalize, Q to quit",
                     amount
                 )
             }

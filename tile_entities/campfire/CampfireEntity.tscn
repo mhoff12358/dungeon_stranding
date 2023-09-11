@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://defryh2ibso7x"]
+
+[ext_resource type="PackedScene" uid="uid://c03ud0q6duxk5" path="res://tile_entities/ClippedEntity.tscn" id="1_vtp7m"]
+[ext_resource type="Texture2D" uid="uid://b8domlag3atwj" path="res://tile_entities/campfire/campfire.png" id="2_bgk00"]
+
+[node name="CampfireEntity" type="Node2D"]
+
+[node name="BodyEntity" parent="." instance=ExtResource("1_vtp7m")]
+
+[node name="Sprite2D" type="Sprite2D" parent="BodyEntity"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_bgk00")
+centered = false

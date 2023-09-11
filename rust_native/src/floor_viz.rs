@@ -1,6 +1,11 @@
+use std::{borrow::BorrowMut, ops::Deref};
+
 use ds_lib::{
     coord::Coord,
-    dungeon_state::tile_state::{OpenType, SpecificTS, TileState},
+    dungeon_state::{
+        tile_entity::TileEntity,
+        tile_state::{OpenType, SpecificTS, TileState},
+    },
     game_state::game_state::InDungeon,
 };
 use godot::{
@@ -19,6 +24,8 @@ pub struct FloorViz {
     tile_map: Option<Gd<TileMap>>,
     #[export]
     player: Option<Gd<Node2D>>,
+    #[export]
+    entities: Option<Gd<Node2D>>,
 
     #[export]
     wall_atlas_coord: Vector2i,
@@ -34,6 +41,16 @@ pub struct FloorViz {
     stairs_up_atlas_coord: Vector2i,
     #[export]
     stairs_down_atlas_coord: Vector2i,
+
+    #[export]
+    body_entity_scene_path: GodotString,
+    body_entity_scene: Option<Gd<PackedScene>>,
+    #[export]
+    campfire_entity_scene_path: GodotString,
+    campfire_entity_scene: Option<Gd<PackedScene>>,
+    #[export]
+    gold_entity_scene_path: GodotString,
+    gold_entity_scene: Option<Gd<PackedScene>>,
 
     #[base]
     base: Base<Control>,
@@ -77,11 +94,33 @@ impl FloorViz {
             .get_tileset()
             .unwrap()
             .get_tile_size();
+        let entity_position = |coord: &Coord| Vector2 {
+            x: (coord.x * tile_size.x) as f32,
+            y: (coord.y * tile_size.y) as f32,
+        };
+
+        let entities = self.entities.as_mut().unwrap();
+        let entities_children = entities.get_children();
+        for i in 0..entities_children.len() {
+            let mut child = entities_children.get(i);
+            entities.remove_child(child.share());
+            child.queue_free();
+        }
+        for (coord, entity) in floor.entities().all_entities_iter() {
+            let entity = entity.borrow();
+            let entity_scene = match entity.deref() {
+                TileEntity::DeadBody(_) => self.body_entity_scene.as_ref().unwrap(),
+                TileEntity::GoldPile(_) => self.gold_entity_scene.as_ref().unwrap(),
+                TileEntity::CampSite => self.campfire_entity_scene.as_ref().unwrap(),
+            };
+            let entity = entity_scene.instantiate().unwrap();
+            let mut entity2d: Gd<Node2D> = entity.share().cast();
+            entities.add_child(entity);
+            entity2d.set_position(entity_position(&coord));
+        }
+
         let player = self.player.as_mut().unwrap();
-        player.set_position(Vector2 {
-            x: (in_dungeon.player_position.x * tile_size.x) as f32,
-            y: (in_dungeon.player_position.y * tile_size.y) as f32,
-        });
+        player.set_position(entity_position(&in_dungeon.player_position));
     }
 }
 
@@ -127,6 +166,7 @@ impl ControlVirtual for FloorViz {
             in_dungeon: None,
             tile_map: None,
             player: None,
+            entities: None,
 
             wall_atlas_coord: -Vector2i::ONE,
             hallway_atlas_coord: -Vector2i::ONE,
@@ -135,6 +175,13 @@ impl ControlVirtual for FloorViz {
             open_door_atlas_coord: -Vector2i::ONE,
             stairs_down_atlas_coord: -Vector2i::ONE,
             stairs_up_atlas_coord: -Vector2i::ONE,
+
+            body_entity_scene_path: "".into(),
+            body_entity_scene: None,
+            campfire_entity_scene_path: "".into(),
+            campfire_entity_scene: None,
+            gold_entity_scene_path: "".into(),
+            gold_entity_scene: None,
 
             base,
         }
@@ -146,5 +193,9 @@ impl ControlVirtual for FloorViz {
             "updated_state".into(),
             self.base.callable("_on_in_dungeon_updated"),
         );
+
+        self.body_entity_scene = Some(load(self.body_entity_scene_path.clone()));
+        self.campfire_entity_scene = Some(load(self.campfire_entity_scene_path.clone()));
+        self.gold_entity_scene = Some(load(self.gold_entity_scene_path.clone()));
     }
 }

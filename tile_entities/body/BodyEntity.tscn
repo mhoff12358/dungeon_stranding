@@ -1,0 +1,51 @@
+[gd_scene load_steps=8 format=3 uid="uid://dr4xfqsjf0y2e"]
+
+[ext_resource type="PackedScene" uid="uid://c03ud0q6duxk5" path="res://tile_entities/ClippedEntity.tscn" id="1_h64op"]
+[ext_resource type="Texture2D" uid="uid://cfdprr0waxw2h" path="res://art_assets/Blue_witch/B_witch_death.png" id="2_cf2np"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v1qsa"]
+atlas = ExtResource("2_cf2np")
+region = Rect2(0, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8co2b"]
+atlas = ExtResource("2_cf2np")
+region = Rect2(0, 384, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mabh0"]
+atlas = ExtResource("2_cf2np")
+region = Rect2(0, 416, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pckco"]
+atlas = ExtResource("2_cf2np")
+region = Rect2(0, 448, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sbrrf"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v1qsa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8co2b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mabh0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pckco")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="BodyEntity" type="Node2D"]
+
+[node name="ClippedEntity" parent="." instance=ExtResource("1_h64op")]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ClippedEntity"]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_sbrrf")
+centered = false
+
+[editable path="ClippedEntity"]
