@@ -1,4 +1,4 @@
-use std::{borrow::BorrowMut, ops::Deref};
+use std::ops::Deref;
 
 use ds_lib::{
     coord::Coord,

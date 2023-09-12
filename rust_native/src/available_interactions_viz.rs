@@ -1,7 +1,4 @@
-use ds_lib::{
-    fight::fight::{Fight, FightPhase},
-    game_state::{game_state::OngoingInteraction, state_updates::interactions::Interaction},
-};
+use ds_lib::game_state::state_updates::interactions::Interaction;
 use godot::{
     engine::{Control, ControlVirtual, Label},
     prelude::*,
