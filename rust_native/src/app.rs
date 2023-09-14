@@ -10,13 +10,18 @@ use crate::godot_utils::set_logger;
 #[derive(GodotClass)]
 #[class(base=Node)]
 pub struct App {
-    app: ds_lib::app::App,
+    app: Option<ds_lib::app::App>,
 
     name: GodotString,
+    #[export]
+    seed: GodotString,
 
     #[base]
     base: Base<Node>,
 }
+
+#[godot_api]
+impl App {}
 
 #[godot_api]
 impl NodeVirtual for App {
@@ -25,13 +30,30 @@ impl NodeVirtual for App {
         set_logger();
         log!("Creating App");
 
-        let args = CliArgs::default();
-
         Self {
-            app: ds_lib::app::App::new(&args),
+            app: None,
             name: "AN APP!".into(),
+            seed: "".into(),
             base,
         }
+    }
+
+    fn enter_tree(&mut self) {
+        let mut args = CliArgs::default();
+
+        if self.seed != "".into() {
+            args.seed = Some(self.seed.clone().into());
+        }
+
+        self.app = Some(ds_lib::app::App::new(&args));
+        ds_lib::log!(
+            "Seed: {}",
+            self.get_app()
+                .game_state
+                .borrow()
+                .persistent()
+                .rng_seed_display
+        );
     }
 
     fn to_string(&self) -> godot::builtin::GodotString {
@@ -51,16 +73,16 @@ impl App {
     }
 
     pub fn handle_keypress(&mut self) {
-        ds_lib::handle_keypress(KeyCode::Char('a'), &mut self.app);
-        check_invariants(&mut self.app);
+        ds_lib::handle_keypress(KeyCode::Char('a'), self.get_app_mut());
+        check_invariants(self.get_app_mut());
     }
 
     pub fn get_app(&self) -> &ds_lib::app::App {
-        return &self.app;
+        return self.app.as_ref().unwrap();
     }
 
     pub fn get_app_mut(&mut self) -> &mut ds_lib::app::App {
-        return &mut self.app;
+        return self.app.as_mut().unwrap();
     }
 }
 
