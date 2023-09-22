@@ -97,12 +97,12 @@ impl ShopViz {
 impl ShopViz {
     #[func]
     pub fn game_state(&self) -> Gd<GameStateViz> {
-        self.game_state.as_ref().unwrap().share()
+        self.game_state.as_ref().unwrap().clone()
     }
 
     #[func]
     pub fn out_of_dungeon(&self) -> Gd<OutOfDungeonViz> {
-        self.out_of_dungeon.as_ref().unwrap().share()
+        self.out_of_dungeon.as_ref().unwrap().clone()
     }
 
     #[func]

@@ -18,7 +18,7 @@ pub struct OutOfDungeonViz {
 impl OutOfDungeonViz {
     #[func]
     pub fn game_state(&self) -> Gd<GameStateViz> {
-        self.game_state.as_ref().unwrap().share()
+        self.game_state.as_ref().unwrap().clone()
     }
 
     #[func(gd_self)]

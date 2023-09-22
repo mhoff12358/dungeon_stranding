@@ -88,7 +88,7 @@ impl App {
 
 fn look_for_app(node: &Gd<Node>) -> Option<Gd<App>> {
     if node.is_class(App::class_name().to_godot_string()) {
-        return Some(node.share().cast());
+        return Some(node.clone().cast());
     }
     for child_index in 0..node.get_child_count() {
         if let Some(look_children) = look_for_app(node.get_child(child_index).as_ref().unwrap()) {

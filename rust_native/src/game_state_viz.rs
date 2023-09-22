@@ -124,11 +124,7 @@ impl ControlVirtual for GameStateViz {
     }
 
     fn ready(&mut self) {
-        self.app = Some(App::find_app(&self.base.share().upcast()));
-
-        //let mut base = self.base.share();
-        //drop(self);
-        //self.base.emit_signal("updated_state".into(), &[]);
+        self.app = Some(App::find_app(&self.base.clone().upcast()));
     }
 
     fn to_string(&self) -> godot::builtin::GodotString {

@@ -60,7 +60,7 @@ pub struct FloorViz {
 impl FloorViz {
     #[func]
     pub fn in_dungeon(&self) -> Gd<InDungeonViz> {
-        self.in_dungeon.as_ref().unwrap().share()
+        self.in_dungeon.as_ref().unwrap().clone()
     }
 
     #[func]
@@ -103,7 +103,7 @@ impl FloorViz {
         let entities_children = entities.get_children();
         for i in 0..entities_children.len() {
             let mut child = entities_children.get(i);
-            entities.remove_child(child.share());
+            entities.remove_child(child.clone());
             child.queue_free();
         }
         for (coord, entity) in floor.entities().all_entities_iter() {
@@ -114,7 +114,7 @@ impl FloorViz {
                 TileEntity::CampSite => self.campfire_entity_scene.as_ref().unwrap(),
             };
             let entity = entity_scene.instantiate().unwrap();
-            let mut entity2d: Gd<Node2D> = entity.share().cast();
+            let mut entity2d: Gd<Node2D> = entity.clone().cast();
             entities.add_child(entity);
             entity2d.set_position(entity_position(&coord));
         }

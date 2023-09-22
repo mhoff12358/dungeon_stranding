@@ -22,7 +22,7 @@ pub struct FightViz {
 impl FightViz {
     #[func]
     pub fn in_dungeon(&self) -> Gd<InDungeonViz> {
-        self.in_dungeon.as_ref().unwrap().share()
+        self.in_dungeon.as_ref().unwrap().clone()
     }
 
     #[func]

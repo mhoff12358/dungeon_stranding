@@ -44,7 +44,7 @@ impl InventoryViz {
 impl InventoryViz {
     #[func]
     pub fn game_state(&self) -> Gd<GameStateViz> {
-        self.game_state.as_ref().unwrap().share()
+        self.game_state.as_ref().unwrap().clone()
     }
 
     #[func]

@@ -3,7 +3,7 @@ use godot::prelude::*;
 pub fn try_walk_parents_for<T: Inherits<Node>>(node: &Node) -> Option<Gd<T>> {
     let mut parent_walk = node.get_parent();
     while let Some(parent) = &parent_walk {
-        if let Some(game_state) = parent.share().try_cast() {
+        if let Some(game_state) = parent.clone().try_cast() {
             return Some(game_state);
         }
         parent_walk = parent.get_parent();
