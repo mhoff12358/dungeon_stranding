@@ -94,9 +94,9 @@ impl FloorViz {
             .get_tileset()
             .unwrap()
             .get_tile_size();
-        let entity_position = |coord: &Coord| Vector2 {
-            x: (coord.x * tile_size.x) as f32,
-            y: (coord.y * tile_size.y) as f32,
+        let entity_position = |coord: &Coord| {
+            (Vector2::new(coord.x as f32, coord.y as f32) + Vector2::new(0.5, 0.5))
+                * Vector2::from_vector2i(tile_size)
         };
 
         let entities = self.entities.as_mut().unwrap();

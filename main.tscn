@@ -333,7 +333,6 @@ autowrap_mode = 2
 script = ExtResource("9_mks4e")
 
 [node name="InDungeonUI" type="InDungeonViz" parent="AspectRatioContainer/GameStateViz"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -372,7 +371,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.109804, 0.109804, 0.109804, 1)
 
-[node name="MapControls" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz" node_paths=PackedStringArray("map", "in_dungeon_viz")]
+[node name="MapControls" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz" node_paths=PackedStringArray("map", "in_dungeon_viz", "floor_viz")]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -384,6 +383,7 @@ mouse_force_pass_scroll_events = false
 script = ExtResource("10_ih4l5")
 map = NodePath("TileMap")
 in_dungeon_viz = NodePath("../..")
+floor_viz = NodePath("..")
 
 [node name="TileMap" type="TileMap" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls"]
 scale = Vector2(1.5, 1.5)
@@ -396,12 +396,33 @@ layer_0/tile_data = PackedInt32Array(655369, 0, 11, 720905, 0, 11, 786442, 0, 11
 [node name="PlayerEntity" type="Node2D" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls/TileMap"]
 
 [node name="Sprite" type="AnimatedSprite2D" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls/TileMap/PlayerEntity"]
-position = Vector2(8.26666, 8.66398)
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_xu6xp")
 
+[node name="MapControlUI" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz"]
+layout_mode = 1
+offset_right = 300.0
+offset_bottom = 100.0
+
+[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControlUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.270588, 0.270588, 0.270588, 1)
+
+[node name="FollowPlayerCheckButton" type="CheckButton" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControlUI"]
+layout_mode = 0
+offset_right = 44.0
+offset_bottom = 24.0
+button_pressed = true
+text = "Follow player"
+
 [node name="FightViz" type="FightViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI" node_paths=PackedStringArray("fight_description_label")]
 fight_description_label = NodePath("Label")
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
@@ -619,6 +640,7 @@ label_settings = SubResource("LabelSettings_gxwih")
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Gear/VBoxContainer/Control/Gear" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer/Control/CombatEquipment" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/SelectedDescriptionPanel/SelectedItem" method="_on_shop_panel_updated_state"]
+[connection signal="toggled" from="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControlUI/FollowPlayerCheckButton" to="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls" method="_on_follow_player_check_button_toggled"]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Counts/Label" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Gear/VBoxContainer/Control/Gear" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer/Control/CombatEquipment" method="_on_inventory_panel_updated_state" flags=18]

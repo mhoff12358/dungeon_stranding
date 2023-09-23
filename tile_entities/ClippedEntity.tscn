@@ -2,4 +2,4 @@
 
 [node name="BodyEntity" type="Polygon2D"]
 clip_children = 1
-polygon = PackedVector2Array(0, 0, 16, 0, 16, 16, 0, 16)
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
