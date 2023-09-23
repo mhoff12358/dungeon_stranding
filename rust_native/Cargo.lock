@@ -272,6 +272,7 @@ dependencies = [
  "instant",
  "js-sys",
  "lazy_static",
+ "owning_ref",
  "rand",
  "ron",
  "rust-embed",

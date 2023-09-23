@@ -1,10 +1,23 @@
-use ds_lib::fight::fight::{Fight, FightPhase};
+use ds_lib::{
+    fight::fight::{Fight, FightPhase},
+    game_state::{
+        game_state::GameState,
+        game_state_input::{
+            accept_game_state_input, FightEventInput, GameStateAcceptsInput, GameStateEventInput,
+            InDungeonEventInput,
+        },
+    },
+};
 use godot::{
     engine::{Control, ControlVirtual, Label},
     prelude::*,
 };
 
-use crate::{in_dungeon_viz::InDungeonViz, tree_utils::walk_parents_for};
+use crate::{
+    game_state_viz::{borrow_game_state_mut, GameStateViz},
+    in_dungeon_viz::{self, InDungeonViz},
+    tree_utils::walk_parents_for,
+};
 
 #[derive(GodotClass)]
 #[class(base=Control)]
@@ -42,6 +55,15 @@ impl FightViz {
             .as_mut()
             .unwrap()
             .set_text(Self::get_fight_description(fight));
+    }
+
+    #[func(gd_self)]
+    pub fn advance_fight(this: Gd<Self>) {
+        let game_state = this.bind().in_dungeon.as_ref().unwrap().bind().game_state();
+        GameStateViz::accept_input(
+            game_state,
+            &GameStateEventInput::InDungeon(InDungeonEventInput::Fight(FightEventInput::Advance)),
+        );
     }
 }
 

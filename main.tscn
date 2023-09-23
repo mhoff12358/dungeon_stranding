@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://d3h1eupfohnd1"]
+[gd_scene load_steps=24 format=3 uid="uid://d3h1eupfohnd1"]
 
 [ext_resource type="Script" path="res://scripts/GameState.gd" id="1_giily"]
 [ext_resource type="Script" path="res://scripts/out_of_dungeon_connections.gd" id="2_1rkja"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://scripts/MapControls.gd" id="10_ih4l5"]
 [ext_resource type="TileSet" uid="uid://de08x02s8201g" path="res://dungeon_tileset.tres" id="11_ngbcr"]
 [ext_resource type="Texture2D" uid="uid://bgruuywc6agcg" path="res://art_assets/Blue_witch/B_witch_idle.png" id="12_25s31"]
+[ext_resource type="Script" path="res://scripts/visualizers/FightViz.gd" id="14_gsero"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d8r8h"]
 atlas = ExtResource("12_25s31")
@@ -401,6 +402,7 @@ sprite_frames = SubResource("SpriteFrames_xu6xp")
 
 [node name="MapControlUI" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz"]
 layout_mode = 1
+anchors_preset = 0
 offset_right = 300.0
 offset_bottom = 100.0
 
@@ -422,7 +424,6 @@ text = "Follow player"
 
 [node name="FightViz" type="FightViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI" node_paths=PackedStringArray("fight_description_label")]
 fight_description_label = NodePath("Label")
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
@@ -430,6 +431,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("14_gsero")
 
 [node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz"]
 layout_mode = 1
@@ -442,12 +444,20 @@ color = Color(0.0196078, 0.0196078, 0.0196078, 1)
 
 [node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = -1
+anchor_top = 0.1
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("10_50krv")
+
+[node name="AdvanceFight" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.02
+anchor_bottom = 0.08
+text = "Advance Fight"
 
 [node name="InventoryPanel" type="InventoryViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI"]
 layout_mode = 1
@@ -641,6 +651,7 @@ label_settings = SubResource("LabelSettings_gxwih")
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer/Control/CombatEquipment" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/SelectedDescriptionPanel/SelectedItem" method="_on_shop_panel_updated_state"]
 [connection signal="toggled" from="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControlUI/FollowPlayerCheckButton" to="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls" method="_on_follow_player_check_button_toggled"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz/AdvanceFight" to="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz" method="_on_advance_fight_pressed"]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Counts/Label" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Gear/VBoxContainer/Control/Gear" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer/Control/CombatEquipment" method="_on_inventory_panel_updated_state" flags=18]

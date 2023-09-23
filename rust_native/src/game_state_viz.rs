@@ -1,9 +1,10 @@
-use std::cell::Ref;
+use std::cell::{Ref, RefCell};
 use std::ops::{Deref, DerefMut};
 
 use crate::{app::App, my_gd_ref::MyGdRef};
 use ds_lib::directions::Direction;
 use ds_lib::game_state::game_state::GameState;
+use ds_lib::game_state::game_state_input::{accept_game_state_input, GameStateEventInput};
 use ds_lib::input::keycode::KeyCode;
 use godot::engine::{Control, ControlVirtual};
 use godot::prelude::*;
@@ -104,6 +105,16 @@ impl GameStateViz {
                 it.get_app().game_state.borrow()
             },
         )
+    }
+
+    pub fn accept_input(this: Gd<Self>, input: &GameStateEventInput) {
+        {
+            let _self = this.bind();
+            let app = _self.app.as_ref().unwrap().bind();
+            let game_state = app.get_app().game_state.deref();
+            accept_game_state_input(game_state, input);
+        }
+        Self::handle_game_update(this);
     }
 }
 
