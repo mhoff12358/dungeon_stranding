@@ -13,7 +13,9 @@ pub mod interaction_viz;
 pub mod inventory_viz;
 pub mod my_gd_ref;
 pub mod out_of_dungeon_viz;
+pub mod shop_item_viz;
 pub mod shop_viz;
+pub mod template_spawner;
 pub mod tree_utils;
 
 struct DungeonStrandingExtension;

@@ -1,15 +1,7 @@
-macro_rules! gd_log {
-    ( $( $t:tt )* ) => {
-        use godot::prelude::ToVariant;
-        godot::engine::utilities::print(
-                format!( $( $t )* ).to_variant(),
-                &[]
-        );
-    }
-}
+use godot::prelude::godot_print;
 
 fn simple_log(text: &str) {
-    gd_log!("{}", text);
+    godot_print!("{}", text);
 }
 
 pub fn set_logger() {

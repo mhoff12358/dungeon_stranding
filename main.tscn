@@ -1,6 +1,6 @@
 [gd_scene load_steps=22 format=3 uid="uid://d3h1eupfohnd1"]
 
-[ext_resource type="Script" path="res://scripts/game_state_input.gd" id="1_waheq"]
+[ext_resource type="Script" path="res://scripts/GameState.gd" id="1_giily"]
 [ext_resource type="Script" path="res://scripts/out_of_dungeon_connections.gd" id="2_1rkja"]
 [ext_resource type="Script" path="res://scripts/inventory_connections.gd" id="4_gkaxy"]
 [ext_resource type="Script" path="res://scripts/visualizers/InventoryCounts.gd" id="5_j5qrg"]
@@ -90,9 +90,7 @@ ratio = 1.7778
 
 [node name="GameStateViz" type="GameStateViz" parent="AspectRatioContainer"]
 layout_mode = 2
-
-[node name="Input" type="Node" parent="AspectRatioContainer/GameStateViz"]
-script = ExtResource("1_waheq")
+script = ExtResource("1_giily")
 
 [node name="OutOfDungeonUI" type="OutOfDungeonViz" parent="AspectRatioContainer/GameStateViz"]
 layout_mode = 1
@@ -108,6 +106,8 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.3
 anchor_bottom = 1.0
+offset_left = -1.0
+offset_right = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("4_gkaxy")
@@ -226,7 +226,8 @@ grow_vertical = 2
 autowrap_mode = 2
 script = ExtResource("7_yyt8n")
 
-[node name="ShopPanel" type="ShopViz" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI"]
+[node name="ShopPanel" type="ShopViz" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI" node_paths=PackedStringArray("shop_item_template")]
+shop_item_template = NodePath("ItemsPanel/ShopItemViz")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
@@ -263,6 +264,36 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("7_gb6ke")
 
+[node name="ShopItemViz" type="ShopItemViz" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel" node_paths=PackedStringArray("shop", "item_name_label", "price_label")]
+shop = NodePath("../..")
+item_name_label = NodePath("ItemName")
+price_label = NodePath("Price")
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.025
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ItemName" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/ShopItemViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.7
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Item name"
+
+[node name="Price" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/ShopItemViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.7
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "10g"
+
 [node name="SelectedDescriptionPanel" type="Control" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel"]
 layout_mode = 1
 anchor_left = 0.6
@@ -293,6 +324,7 @@ autowrap_mode = 2
 script = ExtResource("9_mks4e")
 
 [node name="InDungeonUI" type="InDungeonViz" parent="AspectRatioContainer/GameStateViz"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

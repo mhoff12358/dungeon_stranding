@@ -1,8 +1,8 @@
-use std::ops::Deref;
+use std::{cell::RefCell, ops::Deref};
 
 use ds_lib::{
     game_state::game_state::GameState,
-    party_state::inventory::{InventoryItem, ItemInfo},
+    party_state::inventory::UniqueItemId,
     shop::{shop::Shop, shop_interface::ShopInterface},
 };
 use godot::{
@@ -14,8 +14,24 @@ use owning_ref::OwningHandle;
 use crate::{
     game_state_viz::{borrow_game_state, GameStateViz},
     out_of_dungeon_viz::OutOfDungeonViz,
+    template_spawner::TemplateSpawner,
     tree_utils::walk_parents_for,
 };
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+pub struct ShopId(pub UniqueItemId);
+
+impl ToVariant for ShopId {
+    fn to_variant(&self) -> Variant {
+        self.0 .0.to_variant()
+    }
+}
+
+impl FromVariant for ShopId {
+    fn try_from_variant(variant: &Variant) -> Result<Self, VariantConversionError> {
+        Ok(ShopId(UniqueItemId(u32::try_from_variant(variant)?)))
+    }
+}
 
 #[derive(GodotClass)]
 #[class(base=Control)]
@@ -23,56 +39,16 @@ pub struct ShopViz {
     game_state: Option<Gd<GameStateViz>>,
     out_of_dungeon: Option<Gd<OutOfDungeonViz>>,
 
+    #[export]
+    shop_item_template: Option<Gd<Control>>,
+    shop_item_templates: Option<RefCell<TemplateSpawner<ShopId>>>,
+
     #[base]
     base: Base<Control>,
 }
 
 impl ShopViz {
-    fn items_for_sale_text(shop: &Shop, selected_index: usize) -> String {
-        let mut text = String::new();
-
-        let num_items_for_sale = shop.display_order().len();
-        let selection_identifier = |selected| if selected { "->" } else { "  " };
-        for i in 0..num_items_for_sale {
-            let item_for_sale = shop.get_item(i).unwrap();
-            text = text
-                + format!(
-                    "{}| {} | {}\n",
-                    selection_identifier(selected_index == i),
-                    item_for_sale.price,
-                    item_for_sale.item.name()
-                )
-                .as_str();
-        }
-        text = text
-            + format!(
-                "{}| Finish buying and enter the dungeon.",
-                selection_identifier(selected_index == num_items_for_sale),
-            )
-            .as_str();
-        return text;
-    }
-
-    fn selected_item_text(shop: &Shop, selected_index: usize) -> String {
-        if let Some(item) = shop.get_item(selected_index) {
-            match &item.item {
-                InventoryItem::CombatEquipment(equipment) => {
-                    return format!(
-                        "Name: {}\nEffect: {}",
-                        equipment.name(),
-                        equipment.description()
-                    );
-                }
-                InventoryItem::Gear(gear) => {
-                    return format!("Gear: {}", gear.name());
-                }
-            }
-        } else {
-            return String::from("");
-        }
-    }
-
-    fn shop<'a>(&'a self) -> impl Deref<Target = Shop> + 'a {
+    pub fn shop<'a>(&'a self) -> impl Deref<Target = Shop> + 'a {
         OwningHandle::new_with_fn(
             borrow_game_state(&self.game_state.as_ref().unwrap()),
             |it: *const GameState| {
@@ -82,7 +58,7 @@ impl ShopViz {
         )
     }
 
-    fn shop_interface<'a>(&'a self) -> impl Deref<Target = ShopInterface> + 'a {
+    pub fn shop_interface<'a>(&'a self) -> impl Deref<Target = ShopInterface> + 'a {
         OwningHandle::new_with_fn(
             borrow_game_state(&self.game_state.as_ref().unwrap()),
             |it: *const GameState| {
@@ -106,13 +82,13 @@ impl ShopViz {
     }
 
     #[func]
-    fn shop_text(&self) -> GodotString {
-        Self::items_for_sale_text(&self.shop(), self.shop_interface().selected_index()).into()
-    }
-
-    #[func]
-    fn selected_text(&self) -> GodotString {
-        Self::selected_item_text(&self.shop(), self.shop_interface().selected_index()).into()
+    pub fn _on_out_of_dungeon_state_updated(&self) {
+        let shop = self.shop();
+        self.shop_item_templates
+            .as_ref()
+            .unwrap()
+            .borrow_mut()
+            .update(shop.display_order().iter().map(|id| ShopId(*id)), |x| *x);
     }
 }
 
@@ -122,6 +98,8 @@ impl ControlVirtual for ShopViz {
         Self {
             game_state: None,
             out_of_dungeon: None,
+            shop_item_template: None,
+            shop_item_templates: None,
             base,
         }
     }
@@ -129,5 +107,12 @@ impl ControlVirtual for ShopViz {
     fn enter_tree(&mut self) {
         self.game_state = Some(walk_parents_for(&self.base));
         self.out_of_dungeon = Some(walk_parents_for(&self.base));
+        self.out_of_dungeon.as_mut().unwrap().connect(
+            "updated_state".into(),
+            self.base.callable("_on_out_of_dungeon_state_updated"),
+        );
+        self.shop_item_templates = Some(RefCell::new(TemplateSpawner::new(
+            self.shop_item_template.as_ref().unwrap().clone().upcast(),
+        )));
     }
 }

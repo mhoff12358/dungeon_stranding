@@ -26,7 +26,6 @@ impl App {}
 #[godot_api]
 impl NodeVirtual for App {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
-        godot::engine::utilities::print("Creating App".to_variant(), &[]);
         set_logger();
         log!("Creating App");
 

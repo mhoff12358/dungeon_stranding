@@ -47,6 +47,15 @@ impl InDungeonViz {
     }
 
     #[func]
+    pub fn is_moving_in_dungeon(&self) -> bool {
+        let game_state = borrow_game_state(&self.game_state.as_ref().unwrap());
+        match game_state.deref() {
+            GameState::InDungeon(in_dungeon) => in_dungeon.ongoing_event.is_none(),
+            _ => false,
+        }
+    }
+
+    #[func]
     pub fn get_tiles(&self) -> GodotString {
         let floor = self.borrow_current_floor();
         let stairs = floor.stairs();
