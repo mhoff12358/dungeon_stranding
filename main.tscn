@@ -5,9 +5,9 @@
 [ext_resource type="Script" path="res://scripts/inventory_connections.gd" id="4_gkaxy"]
 [ext_resource type="Script" path="res://scripts/visualizers/InventoryCounts.gd" id="5_j5qrg"]
 [ext_resource type="Script" path="res://scripts/visualizers/Gear.gd" id="6_2ifdh"]
-[ext_resource type="Script" path="res://ShopItemsList.gd" id="7_gb6ke"]
 [ext_resource type="Script" path="res://shop_connections.gd" id="7_xuray"]
 [ext_resource type="Script" path="res://scripts/visualizers/CombatEquipment.gd" id="7_yyt8n"]
+[ext_resource type="Script" path="res://scripts/EnterTheDungeon.gd" id="9_cpnir"]
 [ext_resource type="Script" path="res://ShopItemViz.gd" id="9_g1ov6"]
 [ext_resource type="Script" path="res://SelectedItem.gd" id="9_mks4e"]
 [ext_resource type="Script" path="res://Tiles.gd" id="10_50krv"]
@@ -228,7 +228,7 @@ autowrap_mode = 2
 script = ExtResource("7_yyt8n")
 
 [node name="ShopPanel" type="ShopViz" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI" node_paths=PackedStringArray("shop_item_template")]
-shop_item_template = NodePath("ItemsPanel/ShopItemViz")
+shop_item_template = NodePath("ItemsPanel/PurchasableItems/ShopItemViz")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
@@ -254,18 +254,15 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.168627, 0.0392157, 0.168627, 1)
 
-[node name="ShopItemsList" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel"]
+[node name="PurchasableItems" type="Control" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.05
-anchor_top = 0.025
-anchor_right = 0.95
-anchor_bottom = 0.975
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("7_gb6ke")
 
-[node name="ShopItemViz" type="ShopItemViz" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel" node_paths=PackedStringArray("item_name_label", "price_label")]
+[node name="ShopItemViz" type="ShopItemViz" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/PurchasableItems" node_paths=PackedStringArray("item_name_label", "price_label")]
 item_name_label = NodePath("ItemName")
 price_label = NodePath("Price")
 layout_mode = 1
@@ -276,7 +273,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("9_g1ov6")
 
-[node name="ItemName" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/ShopItemViz"]
+[node name="ItemName" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/PurchasableItems/ShopItemViz"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.7
@@ -285,7 +282,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Item name"
 
-[node name="Price" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/ShopItemViz"]
+[node name="Price" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/PurchasableItems/ShopItemViz"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.7
@@ -294,6 +291,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "10g"
+
+[node name="EnterTheDungeon" type="Button" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel" node_paths=PackedStringArray("shop")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.02
+anchor_right = 0.3
+anchor_bottom = 0.08
+text = "Enter the Dungeon"
+script = ExtResource("9_cpnir")
+shop = NodePath("../..")
 
 [node name="SelectedDescriptionPanel" type="Control" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel"]
 layout_mode = 1
@@ -610,7 +618,6 @@ label_settings = SubResource("LabelSettings_gxwih")
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Counts/Label" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Gear/VBoxContainer/Control/Gear" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer/Control/CombatEquipment" method="_on_inventory_panel_updated_state" flags=18]
-[connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/ShopItemsList" method="_on_shop_panel_updated_state"]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/SelectedDescriptionPanel/SelectedItem" method="_on_shop_panel_updated_state"]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Counts/Label" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Gear/VBoxContainer/Control/Gear" method="_on_inventory_panel_updated_state" flags=18]

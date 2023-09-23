@@ -5,7 +5,7 @@ use std::{
 
 use ds_lib::{
     game_state::game_state::GameState,
-    out_of_dungeon_algos::purchase_from_shop,
+    out_of_dungeon_algos::{enter_dungeon, purchase_from_shop},
     party_state::inventory::UniqueItemId,
     shop::{shop::Shop, shop_interface::ShopInterface},
 };
@@ -106,6 +106,18 @@ impl ShopViz {
             .unwrap()
             .borrow_mut()
             .update(shop.display_order().iter().map(|id| ShopId(*id)), |x| *x);
+    }
+
+    #[func(gd_self)]
+    pub fn finish_buying(mut shop_viz: Gd<ShopViz>) {
+        let game_state: Gd<GameStateViz>;
+        {
+            let _self = shop_viz.bind_mut();
+            game_state = _self.game_state();
+            let mut game_state = borrow_game_state_mut(&game_state);
+            enter_dungeon(&mut game_state);
+        }
+        GameStateViz::handle_game_update(game_state);
     }
 }
 
