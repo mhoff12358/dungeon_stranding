@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://d3h1eupfohnd1"]
+[gd_scene load_steps=23 format=3 uid="uid://d3h1eupfohnd1"]
 
 [ext_resource type="Script" path="res://scripts/GameState.gd" id="1_giily"]
 [ext_resource type="Script" path="res://scripts/out_of_dungeon_connections.gd" id="2_1rkja"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://ShopItemsList.gd" id="7_gb6ke"]
 [ext_resource type="Script" path="res://shop_connections.gd" id="7_xuray"]
 [ext_resource type="Script" path="res://scripts/visualizers/CombatEquipment.gd" id="7_yyt8n"]
+[ext_resource type="Script" path="res://ShopItemViz.gd" id="9_g1ov6"]
 [ext_resource type="Script" path="res://SelectedItem.gd" id="9_mks4e"]
 [ext_resource type="Script" path="res://Tiles.gd" id="10_50krv"]
 [ext_resource type="Script" path="res://scripts/MapControls.gd" id="10_ih4l5"]
@@ -264,8 +265,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("7_gb6ke")
 
-[node name="ShopItemViz" type="ShopItemViz" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel" node_paths=PackedStringArray("shop", "item_name_label", "price_label")]
-shop = NodePath("../..")
+[node name="ShopItemViz" type="ShopItemViz" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel" node_paths=PackedStringArray("item_name_label", "price_label")]
 item_name_label = NodePath("ItemName")
 price_label = NodePath("Price")
 layout_mode = 1
@@ -274,6 +274,7 @@ anchor_right = 1.0
 anchor_bottom = 0.025
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("9_g1ov6")
 
 [node name="ItemName" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/ShopItemViz"]
 layout_mode = 1

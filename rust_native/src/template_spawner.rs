@@ -4,14 +4,14 @@ use std::{
     hash::Hash,
 };
 
-use godot::{engine::node::DuplicateFlags, prelude::*};
+use godot::prelude::*;
 
 pub struct TemplateSpawner<Key>
 where
     Key: Hash + Eq + PartialEq + Copy,
 {
     parent: Gd<Node>,
-    template: Gd<Node>,
+    template: Gd<PackedScene>,
 
     instantiated_templates: HashMap<Key, Gd<Node>>,
 }
@@ -23,33 +23,31 @@ where
     pub fn new(template: Gd<Node>) -> Self {
         let mut parent = template.get_parent().unwrap();
         parent.remove_child(template.clone());
+
+        let mut template_scene = PackedScene::new();
+        let template_children = template.get_children_ex().include_internal(true).done();
+        for mut child in template_children.iter_shared() {
+            child.set_owner(template.clone());
+        }
+        template_scene.pack(template);
         Self {
             parent: parent,
-            template,
+            template: template_scene,
             instantiated_templates: Default::default(),
         }
     }
 
     fn instantiate_template<Value>(
         parent: &mut Gd<Node>,
-        template: &Gd<Node>,
+        template: &Gd<PackedScene>,
         value: &Value,
     ) -> Gd<Node>
     where
         Value: ToVariant,
     {
-        let mut new_node = template
-            .duplicate_ex()
-            .flags(
-                DuplicateFlags::DUPLICATE_SCRIPTS.ord()
-                    | DuplicateFlags::DUPLICATE_SIGNALS.ord()
-                    | DuplicateFlags::DUPLICATE_GROUPS.ord(),
-            )
-            .done()
-            .unwrap();
+        let mut new_node = template.instantiate().unwrap();
         parent.add_child(new_node.clone());
-        //new_node.emit_signal("instantiate_template".into(), &[value.to_variant()]);
-        new_node.call("_on_instantiate_template".into(), &[value.to_variant()]);
+        new_node.emit_signal("instantiate_template".into(), &[value.to_variant()]);
         return new_node;
     }
 
@@ -57,22 +55,14 @@ where
         instantiated_template: &mut Gd<Node>,
         previous: &Option<Gd<Node>>,
     ) {
-        instantiated_template.call(
-            "_on_place_after".into(),
-            &[if let Some(previous) = previous {
-                previous.to_variant()
-            } else {
-                Variant::nil()
-            }],
-        );
-        /*instantiated_template.emit_signal(
+        instantiated_template.emit_signal(
             "place_after".into(),
             &[if let Some(previous) = previous {
                 previous.to_variant()
             } else {
                 Variant::nil()
             }],
-        );*/
+        );
     }
 
     pub fn update<'a, Value, GetKey>(
@@ -93,7 +83,6 @@ where
 
         for value in values {
             let key = (get_key)(&value);
-            ds_lib::log!("Found value with key: {:?}, {:?}", &value, &key);
             let mut instantiated_template = self
                 .instantiated_templates
                 .entry(key)
@@ -101,14 +90,16 @@ where
                 .clone();
             unused_keys.remove(&key);
 
-            ds_lib::log!("Placing after");
             Self::place_instantiated_template_after(&mut instantiated_template, &previous_node);
 
             previous_node = Some(instantiated_template);
         }
 
         for key in unused_keys.iter() {
-            self.instantiated_templates.remove(key);
+            self.instantiated_templates
+                .remove(key)
+                .unwrap()
+                .queue_free();
         }
     }
 }

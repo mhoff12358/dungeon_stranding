@@ -10,12 +10,12 @@ use owning_ref::OwningHandle;
 use crate::{
     my_gd_ref::MyGdRef,
     shop_viz::{ShopId, ShopViz},
+    tree_utils::walk_parents_for,
 };
 
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct ShopItemViz {
-    #[export]
     shop: Option<Gd<ShopViz>>,
 
     shop_id: Option<ShopId>,
@@ -38,50 +38,29 @@ impl ShopItemViz {
 
     #[func]
     fn _on_instantiate_template(&mut self, value: Variant) {
-        unsafe {
-            ds_lib::log!(
-                "Instantiating template {:?}",
-                std::mem::transmute::<&mut Self, *mut Self>(self)
-            );
-        }
+        let shop_id: ShopId;
         let item_text: GodotString;
         let price_text: GodotString;
         {
-            let shop_id = ShopId::from_variant(&value);
+            shop_id = ShopId::from_variant(&value);
             let shop = self.shop();
             let item = shop.get_item(&shop_id.0).unwrap();
             item_text = item.item.name().into();
             price_text = format!("{}g", item.price).into();
         }
-        ds_lib::log!("Instantiating template {:?}, {:?}", item_text, price_text);
+        self.shop_id = Some(shop_id);
         self.item_name_label.as_mut().unwrap().set_text(item_text);
         self.price_label.as_mut().unwrap().set_text(price_text);
     }
 
     #[func]
     fn _on_place_after(&mut self, previous: Variant) {
-        unsafe {
-            ds_lib::log!(
-                "Placing {:?}",
-                std::mem::transmute::<&mut Self, *mut Self>(self)
-            );
-        }
-
         let top;
         if previous.is_nil() {
             top = 0.0;
-            ds_lib::log!(
-                "Placing {:?} at top",
-                self.item_name_label.as_ref().unwrap().get_text()
-            );
         } else {
             let previous_control = Gd::<Control>::from_variant(&previous);
             top = previous_control.get_anchor(Side::SIDE_BOTTOM);
-            ds_lib::log!(
-                "Placing {:?} after {}",
-                self.item_name_label.as_ref().unwrap().get_text(),
-                top
-            );
         }
 
         let size = self.base.get_anchor(Side::SIDE_BOTTOM) - self.base.get_anchor(Side::SIDE_TOP);
@@ -94,6 +73,18 @@ impl ShopItemViz {
             .set_anchor_ex(Side::SIDE_BOTTOM, top + size)
             .keep_offset(true)
             .done();
+    }
+
+    #[func(gd_self)]
+    fn buy_item(this: Gd<Self>) {
+        let shop: Gd<ShopViz>;
+        let item_to_buy: ShopId;
+        {
+            let _self = this.bind();
+            shop = _self.shop.as_ref().unwrap().clone();
+            item_to_buy = _self.shop_id.unwrap();
+        }
+        ShopViz::buy_item(shop, item_to_buy);
     }
 }
 
@@ -112,7 +103,6 @@ impl ShopItemViz {
 #[godot_api]
 impl ControlVirtual for ShopItemViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
-        ds_lib::log!("init-ing ShopItemViz");
         Self {
             shop: None,
             shop_id: None,
@@ -131,5 +121,9 @@ impl ControlVirtual for ShopItemViz {
             let callable = self.base.callable("_on_place_after");
             self.base.connect("place_after".into(), callable);
         }
+    }
+
+    fn ready(&mut self) {
+        self.shop = Some(walk_parents_for(&self.base));
     }
 }

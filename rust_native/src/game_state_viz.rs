@@ -1,5 +1,5 @@
 use std::cell::Ref;
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 
 use crate::{app::App, my_gd_ref::MyGdRef};
 use ds_lib::directions::Direction;
@@ -82,6 +82,17 @@ impl GameStateViz {
         }
         this.emit_signal("updated_state".into(), &[]);
     }
+
+    #[func(gd_self)]
+    pub fn handle_game_update(mut this: Gd<Self>) {
+        {
+            let mut this = this.bind_mut();
+            let mut app_bind = this.app.as_mut().unwrap().bind_mut();
+            let app = app_bind.get_app_mut();
+            ds_lib::game_state::state_updates::update_algos::check_invariants(app);
+        }
+        this.emit_signal("updated_state".into(), &[]);
+    }
 }
 
 impl GameStateViz {
@@ -107,6 +118,27 @@ pub fn borrow_game_state<'a>(
         ) -> impl Deref<Target = GameState> + StableAddress + 'c {
             let it = unsafe { &*it };
             it.get_app().game_state.borrow()
+        }
+        let it = unsafe { &*it };
+        OwningHandle::new_with_fn(
+            MyGdRef::new(it.app.as_ref().unwrap().bind()),
+            &internal_borrow,
+        )
+    }
+    OwningHandle::new_with_fn(MyGdRef::new(game_state.bind()), &internal_borrow)
+}
+
+pub fn borrow_game_state_mut<'a>(
+    game_state: &'a Gd<GameStateViz>,
+) -> impl DerefMut<Target = GameState> + StableAddress + 'a {
+    fn internal_borrow<'b>(
+        it: *const GameStateViz,
+    ) -> impl DerefMut<Target = GameState> + StableAddress + 'b {
+        fn internal_borrow<'c>(
+            it: *const App,
+        ) -> impl DerefMut<Target = GameState> + StableAddress + 'c {
+            let it = unsafe { &*it };
+            it.get_app().game_state.borrow_mut()
         }
         let it = unsafe { &*it };
         OwningHandle::new_with_fn(

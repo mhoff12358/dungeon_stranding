@@ -1,7 +1,11 @@
-use std::{cell::RefCell, ops::Deref};
+use std::{
+    cell::RefCell,
+    ops::{Deref, DerefMut},
+};
 
 use ds_lib::{
     game_state::game_state::GameState,
+    out_of_dungeon_algos::purchase_from_shop,
     party_state::inventory::UniqueItemId,
     shop::{shop::Shop, shop_interface::ShopInterface},
 };
@@ -9,10 +13,10 @@ use godot::{
     engine::{Control, ControlVirtual},
     prelude::*,
 };
-use owning_ref::OwningHandle;
+use owning_ref::{OwningHandle, OwningRef, OwningRefMut};
 
 use crate::{
-    game_state_viz::{borrow_game_state, GameStateViz},
+    game_state_viz::{borrow_game_state, borrow_game_state_mut, GameStateViz},
     out_of_dungeon_viz::OutOfDungeonViz,
     template_spawner::TemplateSpawner,
     tree_utils::walk_parents_for,
@@ -49,13 +53,15 @@ pub struct ShopViz {
 
 impl ShopViz {
     pub fn shop<'a>(&'a self) -> impl Deref<Target = Shop> + 'a {
-        OwningHandle::new_with_fn(
-            borrow_game_state(&self.game_state.as_ref().unwrap()),
-            |it: *const GameState| {
-                let it = unsafe { &*it };
-                &it.unwrap_out_of_dungeon().shop
-            },
-        )
+        OwningRef::new(borrow_game_state(&self.game_state.as_ref().unwrap()))
+            .map(|game_state| &game_state.unwrap_out_of_dungeon().shop)
+    }
+
+    pub fn shop_mut<'a>(&'a self) -> impl DerefMut<Target = Shop> + 'a {
+        OwningRefMut::new(borrow_game_state_mut(
+            &mut self.game_state.as_ref().unwrap(),
+        ))
+        .map_mut(|game_state| &mut game_state.unwrap_out_of_dungeon_mut().shop)
     }
 
     pub fn shop_interface<'a>(&'a self) -> impl Deref<Target = ShopInterface> + 'a {
@@ -66,6 +72,17 @@ impl ShopViz {
                 &it.unwrap_out_of_dungeon().shop_interface
             },
         )
+    }
+
+    pub fn buy_item(mut shop_viz: Gd<ShopViz>, item_to_buy: ShopId) {
+        let game_state: Gd<GameStateViz>;
+        {
+            let _self = shop_viz.bind_mut();
+            game_state = _self.game_state();
+            let mut game_state = borrow_game_state_mut(&game_state);
+            purchase_from_shop(game_state.unwrap_out_of_dungeon_mut(), item_to_buy.0);
+        }
+        GameStateViz::handle_game_update(game_state);
     }
 }
 
