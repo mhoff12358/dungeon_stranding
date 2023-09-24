@@ -1,0 +1,9 @@
+[submodule "rust_native/deps/dungeon_stranding"]
+	path = rust_native/deps/dungeon_stranding
+	url = git@gitlab.com:mhoff12358/dungeon_stranding.git
+[submodule "rust_native/deps/-f"]
+	path = rust_native/deps/-f
+	url = git@github.com:mhoff12358/gdextension.git
+[submodule "rust_native/deps/gdextension"]
+	path = rust_native/deps/gdextension
+	url = git@github.com:mhoff12358/gdextension.git
