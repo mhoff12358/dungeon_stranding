@@ -5,6 +5,8 @@ pub mod godot_utils;
 
 pub mod app;
 pub mod available_interactions_viz;
+pub mod camp_viz;
+pub mod dig_viz;
 pub mod fight_viz;
 pub mod floor_viz;
 pub mod game_state_viz;

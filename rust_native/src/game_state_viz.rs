@@ -1,10 +1,11 @@
-use std::cell::{Ref, RefCell};
+use std::cell::Ref;
 use std::ops::{Deref, DerefMut};
 
 use crate::{app::App, my_gd_ref::MyGdRef};
 use ds_lib::directions::Direction;
 use ds_lib::game_state::game_state::GameState;
-use ds_lib::game_state::game_state_input::{accept_game_state_input, GameStateEventInput};
+use ds_lib::game_state::game_state_input::accept_game_state_input;
+use ds_lib::game_state::inputs::game_state_input::GameStateInput;
 use ds_lib::input::keycode::KeyCode;
 use godot::engine::{Control, ControlVirtual};
 use godot::prelude::*;
@@ -29,6 +30,9 @@ enum GodotInput {
 
 #[godot_api]
 impl GameStateViz {
+    #[signal]
+    fn pre_updated_state();
+
     #[signal]
     fn updated_state();
 
@@ -81,6 +85,7 @@ impl GameStateViz {
             ds_lib::handle_keypress(key_code, app);
             ds_lib::game_state::state_updates::update_algos::check_invariants(app);
         }
+        this.emit_signal("pre_updated_state".into(), &[]);
         this.emit_signal("updated_state".into(), &[]);
     }
 
@@ -92,6 +97,7 @@ impl GameStateViz {
             let app = app_bind.get_app_mut();
             ds_lib::game_state::state_updates::update_algos::check_invariants(app);
         }
+        this.emit_signal("pre_updated_state".into(), &[]);
         this.emit_signal("updated_state".into(), &[]);
     }
 }
@@ -107,7 +113,7 @@ impl GameStateViz {
         )
     }
 
-    pub fn accept_input(this: Gd<Self>, input: &GameStateEventInput) {
+    pub fn accept_input(this: Gd<Self>, input: &GameStateInput) {
         {
             let _self = this.bind();
             let app = _self.app.as_ref().unwrap().bind();

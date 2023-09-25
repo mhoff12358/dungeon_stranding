@@ -1,18 +1,21 @@
 use ds_lib::game_state::game_state::OngoingInteraction;
 use godot::{
-    engine::{Control, ControlVirtual, Label},
+    engine::{Control, ControlVirtual},
     prelude::*,
 };
 
-use crate::{in_dungeon_viz::InDungeonViz, tree_utils::walk_parents_for};
+use crate::{
+    camp_viz::CampViz, dig_viz::DigViz, game_state_viz::GameStateViz, in_dungeon_viz::InDungeonViz,
+    tree_utils::walk_parents_for,
+};
 
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct InteractionViz {
     in_dungeon: Option<Gd<InDungeonViz>>,
 
-    #[export]
-    interaction_options_label: Option<Gd<Label>>,
+    pub dig_viz: Option<Gd<DigViz>>,
+    pub camp_viz: Option<Gd<CampViz>>,
 
     #[base]
     base: Base<Control>,
@@ -26,7 +29,7 @@ impl InteractionViz {
     }
 
     #[func]
-    pub fn _on_in_dungeon_updated(&mut self) {
+    pub fn hide(&mut self) {
         self.base.set_visible(false);
     }
 
@@ -41,28 +44,18 @@ impl InteractionViz {
             .as_ref()
             .unwrap()
             .unwrap_interaction();
-
-        self.interaction_options_label
-            .as_mut()
-            .unwrap()
-            .set_text(Self::get_interaction_description(interaction));
-    }
-}
-
-impl InteractionViz {
-    fn get_interaction_description(interaction: &OngoingInteraction) -> GodotString {
-        let text = match interaction {
+        match interaction {
             OngoingInteraction::Dig => {
-                format!("Pick a direction to dig\nQ to quit")
+                if let Some(dig_viz) = self.dig_viz.as_mut() {
+                    dig_viz.bind_mut().updated();
+                }
             }
             OngoingInteraction::Camp { amount } => {
-                format!(
-                    "How much food to spend camping? (A & D to change)\n{} food\n\nSpace to finalize, Q to quit",
-                    amount
-                )
+                if let Some(camp_viz) = self.camp_viz.as_mut() {
+                    camp_viz.bind_mut().updated(amount);
+                }
             }
-        };
-        return text.into();
+        }
     }
 }
 
@@ -71,18 +64,18 @@ impl ControlVirtual for InteractionViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             in_dungeon: None,
-            interaction_options_label: None,
+
+            camp_viz: None,
+            dig_viz: None,
 
             base,
         }
     }
 
     fn enter_tree(&mut self) {
+        walk_parents_for::<GameStateViz>(&self.base)
+            .connect("pre_updated_state".into(), self.base.callable("hide"));
         self.in_dungeon = Some(walk_parents_for(&self.base));
-        self.in_dungeon.as_mut().unwrap().connect(
-            "updated_state".into(),
-            self.base.callable("_on_in_dungeon_updated"),
-        );
         self.in_dungeon.as_mut().unwrap().connect(
             "updated_state_interaction".into(),
             self.base.callable("_on_in_dungeon_updated_interaction"),
