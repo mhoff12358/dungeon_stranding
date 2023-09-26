@@ -10,3 +10,5 @@ crate-type = ["cdylib"]
 godot = { path = "deps/gdextension/godot" }
 dungeon_stranding = { path = "deps/dungeon_stranding" }
 owning_ref = "*"
+num-derive = "*"
+num-traits = "*"

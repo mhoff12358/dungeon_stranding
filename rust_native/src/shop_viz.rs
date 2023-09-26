@@ -45,7 +45,7 @@ pub struct ShopViz {
 
     #[export]
     shop_item_template: Option<Gd<Control>>,
-    shop_item_templates: Option<RefCell<TemplateSpawner<ShopId>>>,
+    shop_item_templates: Option<RefCell<TemplateSpawner<ShopId, ShopId, Node>>>,
 
     #[base]
     base: Base<Control>,

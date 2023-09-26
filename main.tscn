@@ -580,8 +580,8 @@ grow_vertical = 2
 autowrap_mode = 2
 script = ExtResource("7_yyt8n")
 
-[node name="AvailableInteractionsViz" type="AvailableInteractionsViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI" node_paths=PackedStringArray("interactions_label")]
-interactions_label = NodePath("ColorRect/Options")
+[node name="AvailableInteractionsViz" type="AvailableInteractionsViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI" node_paths=PackedStringArray("interaction_template")]
+interaction_template = NodePath("ColorRect/Options/Option")
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.7
@@ -605,15 +605,36 @@ offset_right = 328.0
 offset_bottom = 42.0
 text = "Available interactions:"
 
-[node name="Options" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect"]
+[node name="Options" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect"]
 layout_mode = 1
-anchors_preset = -1
 anchor_left = 0.062
 anchor_top = 0.134
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_right = 0.399994
 offset_bottom = -0.397583
+
+[node name="Option" type="AvailableInteractionViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options" node_paths=PackedStringArray("label")]
+label = NodePath("Label")
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.1
+
+[node name="Button" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/Option"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.1
+anchor_bottom = 1.0
+
+[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/Option"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.12
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="InteractionViz" type="InteractionViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI"]
 layout_mode = 1
