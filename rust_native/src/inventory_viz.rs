@@ -1,14 +1,14 @@
 use std::ops::Deref;
 
-use ds_lib::{
-    game_state::game_state::GameState,
-    party_state::inventory::{Inventory, ItemInfo},
+use ds_lib::game_state::{
+    game_state::GameState,
+    inventory::{Inventory, ItemInfo},
 };
 use godot::{
     engine::{Control, ControlVirtual},
     prelude::*,
 };
-use owning_ref::OwningHandle;
+use owning_ref::{OwningHandle, RefRef};
 
 use crate::{
     game_state_viz::{borrow_game_state, GameStateViz},
@@ -31,9 +31,9 @@ impl InventoryViz {
             |it: *const GameState| {
                 let it = unsafe { &*it };
                 if it.is_in_dungeon() {
-                    &it.unwrap_in_dungeon().party_stats.inventory
+                    RefRef::new(it.unwrap_in_dungeon().party_stats.inventory.borrow())
                 } else {
-                    &it.unwrap_out_of_dungeon().purchased_inventory
+                    RefRef::new(it.unwrap_out_of_dungeon().purchased_inventory.borrow())
                 }
             },
         )

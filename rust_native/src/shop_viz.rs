@@ -4,9 +4,8 @@ use std::{
 };
 
 use ds_lib::{
-    game_state::game_state::GameState,
+    game_state::{game_state::GameState, inventory::UniqueItemId},
     out_of_dungeon_algos::{enter_dungeon, purchase_from_shop},
-    party_state::inventory::UniqueItemId,
     shop::{shop::Shop, shop_interface::ShopInterface},
 };
 use godot::{
