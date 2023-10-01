@@ -1,13 +1,15 @@
-use ds_lib::game_state::state_updates::interactions::Interaction;
+use ds_lib::game_state::{
+    inputs::in_dungeon_input::InDungeonInput, state_updates::interactions::Interaction,
+};
 use godot::{
     engine::{Control, ControlVirtual, Label},
     prelude::*,
 };
-use num_traits::cast::ToPrimitive;
 
 use crate::{
+    game_state_viz::GameStateViz,
     in_dungeon_viz::InDungeonViz,
-    template_spawner::{Template, TemplateControl, TemplateSpawner},
+    template_spawner::{TemplateControl, TemplateSpawner},
     tree_utils::walk_parents_for,
 };
 
@@ -27,6 +29,7 @@ impl TemplateControl for AvailableInteractionViz {
     type Value = Interaction;
 
     fn instantiate_template(&mut self, value: &Self::Value) {
+        self.interaction = Some(value.clone());
         self.label
             .as_mut()
             .unwrap()
@@ -43,7 +46,16 @@ impl TemplateControl for AvailableInteractionViz {
 }
 
 #[godot_api]
-impl AvailableInteractionViz {}
+impl AvailableInteractionViz {
+    #[func(gd_self)]
+    pub fn do_interaction(this: Gd<Self>) {
+        let interaction = this.bind().interaction.as_ref().unwrap().clone();
+        GameStateViz::accept_input_from_child(
+            &this.upcast(),
+            &InDungeonInput::do_interaction(interaction),
+        );
+    }
+}
 
 #[godot_api]
 impl ControlVirtual for AvailableInteractionViz {
@@ -87,16 +99,6 @@ impl AvailableInteractionsViz {
             in_dungeon.interactions.iter().map(|inter| *inter),
             |interaction| *interaction,
         );
-    }
-}
-
-impl AvailableInteractionsViz {
-    fn get_interactions(interactions: &Vec<Interaction>) -> GodotString {
-        let mut text = String::new();
-        for (index, interaction) in interactions.iter().enumerate() {
-            text = format!("{}{}: {}\n", text, index + 1, interaction.description());
-        }
-        return text.into();
     }
 }
 

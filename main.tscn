@@ -353,6 +353,7 @@ stairs_down_atlas_coord = Vector2i(4, 36)
 body_entity_scene_path = "res://tile_entities/body/BodyEntity.tscn"
 campfire_entity_scene_path = "res://tile_entities/campfire/CampfireEntity.tscn"
 gold_entity_scene_path = "res://tile_entities/gold/GoldEntity.tscn"
+chest_entity_scene_path = "res://tile_entities/chest/ChestEntity.tscn"
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
@@ -581,7 +582,7 @@ autowrap_mode = 2
 script = ExtResource("7_yyt8n")
 
 [node name="AvailableInteractionsViz" type="AvailableInteractionsViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI" node_paths=PackedStringArray("interaction_template")]
-interaction_template = NodePath("ColorRect/Options/Option")
+interaction_template = NodePath("ColorRect/Options/AvailableInteractionViz")
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.7
@@ -614,20 +615,22 @@ anchor_bottom = 1.0
 offset_right = 0.399994
 offset_bottom = -0.397583
 
-[node name="Option" type="AvailableInteractionViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options" node_paths=PackedStringArray("label")]
+[node name="AvailableInteractionViz" type="AvailableInteractionViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options" node_paths=PackedStringArray("label")]
 label = NodePath("Label")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.1
+offset_left = 1.0
+offset_right = 1.0
 
-[node name="Button" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/Option"]
+[node name="Button" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.1
 anchor_bottom = 1.0
 
-[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/Option"]
+[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.12
@@ -792,6 +795,7 @@ text = "Cancel"
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Counts/Label" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Gear/VBoxContainer/Control/Gear" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer/Control/CombatEquipment" method="_on_inventory_panel_updated_state" flags=18]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz/Button" to="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz" method="do_interaction"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz/Decrease" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz" method="change_amount" binds= [-50]]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz/Increase" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz" method="change_amount" binds= [50]]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz/Camp" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz" method="camp"]

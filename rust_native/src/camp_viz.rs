@@ -49,14 +49,12 @@ impl CampViz {
 
     #[func]
     pub fn hide(&mut self) {
-        ds_lib::log!("Camp vis false");
         self.base.set_visible(false);
     }
 }
 
 impl CampViz {
     pub fn updated(&mut self, amount: &i32) {
-        ds_lib::log!("Camp vis true");
         self.base.set_visible(true);
         self.amount_label
             .as_mut()

@@ -51,6 +51,9 @@ pub struct FloorViz {
     #[export]
     gold_entity_scene_path: GodotString,
     gold_entity_scene: Option<Gd<PackedScene>>,
+    #[export]
+    chest_entity_scene_path: GodotString,
+    chest_entity_scene: Option<Gd<PackedScene>>,
 
     #[base]
     base: Base<Control>,
@@ -112,6 +115,7 @@ impl FloorViz {
                 TileEntity::DeadBody(_) => self.body_entity_scene.as_ref().unwrap(),
                 TileEntity::GoldPile(_) => self.gold_entity_scene.as_ref().unwrap(),
                 TileEntity::CampSite => self.campfire_entity_scene.as_ref().unwrap(),
+                TileEntity::Chest(_) => self.chest_entity_scene.as_ref().unwrap(),
             };
             let entity = entity_scene.instantiate().unwrap();
             let mut entity2d: Gd<Node2D> = entity.clone().cast();
@@ -182,6 +186,8 @@ impl ControlVirtual for FloorViz {
             campfire_entity_scene: None,
             gold_entity_scene_path: "".into(),
             gold_entity_scene: None,
+            chest_entity_scene_path: "".into(),
+            chest_entity_scene: None,
 
             base,
         }

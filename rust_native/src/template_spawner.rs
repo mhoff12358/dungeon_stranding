@@ -3,7 +3,6 @@ use std::{
     fmt::Debug,
     hash::Hash,
     marker::PhantomData,
-    ops::Deref,
 };
 
 use godot::{
@@ -74,7 +73,7 @@ where
     phantom: PhantomData<Value>,
 }
 
-trait TST {
+pub trait TemplateSpawnerDefaultImplTrait {
     type Value;
     type TemplateType: GodotClass + Inherits<Node>;
 
@@ -82,7 +81,7 @@ trait TST {
     fn place_after(template: Gd<Self::TemplateType>, previous: &Option<Gd<Self::TemplateType>>);
 }
 
-impl<Key, Value: ToVariant> TST for TemplateSpawner<Key, Value, Node>
+impl<Key, Value: ToVariant> TemplateSpawnerDefaultImplTrait for TemplateSpawner<Key, Value, Node>
 where
     Key: Hash + Eq + PartialEq + Copy,
 {
@@ -107,7 +106,7 @@ where
     }
 }
 
-impl<Key, Value, TemplateType: Template<Value = Value>> TST
+impl<Key, Value, TemplateType: Template<Value = Value>> TemplateSpawnerDefaultImplTrait
     for TemplateSpawner<Key, Value, TemplateType>
 where
     Key: Hash + Eq + PartialEq + Copy,
@@ -130,7 +129,7 @@ where
 impl<Key, Value, TemplateType: Inherits<Node>> TemplateSpawner<Key, Value, TemplateType>
 where
     Key: Hash + Eq + PartialEq + Copy + Debug,
-    Self: TST<TemplateType = TemplateType, Value = Value>,
+    Self: TemplateSpawnerDefaultImplTrait<TemplateType = TemplateType, Value = Value>,
 {
     pub fn new(template: Gd<TemplateType>) -> Self {
         let template = template.upcast();

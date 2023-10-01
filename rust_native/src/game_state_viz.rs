@@ -1,6 +1,7 @@
 use std::cell::Ref;
 use std::ops::{Deref, DerefMut};
 
+use crate::tree_utils::walk_parents_for;
 use crate::{app::App, my_gd_ref::MyGdRef};
 use ds_lib::directions::Direction;
 use ds_lib::game_state::game_state::GameState;
@@ -121,6 +122,14 @@ impl GameStateViz {
             accept_game_state_input(game_state, input);
         }
         Self::handle_game_update(this);
+    }
+
+    pub fn accept_input_from_child(indirect_child: &Gd<Node>, input: &GameStateInput) {
+        Self::accept_input(Self::get_game_state_from_node(indirect_child), input);
+    }
+
+    fn get_game_state_from_node(this: &Gd<Node>) -> Gd<GameStateViz> {
+        walk_parents_for(&this)
     }
 }
 
