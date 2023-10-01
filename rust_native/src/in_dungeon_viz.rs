@@ -24,6 +24,12 @@ pub struct InDungeonViz {
     base: Base<Control>,
 }
 
+impl InDungeonViz {
+    pub const UPDATED_STATE_SIGNAL: &str = "updated_state";
+    pub const UPDATED_STATE_FIGHT_SIGNAL: &str = "updated_state_fight";
+    pub const UPDATED_STATE_INTERACTION_SIGNAL: &str = "updated_state_interaction";
+}
+
 #[godot_api]
 impl InDungeonViz {
     #[signal]
@@ -81,12 +87,12 @@ impl InDungeonViz {
             _self.map_controlable = is_in_dungeon && !is_fight && !is_interaction;
         }
         if is_in_dungeon {
-            this.emit_signal("updated_state".into(), &[]);
+            this.emit_signal(Self::UPDATED_STATE_SIGNAL.into(), &[]);
             if is_fight {
-                this.emit_signal("updated_state_fight".into(), &[]);
+                this.emit_signal(Self::UPDATED_STATE_FIGHT_SIGNAL.into(), &[]);
             }
             if is_interaction {
-                this.emit_signal("updated_state_interaction".into(), &[]);
+                this.emit_signal(Self::UPDATED_STATE_INTERACTION_SIGNAL.into(), &[]);
             }
         }
     }
@@ -127,7 +133,7 @@ impl ControlVirtual for InDungeonViz {
     fn enter_tree(&mut self) {
         self.game_state = Some(self.base.get_parent().unwrap().cast());
         self.game_state.as_mut().unwrap().connect(
-            "updated_state".into(),
+            GameStateViz::UPDATED_STATE_SIGNAL.into(),
             self.base.callable("_on_game_state_updated"),
         );
     }

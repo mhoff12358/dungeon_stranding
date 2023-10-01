@@ -29,6 +29,11 @@ enum GodotInput {
     Cancel,
 }
 
+impl GameStateViz {
+    pub const PRE_UPDATED_STATE_SIGNAL: &str = "pre_updated_state";
+    pub const UPDATED_STATE_SIGNAL: &str = "updated_state";
+}
+
 #[godot_api]
 impl GameStateViz {
     #[signal]
@@ -86,8 +91,8 @@ impl GameStateViz {
             ds_lib::handle_keypress(key_code, app);
             ds_lib::game_state::state_updates::update_algos::check_invariants(app);
         }
-        this.emit_signal("pre_updated_state".into(), &[]);
-        this.emit_signal("updated_state".into(), &[]);
+        this.emit_signal(Self::PRE_UPDATED_STATE_SIGNAL.into(), &[]);
+        this.emit_signal(Self::UPDATED_STATE_SIGNAL.into(), &[]);
     }
 
     #[func(gd_self)]
@@ -98,8 +103,8 @@ impl GameStateViz {
             let app = app_bind.get_app_mut();
             ds_lib::game_state::state_updates::update_algos::check_invariants(app);
         }
-        this.emit_signal("pre_updated_state".into(), &[]);
-        this.emit_signal("updated_state".into(), &[]);
+        this.emit_signal(Self::PRE_UPDATED_STATE_SIGNAL.into(), &[]);
+        this.emit_signal(Self::UPDATED_STATE_SIGNAL.into(), &[]);
     }
 }
 

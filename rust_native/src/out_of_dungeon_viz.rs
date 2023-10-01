@@ -14,6 +14,10 @@ pub struct OutOfDungeonViz {
     base: Base<Control>,
 }
 
+impl OutOfDungeonViz {
+    pub const UPDATED_STATE_SIGNAL: &str = "updated_state";
+}
+
 #[godot_api]
 impl OutOfDungeonViz {
     #[func]
@@ -41,7 +45,7 @@ impl OutOfDungeonViz {
             _self.base.set_visible(is_out_of_dungeon);
         }
         if is_out_of_dungeon {
-            this.emit_signal("updated_state".into(), &[]);
+            this.emit_signal(Self::UPDATED_STATE_SIGNAL.into(), &[]);
         }
     }
 }
@@ -58,7 +62,7 @@ impl ControlVirtual for OutOfDungeonViz {
     fn enter_tree(&mut self) {
         self.game_state = Some(self.base.get_parent().unwrap().cast());
         self.game_state.as_mut().unwrap().connect(
-            "updated_state".into(),
+            GameStateViz::UPDATED_STATE_SIGNAL.into(),
             self.base.callable("_on_game_state_updated"),
         );
     }

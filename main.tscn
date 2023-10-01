@@ -1,12 +1,9 @@
-[gd_scene load_steps=24 format=3 uid="uid://d3h1eupfohnd1"]
+[gd_scene load_steps=21 format=3 uid="uid://d3h1eupfohnd1"]
 
 [ext_resource type="Script" path="res://scripts/GameState.gd" id="1_giily"]
 [ext_resource type="Script" path="res://scripts/out_of_dungeon_connections.gd" id="2_1rkja"]
-[ext_resource type="Script" path="res://scripts/inventory_connections.gd" id="4_gkaxy"]
-[ext_resource type="Script" path="res://scripts/visualizers/InventoryCounts.gd" id="5_j5qrg"]
-[ext_resource type="Script" path="res://scripts/visualizers/Gear.gd" id="6_2ifdh"]
+[ext_resource type="PackedScene" uid="uid://clxavgj2qp884" path="res://inventory_panel.tscn" id="3_ae7ji"]
 [ext_resource type="Script" path="res://shop_connections.gd" id="7_xuray"]
-[ext_resource type="Script" path="res://scripts/visualizers/CombatEquipment.gd" id="7_yyt8n"]
 [ext_resource type="Script" path="res://scripts/EnterTheDungeon.gd" id="9_cpnir"]
 [ext_resource type="Script" path="res://ShopItemViz.gd" id="9_g1ov6"]
 [ext_resource type="Script" path="res://SelectedItem.gd" id="9_mks4e"]
@@ -93,6 +90,7 @@ layout_mode = 2
 script = ExtResource("1_giily")
 
 [node name="OutOfDungeonUI" type="OutOfDungeonViz" parent="AspectRatioContainer/GameStateViz"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -101,130 +99,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_1rkja")
 
-[node name="InventoryPanel" type="InventoryViz" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI"]
+[node name="InventoryPanel" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI" instance=ExtResource("3_ae7ji")]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.3
-anchor_bottom = 1.0
-offset_left = -1.0
-offset_right = -1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("4_gkaxy")
-
-[node name="Counts" type="Control" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel"]
-layout_mode = 1
-anchor_right = 1.0
-anchor_bottom = 0.2
-
-[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Counts"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.00784314, 0.141176, 0.141176, 1)
-
-[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Counts"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.05
-anchor_top = 0.1
-anchor_right = 0.95
-anchor_bottom = 0.9
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("5_j5qrg")
-
-[node name="Gear" type="Control" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel"]
-layout_mode = 1
-anchor_top = 0.2
-anchor_right = 1.0
-anchor_bottom = 0.6
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Gear"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.00392157, 0.0588235, 0.109804, 1)
-
-[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Gear"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Gear/VBoxContainer"]
-layout_mode = 2
-text = "Gear:"
-
-[node name="Control" type="Control" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Gear/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Gear" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Gear/VBoxContainer/Control"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-autowrap_mode = 2
-script = ExtResource("6_2ifdh")
-
-[node name="CombatEquipment" type="Control" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel"]
-layout_mode = 1
-anchor_top = 0.6
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/CombatEquipment"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.00784314, 0.129412, 0.0509804, 1)
-
-[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/CombatEquipment"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer"]
-layout_mode = 2
-text = "Combat Equipment:"
-
-[node name="Control" type="Control" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="CombatEquipment" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer/Control"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-autowrap_mode = 2
-script = ExtResource("7_yyt8n")
+offset_left = 0.0
+offset_right = 0.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="ShopPanel" type="ShopViz" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI" node_paths=PackedStringArray("shop_item_template")]
 shop_item_template = NodePath("ItemsPanel/PurchasableItems/ShopItemViz")
@@ -458,128 +338,13 @@ anchor_top = 0.02
 anchor_bottom = 0.08
 text = "Advance Fight"
 
-[node name="InventoryPanel" type="InventoryViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI"]
+[node name="InventoryPanel" parent="AspectRatioContainer/GameStateViz/InDungeonUI" instance=ExtResource("3_ae7ji")]
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.3
 anchor_bottom = 0.7
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("4_gkaxy")
-
-[node name="Counts" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel"]
-layout_mode = 1
-anchor_right = 1.0
-anchor_bottom = 0.2
-
-[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Counts"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.00784314, 0.141176, 0.141176, 1)
-
-[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Counts"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.05
-anchor_top = 0.1
-anchor_right = 0.95
-anchor_bottom = 0.9
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("5_j5qrg")
-
-[node name="Gear" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel"]
-layout_mode = 1
-anchor_top = 0.2
-anchor_right = 1.0
-anchor_bottom = 0.6
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Gear"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.00392157, 0.0588235, 0.109804, 1)
-
-[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Gear"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Gear/VBoxContainer"]
-layout_mode = 2
-text = "Gear:"
-
-[node name="Control" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Gear/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Gear" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Gear/VBoxContainer/Control"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_vertical = 3
-autowrap_mode = 2
-script = ExtResource("6_2ifdh")
-
-[node name="CombatEquipment" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel"]
-layout_mode = 1
-anchor_top = 0.6
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/CombatEquipment"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.00784314, 0.129412, 0.0509804, 1)
-
-[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/CombatEquipment"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer"]
-layout_mode = 2
-text = "Combat Equipment:"
-
-[node name="Control" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="CombatEquipment" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer/Control"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.1
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-autowrap_mode = 2
-script = ExtResource("7_yyt8n")
+offset_left = 0.0
+offset_right = 0.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="AvailableInteractionsViz" type="AvailableInteractionsViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI" node_paths=PackedStringArray("interaction_template")]
 interaction_template = NodePath("ColorRect/Options/AvailableInteractionViz")
@@ -638,6 +403,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="InteractionViz" type="InteractionViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI"]
 layout_mode = 1
@@ -786,15 +556,9 @@ offset_bottom = 293.997
 scale = Vector2(2, 2)
 text = "Cancel"
 
-[connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Counts/Label" method="_on_inventory_panel_updated_state" flags=18]
-[connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/Gear/VBoxContainer/Control/Gear" method="_on_inventory_panel_updated_state" flags=18]
-[connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer/Control/CombatEquipment" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/SelectedDescriptionPanel/SelectedItem" method="_on_shop_panel_updated_state"]
 [connection signal="toggled" from="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControlUI/FollowPlayerCheckButton" to="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls" method="_on_follow_player_check_button_toggled"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz/AdvanceFight" to="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz" method="_on_advance_fight_pressed"]
-[connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Counts/Label" method="_on_inventory_panel_updated_state" flags=18]
-[connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/Gear/VBoxContainer/Control/Gear" method="_on_inventory_panel_updated_state" flags=18]
-[connection signal="updated_state" from="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InventoryPanel/CombatEquipment/VBoxContainer/Control/CombatEquipment" method="_on_inventory_panel_updated_state" flags=18]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz/Button" to="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz" method="do_interaction"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz/Decrease" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz" method="change_amount" binds= [-50]]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz/Increase" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz" method="change_amount" binds= [50]]

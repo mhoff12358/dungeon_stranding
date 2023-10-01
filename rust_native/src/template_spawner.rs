@@ -3,6 +3,7 @@ use std::{
     fmt::Debug,
     hash::Hash,
     marker::PhantomData,
+    ops::Deref,
 };
 
 use godot::{
@@ -13,8 +14,9 @@ use godot::{
 
 pub trait Template: GodotClass<Declarer = UserDomain> + Inherits<Node> + Sized {
     type Value;
+    type Context;
 
-    fn instantiate_template(&mut self, value: &Self::Value);
+    fn instantiate_template(&mut self, value: &Self::Value, context: &Self::Context);
     fn place_after(&mut self, previous: &Option<Gd<Self>>);
 }
 
@@ -22,10 +24,11 @@ pub trait TemplateControl:
     GodotClass<Declarer = UserDomain, Base = Control> + Inherits<Node> + Inherits<Control> + Sized
 {
     type Value;
+    type Context;
 
     fn control(&self) -> &Self::Base;
     fn control_mut(&mut self) -> &mut Self::Base;
-    fn instantiate_template(&mut self, value: &Self::Value);
+    fn instantiate_template(&mut self, value: &Self::Value, context: &Self::Context);
 }
 
 impl<T> Template for T
@@ -33,9 +36,10 @@ where
     T: TemplateControl,
 {
     type Value = <T as TemplateControl>::Value;
+    type Context = <T as TemplateControl>::Context;
 
-    fn instantiate_template(&mut self, value: &Self::Value) {
-        <T as TemplateControl>::instantiate_template(self, value);
+    fn instantiate_template(&mut self, value: &Self::Value, context: &Self::Context) {
+        <T as TemplateControl>::instantiate_template(self, value, context);
     }
 
     fn place_after(&mut self, previous: &Option<Gd<Self>>) {
@@ -62,7 +66,7 @@ where
     }
 }
 
-pub struct TemplateSpawner<Key, Value, TemplateType: GodotClass + Inherits<Node>>
+pub struct TemplateSpawner<Key, Value, Context, TemplateType: GodotClass + Inherits<Node>>
 where
     Key: Hash + Eq + PartialEq + Copy,
 {
@@ -70,25 +74,28 @@ where
     template: Gd<PackedScene>,
 
     instantiated_templates: HashMap<Key, Gd<TemplateType>>,
-    phantom: PhantomData<Value>,
+    phantom: PhantomData<(Value, Context)>,
 }
 
 pub trait TemplateSpawnerDefaultImplTrait {
     type Value;
+    type Context;
     type TemplateType: GodotClass + Inherits<Node>;
 
-    fn initialize(template: Gd<Self::TemplateType>, value: &Self::Value);
+    fn initialize(template: Gd<Self::TemplateType>, value: &Self::Value, context: &Self::Context);
     fn place_after(template: Gd<Self::TemplateType>, previous: &Option<Gd<Self::TemplateType>>);
 }
 
-impl<Key, Value: ToVariant> TemplateSpawnerDefaultImplTrait for TemplateSpawner<Key, Value, Node>
+impl<Key, Value: ToVariant, Context> TemplateSpawnerDefaultImplTrait
+    for TemplateSpawner<Key, Value, Context, Node>
 where
     Key: Hash + Eq + PartialEq + Copy,
 {
     type Value = Value;
+    type Context = ();
     type TemplateType = Node;
 
-    fn initialize(template: Gd<Self::TemplateType>, value: &Self::Value) {
+    fn initialize(template: Gd<Self::TemplateType>, value: &Self::Value, _context: &Self::Context) {
         template
             .upcast::<Node>()
             .emit_signal("instantiate_template".into(), &[value.to_variant()]);
@@ -106,16 +113,21 @@ where
     }
 }
 
-impl<Key, Value, TemplateType: Template<Value = Value>> TemplateSpawnerDefaultImplTrait
-    for TemplateSpawner<Key, Value, TemplateType>
+impl<Key, Value, Context, TemplateType: Template<Value = Value, Context = Context>>
+    TemplateSpawnerDefaultImplTrait for TemplateSpawner<Key, Value, Context, TemplateType>
 where
     Key: Hash + Eq + PartialEq + Copy,
 {
     type Value = Value;
+    type Context = Context;
     type TemplateType = TemplateType;
 
-    fn initialize(mut template: Gd<Self::TemplateType>, value: &Self::Value) {
-        template.bind_mut().instantiate_template(value);
+    fn initialize(
+        mut template: Gd<Self::TemplateType>,
+        value: &Self::Value,
+        context: &Self::Context,
+    ) {
+        template.bind_mut().instantiate_template(value, context);
     }
 
     fn place_after(
@@ -126,10 +138,15 @@ where
     }
 }
 
-impl<Key, Value, TemplateType: Inherits<Node>> TemplateSpawner<Key, Value, TemplateType>
+impl<Key, Value, Context, TemplateType: Inherits<Node>>
+    TemplateSpawner<Key, Value, Context, TemplateType>
 where
     Key: Hash + Eq + PartialEq + Copy + Debug,
-    Self: TemplateSpawnerDefaultImplTrait<TemplateType = TemplateType, Value = Value>,
+    Self: TemplateSpawnerDefaultImplTrait<
+        TemplateType = TemplateType,
+        Context = Context,
+        Value = Value,
+    >,
 {
     pub fn new(template: Gd<TemplateType>) -> Self {
         let template = template.upcast();
@@ -153,11 +170,12 @@ where
     fn instantiate_template(
         parent: &mut Gd<Node>,
         template: &Gd<PackedScene>,
+        context: &Context,
         value: &Value,
     ) -> Gd<TemplateType> {
         let new_node: Gd<TemplateType> = template.instantiate().unwrap().cast();
         parent.add_child(new_node.clone().upcast());
-        Self::initialize(new_node.clone(), value);
+        Self::initialize(new_node.clone(), value, context);
         return new_node;
     }
 
@@ -168,10 +186,13 @@ where
         Self::place_after(instantiated_template.clone(), previous);
     }
 
-    pub fn update<'a, GetKey>(&mut self, values: impl Iterator<Item = Value>, get_key: GetKey)
-    where
+    pub fn update_with_getter<'a, GetKey>(
+        &'a mut self,
+        values: impl Iterator<Item = impl Deref<Target = Value> + 'a> + 'a,
+        get_key: GetKey,
+        context: &Context,
+    ) where
         GetKey: Fn(&Value) -> Key,
-        //Value: 'a + ToVariant + Debug,
     {
         let mut unused_keys: HashSet<Key> =
             self.instantiated_templates.keys().map(|key| *key).collect();
@@ -186,7 +207,7 @@ where
             let mut instantiated_template = self
                 .instantiated_templates
                 .entry(key)
-                .or_insert_with(|| Self::instantiate_template(parent, template, &value))
+                .or_insert_with(|| Self::instantiate_template(parent, template, context, &value))
                 .clone();
             unused_keys.remove(&key);
 
@@ -202,5 +223,38 @@ where
                 .upcast::<Node>()
                 .queue_free();
         }
+    }
+}
+
+struct RefWrapper<T>(T);
+
+impl<T> Deref for RefWrapper<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<Value, Context, TemplateType: Inherits<Node>>
+    TemplateSpawner<Value, Value, Context, TemplateType>
+where
+    Value: Hash + Eq + PartialEq + Copy + Debug,
+    Self: TemplateSpawnerDefaultImplTrait<
+        TemplateType = TemplateType,
+        Value = Value,
+        Context = Context,
+    >,
+{
+    pub fn update<'a>(&'a mut self, values: impl Iterator<Item = Value>, context: &Context) {
+        self.update_with_getter(values.map(|x| RefWrapper(x)), |x| *x, context);
+    }
+
+    pub fn update_ref<'a>(
+        &'a mut self,
+        values: impl Iterator<Item = &'a Value>,
+        context: &Context,
+    ) {
+        self.update_with_getter(values, |x| *x, context);
     }
 }

@@ -101,11 +101,11 @@ impl ControlVirtual for FightViz {
     fn enter_tree(&mut self) {
         self.in_dungeon = Some(walk_parents_for(&self.base));
         self.in_dungeon.as_mut().unwrap().connect(
-            "updated_state".into(),
+            InDungeonViz::UPDATED_STATE_SIGNAL.into(),
             self.base.callable("_on_in_dungeon_updated"),
         );
         self.in_dungeon.as_mut().unwrap().connect(
-            "updated_state_fight".into(),
+            InDungeonViz::UPDATED_STATE_FIGHT_SIGNAL.into(),
             self.base.callable("_on_in_dungeon_updated_fight"),
         );
     }

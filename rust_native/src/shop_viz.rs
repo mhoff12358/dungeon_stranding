@@ -44,7 +44,7 @@ pub struct ShopViz {
 
     #[export]
     shop_item_template: Option<Gd<Control>>,
-    shop_item_templates: Option<RefCell<TemplateSpawner<ShopId, ShopId, Node>>>,
+    shop_item_templates: Option<RefCell<TemplateSpawner<ShopId, ShopId, (), Node>>>,
 
     #[base]
     base: Base<Control>,
@@ -104,7 +104,7 @@ impl ShopViz {
             .as_ref()
             .unwrap()
             .borrow_mut()
-            .update(shop.display_order().iter().map(|id| ShopId(*id)), |x| *x);
+            .update(shop.display_order().iter().map(|x| ShopId(*x)), &());
     }
 
     #[func(gd_self)]
@@ -136,7 +136,7 @@ impl ControlVirtual for ShopViz {
         self.game_state = Some(walk_parents_for(&self.base));
         self.out_of_dungeon = Some(walk_parents_for(&self.base));
         self.out_of_dungeon.as_mut().unwrap().connect(
-            "updated_state".into(),
+            OutOfDungeonViz::UPDATED_STATE_SIGNAL.into(),
             self.base.callable("_on_out_of_dungeon_state_updated"),
         );
         self.shop_item_templates = Some(RefCell::new(TemplateSpawner::new(

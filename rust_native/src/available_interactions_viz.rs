@@ -27,8 +27,9 @@ pub struct AvailableInteractionViz {
 
 impl TemplateControl for AvailableInteractionViz {
     type Value = Interaction;
+    type Context = ();
 
-    fn instantiate_template(&mut self, value: &Self::Value) {
+    fn instantiate_template(&mut self, value: &Self::Value, _context: &Self::Context) {
         self.interaction = Some(value.clone());
         self.label
             .as_mut()
@@ -76,7 +77,7 @@ pub struct AvailableInteractionsViz {
     #[export]
     interaction_template: Option<Gd<AvailableInteractionViz>>,
     interactions_spawner:
-        Option<TemplateSpawner<Interaction, Interaction, AvailableInteractionViz>>,
+        Option<TemplateSpawner<Interaction, Interaction, (), AvailableInteractionViz>>,
     #[base]
     base: Base<Control>,
 }
@@ -95,10 +96,7 @@ impl AvailableInteractionsViz {
         let in_dungeon = in_dungeon.bind();
         let in_dungeon = in_dungeon.borrow_in_dungeon();
         let spawner = self.interactions_spawner.as_mut().unwrap();
-        spawner.update(
-            in_dungeon.interactions.iter().map(|inter| *inter),
-            |interaction| *interaction,
-        );
+        spawner.update_ref(in_dungeon.interactions.iter(), &());
     }
 }
 
@@ -118,7 +116,7 @@ impl ControlVirtual for AvailableInteractionsViz {
     fn ready(&mut self) {
         self.in_dungeon = Some(walk_parents_for(&self.base));
         self.in_dungeon.as_mut().unwrap().connect(
-            "updated_state".into(),
+            InDungeonViz::UPDATED_STATE_SIGNAL.into(),
             self.base.callable("_on_in_dungeon_updated"),
         );
 
