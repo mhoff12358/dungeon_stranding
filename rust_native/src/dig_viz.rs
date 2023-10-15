@@ -82,9 +82,6 @@ impl ControlVirtual for DigViz {
             .as_mut()
             .unwrap()
             .connect("pre_updated_state".into(), self.base.callable("hide"));
-        walk_parents_for::<InteractionViz>(&self.base)
-            .bind_mut()
-            .dig_viz = Some(self.base.clone().cast());
     }
 
     /*fn gui_input(&mut self, event: Gd<InputEvent>) {

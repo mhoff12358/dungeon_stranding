@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://d3h1eupfohnd1"]
+[gd_scene load_steps=22 format=3 uid="uid://d3h1eupfohnd1"]
 
 [ext_resource type="Script" path="res://scripts/GameState.gd" id="1_giily"]
 [ext_resource type="Script" path="res://scripts/out_of_dungeon_connections.gd" id="2_1rkja"]
@@ -12,6 +12,7 @@
 [ext_resource type="TileSet" uid="uid://de08x02s8201g" path="res://dungeon_tileset.tres" id="11_ngbcr"]
 [ext_resource type="Texture2D" uid="uid://bgruuywc6agcg" path="res://art_assets/Blue_witch/B_witch_idle.png" id="12_25s31"]
 [ext_resource type="Script" path="res://scripts/visualizers/FightViz.gd" id="14_gsero"]
+[ext_resource type="PackedScene" uid="uid://dnev621h4psxf" path="res://transferrable_inventory_viz.tscn" id="14_w0ts8"]
 [ext_resource type="LabelSettings" uid="uid://br8gvbbjg2dej" path="res://ui_scenes/styles/interaction_label_settings.tres" id="16_7ver7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d8r8h"]
@@ -411,24 +412,23 @@ offset_bottom = 40.0
 
 [node name="InteractionViz" type="InteractionViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.25
-anchor_top = 0.25
-anchor_right = 0.75
-anchor_bottom = 0.75
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz"]
-layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 0.721569, 1, 1)
 
-[node name="CampViz" type="CampViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz" node_paths=PackedStringArray("amount_label")]
+[node name="DiContext" type="DiContext" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz"]
+
+[node name="SmallInteractions" type="Control" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz"]
+layout_mode = 1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+offset_bottom = 40.0
+
+[node name="CampViz" type="CampViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions" node_paths=PackedStringArray("amount_label")]
 amount_label = NodePath("Amount")
 layout_mode = 1
 anchors_preset = 15
@@ -437,7 +437,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz"]
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz"]
+
+[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.721569, 1, 1)
+
+[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz"]
 layout_mode = 0
 offset_left = 371.0
 offset_top = 145.997
@@ -446,7 +457,7 @@ offset_bottom = 190.997
 text = "Camp amount:"
 label_settings = ExtResource("16_7ver7")
 
-[node name="Amount" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz"]
+[node name="Amount" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz"]
 layout_mode = 0
 offset_left = 372.0
 offset_top = 208.997
@@ -456,7 +467,7 @@ text = "0"
 label_settings = ExtResource("16_7ver7")
 horizontal_alignment = 1
 
-[node name="Decrease" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz"]
+[node name="Decrease" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz"]
 layout_mode = 0
 offset_left = 306.0
 offset_top = 203.0
@@ -465,7 +476,7 @@ offset_bottom = 234.0
 scale = Vector2(2, 2)
 text = "<"
 
-[node name="Increase" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz"]
+[node name="Increase" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz"]
 layout_mode = 0
 offset_left = 576.0
 offset_top = 200.997
@@ -474,7 +485,7 @@ offset_bottom = 231.997
 scale = Vector2(2, 2)
 text = ">"
 
-[node name="Camp" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz"]
+[node name="Camp" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz"]
 layout_mode = 0
 offset_left = 260.0
 offset_top = 360.997
@@ -483,7 +494,7 @@ offset_bottom = 391.997
 scale = Vector2(2, 2)
 text = "Camp"
 
-[node name="Cancel" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz"]
+[node name="Cancel" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz"]
 layout_mode = 0
 offset_left = 575.0
 offset_top = 357.997
@@ -492,8 +503,7 @@ offset_bottom = 388.997
 scale = Vector2(2, 2)
 text = "Cancel"
 
-[node name="DigViz" type="DigViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz"]
-visible = false
+[node name="DigViz" type="DigViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -501,7 +511,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz"]
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz"]
+
+[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.721569, 1, 1)
+
+[node name="Label" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz"]
 layout_mode = 0
 offset_left = 275.0
 offset_top = 101.997
@@ -510,7 +531,7 @@ offset_bottom = 146.997
 text = "Pick a direction with WASD"
 label_settings = ExtResource("16_7ver7")
 
-[node name="Left" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz"]
+[node name="Left" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz"]
 layout_mode = 0
 offset_left = 330.0
 offset_top = 262.997
@@ -519,7 +540,7 @@ offset_bottom = 293.997
 scale = Vector2(2, 2)
 text = "<-"
 
-[node name="Right" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz"]
+[node name="Right" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz"]
 layout_mode = 0
 offset_left = 428.0
 offset_top = 263.997
@@ -528,7 +549,7 @@ offset_bottom = 294.997
 scale = Vector2(2, 2)
 text = "->"
 
-[node name="Up" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz"]
+[node name="Up" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz"]
 layout_mode = 0
 offset_left = 380.0
 offset_top = 200.997
@@ -537,7 +558,7 @@ offset_bottom = 231.997
 scale = Vector2(2, 2)
 text = "^"
 
-[node name="Down" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz"]
+[node name="Down" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz"]
 layout_mode = 0
 offset_left = 379.0
 offset_top = 331.997
@@ -547,7 +568,7 @@ scale = Vector2(2, 2)
 text = "V
 "
 
-[node name="Cancel" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz"]
+[node name="Cancel" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz"]
 layout_mode = 0
 offset_left = 550.0
 offset_top = 262.997
@@ -556,16 +577,114 @@ offset_bottom = 293.997
 scale = Vector2(2, 2)
 text = "Cancel"
 
+[node name="LootViz" type="LootViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz" node_paths=PackedStringArray("inventory_display_from", "inventory_display_to", "transfer_viz")]
+inventory_display_from = NodePath("FromTransferrableInventoryViz")
+inventory_display_to = NodePath("ToTransferrableInventoryViz")
+transfer_viz = NodePath("TransferViz")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz"]
+
+[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.811765, 0.815686, 1, 1)
+
+[node name="ToTransferrableInventoryViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz" instance=ExtResource("14_w0ts8")]
+layout_mode = 1
+
+[node name="FromTransferrableInventoryViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz" instance=ExtResource("14_w0ts8")]
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 1.0
+
+[node name="TransferViz" type="TransferViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+
+[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.839216, 1, 1)
+
+[node name="Title" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+layout_mode = 0
+offset_left = 424.0
+offset_top = 162.997
+offset_right = 546.0
+offset_bottom = 207.997
+text = "Transfer"
+label_settings = ExtResource("16_7ver7")
+
+[node name="Min" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+layout_mode = 0
+offset_left = 62.0001
+offset_top = 283.997
+offset_right = 184.0
+offset_bottom = 328.997
+text = "Min"
+label_settings = ExtResource("16_7ver7")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Max" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+layout_mode = 0
+offset_left = 793.0
+offset_top = 282.997
+offset_right = 915.0
+offset_bottom = 327.997
+text = "Max"
+label_settings = ExtResource("16_7ver7")
+vertical_alignment = 1
+
+[node name="Amount" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+layout_mode = 0
+offset_left = 429.0
+offset_top = 243.997
+offset_right = 551.0
+offset_bottom = 288.997
+text = "Amount"
+label_settings = ExtResource("16_7ver7")
+
+[node name="SelectSlider" type="HSlider" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.2
+anchor_top = 0.5
+anchor_right = 0.8
+anchor_bottom = 0.65
+offset_top = 0.00335693
+offset_bottom = -7.99567
+grow_horizontal = 2
+grow_vertical = 2
+
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/SelectedDescriptionPanel/SelectedItem" method="_on_shop_panel_updated_state"]
 [connection signal="toggled" from="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControlUI/FollowPlayerCheckButton" to="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls" method="_on_follow_player_check_button_toggled"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz/AdvanceFight" to="AspectRatioContainer/GameStateViz/InDungeonUI/FightViz" method="_on_advance_fight_pressed"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz/Button" to="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz" method="do_interaction"]
-[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz/Decrease" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz" method="change_amount" binds= [-50]]
-[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz/Increase" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz" method="change_amount" binds= [50]]
-[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz/Camp" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz" method="camp"]
-[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz/Cancel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/CampViz" method="cancel"]
-[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz/Left" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz" method="dig_left"]
-[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz/Right" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz" method="dig_right"]
-[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz/Up" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz" method="dig_up"]
-[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz/Down" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz" method="dig_down"]
-[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz/Cancel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/DigViz" method="cancel"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz/Decrease" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz" method="change_amount" binds= [-50]]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz/Increase" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz" method="change_amount" binds= [50]]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz/Camp" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz" method="camp"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz/Cancel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/CampViz" method="cancel"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Left" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="dig_left"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Right" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="dig_right"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Up" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="dig_up"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Down" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="dig_down"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Cancel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="cancel"]

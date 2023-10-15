@@ -6,11 +6,14 @@ use std::{
     ops::Deref,
 };
 
+use ds_lib::log;
 use godot::{
     engine::{global::Side, Control},
     obj::dom::UserDomain,
     prelude::*,
 };
+
+use crate::packing::pack_node;
 
 pub trait Template: GodotClass<Declarer = UserDomain> + Inherits<Node> + Sized {
     type Value;
@@ -153,12 +156,7 @@ where
         let mut parent = template.get_parent().unwrap();
         parent.remove_child(template.clone());
 
-        let mut template_scene = PackedScene::new();
-        let template_children = template.get_children_ex().include_internal(true).done();
-        for mut child in template_children.iter_shared() {
-            child.set_owner(template.clone());
-        }
-        template_scene.pack(template);
+        let template_scene = pack_node(template);
         Self {
             parent: parent,
             template: template_scene,

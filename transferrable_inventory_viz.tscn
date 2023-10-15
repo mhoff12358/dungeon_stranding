@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://dnev621h4psxf"]
+
+[node name="TransferrableInventoryViz" type="TransferrableInventoryViz"]
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+
+[node name="DiContext" type="DiContext" parent="."]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.105882, 0.105882, 0.105882, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MoneyItem" type="HBoxContainer" parent="Control/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Control/VBoxContainer/MoneyItem"]
+layout_mode = 2
+text = "Transfer"
+
+[node name="Money" type="Label" parent="Control/VBoxContainer/MoneyItem"]
+layout_mode = 2
+text = "Money"
+
+[node name="Amount" type="Label" parent="Control/VBoxContainer/MoneyItem"]
+layout_mode = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="Control/VBoxContainer/MoneyItem/Amount"]
+id = "money"
+
+[node name="FoodItem" type="HBoxContainer" parent="Control/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Control/VBoxContainer/FoodItem"]
+layout_mode = 2
+text = "Transfer"
+
+[node name="Food" type="Label" parent="Control/VBoxContainer/FoodItem"]
+layout_mode = 2
+text = "Food"
+
+[node name="Amount" type="Label" parent="Control/VBoxContainer/FoodItem"]
+layout_mode = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="Control/VBoxContainer/FoodItem/Amount"]
+id = "food"
+
+[node name="InventoryItemViz" type="InventoryItemViz" parent="Control/VBoxContainer" node_paths=PackedStringArray("label")]
+label = NodePath("ItemTemplate/Description")
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="Control/VBoxContainer/InventoryItemViz"]
+remove_registration_object = true
+
+[node name="ItemTemplate" type="HBoxContainer" parent="Control/VBoxContainer/InventoryItemViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="Control/VBoxContainer/InventoryItemViz/ItemTemplate"]
+layout_mode = 2
+text = "Transfer"
+
+[node name="Description" type="Label" parent="Control/VBoxContainer/InventoryItemViz/ItemTemplate"]
+layout_mode = 2
+text = "Description"
+
+[connection signal="pressed" from="Control/VBoxContainer/MoneyItem/Button" to="." method="start_transfer_money"]
+[connection signal="pressed" from="Control/VBoxContainer/FoodItem/Button" to="." method="start_transfer_food"]

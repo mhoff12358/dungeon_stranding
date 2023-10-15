@@ -5,7 +5,12 @@ use godot::{
 };
 
 use crate::{
-    camp_viz::CampViz, dig_viz::DigViz, game_state_viz::GameStateViz, in_dungeon_viz::InDungeonViz,
+    camp_viz::CampViz,
+    di_context::di_context::DiContext,
+    dig_viz::DigViz,
+    game_state_viz::GameStateViz,
+    in_dungeon_viz::InDungeonViz,
+    loot_viz::{self, loot_viz::LootViz},
     tree_utils::walk_parents_for,
 };
 
@@ -14,8 +19,9 @@ use crate::{
 pub struct InteractionViz {
     in_dungeon: Option<Gd<InDungeonViz>>,
 
-    pub dig_viz: Option<Gd<DigViz>>,
-    pub camp_viz: Option<Gd<CampViz>>,
+    dig_viz: Option<Gd<DigViz>>,
+    camp_viz: Option<Gd<CampViz>>,
+    loot_viz: Option<Gd<LootViz>>,
 
     #[base]
     base: Base<Control>,
@@ -46,14 +52,13 @@ impl InteractionViz {
             .unwrap_interaction();
         match interaction {
             OngoingInteraction::Dig => {
-                if let Some(dig_viz) = self.dig_viz.as_mut() {
-                    dig_viz.bind_mut().updated();
-                }
+                self.dig_viz.as_mut().unwrap().bind_mut().updated();
             }
             OngoingInteraction::Camp { amount } => {
-                if let Some(camp_viz) = self.camp_viz.as_mut() {
-                    camp_viz.bind_mut().updated(amount);
-                }
+                self.camp_viz.as_mut().unwrap().bind_mut().updated(amount);
+            }
+            OngoingInteraction::Loot(..) => {
+                self.loot_viz.as_mut().unwrap().bind_mut().updated();
             }
         }
     }
@@ -67,6 +72,7 @@ impl ControlVirtual for InteractionViz {
 
             camp_viz: None,
             dig_viz: None,
+            loot_viz: None,
 
             base,
         }
@@ -80,5 +86,20 @@ impl ControlVirtual for InteractionViz {
             "updated_state_interaction".into(),
             self.base.callable("_on_in_dungeon_updated_interaction"),
         );
+    }
+
+    fn ready(&mut self) {
+        self.dig_viz = DiContext::get_nearest(self.base.clone().upcast())
+            .unwrap()
+            .bind()
+            .get_registered_node_template("".into());
+        self.camp_viz = DiContext::get_nearest(self.base.clone().upcast())
+            .unwrap()
+            .bind()
+            .get_registered_node_template("".into());
+        self.loot_viz = DiContext::get_nearest(self.base.clone().upcast())
+            .unwrap()
+            .bind()
+            .get_registered_node_template("".into());
     }
 }

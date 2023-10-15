@@ -81,8 +81,5 @@ impl ControlVirtual for CampViz {
             .as_mut()
             .unwrap()
             .connect("pre_updated_state".into(), self.base.callable("hide"));
-        walk_parents_for::<InteractionViz>(&self.base)
-            .bind_mut()
-            .camp_viz = Some(self.base.clone().cast());
     }
 }

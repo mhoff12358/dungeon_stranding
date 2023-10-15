@@ -9,7 +9,7 @@ use godot::{
 use crate::{
     game_state_viz::GameStateViz,
     in_dungeon_viz::InDungeonViz,
-    template_spawner::{TemplateControl, TemplateSpawner},
+    template_spawners::template_spawner::{TemplateControl, TemplateSpawner},
     tree_utils::walk_parents_for,
 };
 
