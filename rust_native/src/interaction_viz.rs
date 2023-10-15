@@ -5,12 +5,8 @@ use godot::{
 };
 
 use crate::{
-    camp_viz::CampViz,
-    di_context::di_context::DiContext,
-    dig_viz::DigViz,
-    game_state_viz::GameStateViz,
-    in_dungeon_viz::InDungeonViz,
-    loot_viz::{self, loot_viz::LootViz},
+    camp_viz::CampViz, di_context::di_context::DiContext, dig_viz::DigViz,
+    game_state_viz::GameStateViz, in_dungeon_viz::InDungeonViz, loot_viz::loot_viz::LootViz,
     tree_utils::walk_parents_for,
 };
 

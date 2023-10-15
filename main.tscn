@@ -626,12 +626,15 @@ color = Color(1, 0.839216, 1, 1)
 
 [node name="Title" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
 layout_mode = 0
-offset_left = 424.0
-offset_top = 162.997
-offset_right = 546.0
-offset_bottom = 207.997
+offset_left = 405.0
+offset_top = 127.997
+offset_right = 527.0
+offset_bottom = 172.997
 text = "Transfer"
 label_settings = ExtResource("16_7ver7")
+
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/Title"]
+id = "description"
 
 [node name="Min" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
 layout_mode = 0
@@ -644,6 +647,9 @@ label_settings = ExtResource("16_7ver7")
 horizontal_alignment = 2
 vertical_alignment = 1
 
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/Min"]
+id = "min"
+
 [node name="Max" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
 layout_mode = 0
 offset_left = 793.0
@@ -654,14 +660,26 @@ text = "Max"
 label_settings = ExtResource("16_7ver7")
 vertical_alignment = 1
 
-[node name="Amount" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/Max"]
+id = "max"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
 layout_mode = 0
-offset_left = 429.0
-offset_top = 243.997
-offset_right = 551.0
-offset_bottom = 288.997
+offset_left = 402.0
+offset_top = 218.997
+offset_right = 524.0
+offset_bottom = 263.997
+
+[node name="Amount" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer"]
+layout_mode = 2
 text = "Amount"
 label_settings = ExtResource("16_7ver7")
+
+[node name="AmountDisplay" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer"]
+layout_mode = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer/AmountDisplay"]
+id = "amount"
 
 [node name="SelectSlider" type="HSlider" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
 layout_mode = 1
@@ -674,6 +692,9 @@ offset_top = 0.00335693
 offset_bottom = -7.99567
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/SelectSlider"]
+id = "slider"
 
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/SelectedDescriptionPanel/SelectedItem" method="_on_shop_panel_updated_state"]
 [connection signal="toggled" from="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControlUI/FollowPlayerCheckButton" to="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls" method="_on_follow_player_check_button_toggled"]
@@ -688,3 +709,4 @@ grow_vertical = 2
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Up" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="dig_up"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Down" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="dig_down"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Cancel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="cancel"]
+[connection signal="value_changed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/SelectSlider" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz" method="set_proportion"]

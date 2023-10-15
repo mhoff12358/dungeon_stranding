@@ -4,9 +4,7 @@ use godot::{
     prelude::*,
 };
 
-use crate::{
-    game_state_viz::GameStateViz, interaction_viz::InteractionViz, tree_utils::walk_parents_for,
-};
+use crate::{game_state_viz::GameStateViz, tree_utils::walk_parents_for};
 
 #[derive(GodotClass)]
 #[class(base=Control)]

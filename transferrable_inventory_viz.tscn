@@ -67,15 +67,15 @@ layout_mode = 2
 [node name="DiRegistration" type="DiRegistration" parent="Control/VBoxContainer/FoodItem/Amount"]
 id = "food"
 
-[node name="InventoryItemViz" type="InventoryItemViz" parent="Control/VBoxContainer" node_paths=PackedStringArray("label")]
+[node name="TransferrableInventoryItemViz" type="TransferrableInventoryItemViz" parent="Control/VBoxContainer" node_paths=PackedStringArray("label")]
 label = NodePath("ItemTemplate/Description")
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
-[node name="DiRegistration" type="DiRegistration" parent="Control/VBoxContainer/InventoryItemViz"]
+[node name="DiRegistration" type="DiRegistration" parent="Control/VBoxContainer/TransferrableInventoryItemViz"]
 remove_registration_object = true
 
-[node name="ItemTemplate" type="HBoxContainer" parent="Control/VBoxContainer/InventoryItemViz"]
+[node name="ItemTemplate" type="HBoxContainer" parent="Control/VBoxContainer/TransferrableInventoryItemViz"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -83,13 +83,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Button" type="Button" parent="Control/VBoxContainer/InventoryItemViz/ItemTemplate"]
+[node name="Button" type="Button" parent="Control/VBoxContainer/TransferrableInventoryItemViz/ItemTemplate"]
 layout_mode = 2
 text = "Transfer"
 
-[node name="Description" type="Label" parent="Control/VBoxContainer/InventoryItemViz/ItemTemplate"]
+[node name="Description" type="Label" parent="Control/VBoxContainer/TransferrableInventoryItemViz/ItemTemplate"]
 layout_mode = 2
 text = "Description"
 
 [connection signal="pressed" from="Control/VBoxContainer/MoneyItem/Button" to="." method="start_transfer_money"]
 [connection signal="pressed" from="Control/VBoxContainer/FoodItem/Button" to="." method="start_transfer_food"]
+[connection signal="pressed" from="Control/VBoxContainer/TransferrableInventoryItemViz/ItemTemplate/Button" to="Control/VBoxContainer/TransferrableInventoryItemViz" method="transfer"]

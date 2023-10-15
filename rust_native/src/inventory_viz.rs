@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use ds_lib::game_state::inventory::{Inventory, ItemInfo, UniqueItemId};
+use ds_lib::game_state::inventory::Inventory;
 use godot::{
     engine::{Control, ControlVirtual, Label},
     prelude::*,
@@ -8,11 +8,8 @@ use godot::{
 
 use crate::{
     game_state_viz::{borrow_game_state, GameStateViz},
-    template_spawners::{
-        inventory_template_spawner::{
-            InventoryItemViz, InventorySpawnerType, InventoryTemplateSpawner,
-        },
-        template_spawner::{Template, TemplateControl, TemplateSpawner},
+    template_spawners::inventory_template_spawner::{
+        InventoryItemViz, InventorySpawnerType, InventoryTemplateSpawner,
     },
     tree_utils::walk_parents_for,
 };

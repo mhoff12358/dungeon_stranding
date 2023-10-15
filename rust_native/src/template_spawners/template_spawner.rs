@@ -6,7 +6,6 @@ use std::{
     ops::Deref,
 };
 
-use ds_lib::log;
 use godot::{
     engine::{global::Side, Control},
     obj::dom::UserDomain,

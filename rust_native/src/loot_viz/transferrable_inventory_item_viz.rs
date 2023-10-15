@@ -2,13 +2,12 @@ use std::ops::Deref;
 
 use ds_lib::game_state::inventory::{Inventory, ItemInfo, UniqueItemId};
 use godot::{
-    engine::{Control, Label},
+    engine::{Control, ControlVirtual, Label},
     prelude::*,
 };
-use owning_ref::{OwningHandle, OwningRef, RefRef, StableAddress};
+use owning_ref::{OwningHandle, StableAddress};
 
 use crate::{
-    game_state_viz::GameStateViz,
     my_gd_ref::MyGdRef,
     template_spawners::{
         inventory_template_spawner::{ContextProvidesInventory, ProvidedInventory},
@@ -45,32 +44,13 @@ impl TransferrableInventoryItemViz {
 
 impl ContextProvidesInventory for Gd<TransferrableInventoryViz> {
     fn inventory<'a>(&'a self) -> ProvidedInventory<'a> {
-        /*fn internal_borrow<'a>(
-            it: *const TransferrableInventoryViz,
-        ) -> impl Deref<Target = Inventory> + StableAddress + 'a {*/
         fn internal_borrow<'b>(
             it: *const TransferrableInventoryViz,
         ) -> impl Deref<Target = Inventory> + StableAddress + 'b {
-            fn internal_borrow<'c>(
-                //it: *const RefRef<Inventory>,
-                it: *const Inventory,
-            ) -> impl Deref<Target = Inventory> + StableAddress + 'c {
-                let it = unsafe { &*it };
-                it
-            }
             let it = unsafe { &*it };
             it.get_inventory()
-            //OwningHandle::new_with_fn(it.get_inventory(), &internal_borrow)
         }
-        /*let it = unsafe { &*it };
-            OwningHandle::new_with_fn(o, &internal_borrow)
-        }*/
-        let ptr = self.clone();
         let handle = OwningHandle::new_with_fn(MyGdRef::new(self.bind()), &internal_borrow);
-        /*let owned_ref = OwningRef::new(MyGdRef::new(self.bind())).map(|transferrable|
-
-
-        );*/
         ProvidedInventory::Box(Box::new(handle))
     }
 }
@@ -97,6 +77,17 @@ impl TemplateControl for TransferrableInventoryItemViz {
         let item = inventory.get_item(value).unwrap();
         if let Some(label) = self.label.as_mut() {
             label.set_text(format!("{}: {}", item.name(), item.description()).into());
+        }
+    }
+}
+
+#[godot_api]
+impl ControlVirtual for TransferrableInventoryItemViz {
+    fn init(base: godot::obj::Base<Self::Base>) -> Self {
+        Self {
+            base,
+            label: None,
+            info: None,
         }
     }
 }

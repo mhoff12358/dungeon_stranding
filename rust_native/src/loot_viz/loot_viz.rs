@@ -2,7 +2,6 @@ use std::{cell::RefCell, rc::Rc};
 
 use ds_lib::game_state::{
     game_state::{GameState, InDungeon, InDungeonEvent, OngoingInteraction},
-    inputs::ongoing_interaction_input,
     inventory::{Inventory, UniqueItemId},
     inventory_transfer::OngoingInventoryTransfer,
 };
@@ -10,7 +9,6 @@ use godot::{
     engine::{Control, ControlVirtual},
     prelude::*,
 };
-use owning_ref::RefMutRef;
 
 use crate::{
     game_state_viz::{borrow_game_state, GameStateViz},
@@ -182,11 +180,13 @@ impl LootViz {
     }
 
     pub fn start_transfer_amount(&mut self, transfer_type: TransferType, direction: LootDirection) {
-        self.transfer_viz
-            .as_mut()
-            .unwrap()
-            .bind_mut()
-            .init(transfer_type, direction);
+        let inventories = self.directed_inventories(direction);
+        TransferViz::init(
+            self.transfer_viz.as_mut().unwrap().clone(),
+            transfer_type,
+            direction,
+            inventories,
+        );
     }
 }
 

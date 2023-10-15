@@ -1,6 +1,26 @@
 use std::ops::Deref;
 
-use godot::prelude::GdRef;
+use godot::prelude::*;
+
+pub struct MyGd<T: GodotClass> {
+    inner: Gd<T>,
+}
+
+impl<T: GodotClass> MyGd<T> {
+    pub fn new(inner: Gd<T>) -> Self {
+        Self { inner }
+    }
+}
+
+impl<T: GodotClass> Deref for MyGd<T> {
+    type Target = Gd<T>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
+
+unsafe impl<T: GodotClass> owning_ref::StableAddress for MyGd<T> {}
 
 pub struct MyGdRef<'a, T> {
     inner: GdRef<'a, T>,

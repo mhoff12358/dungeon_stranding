@@ -1,32 +1,29 @@
 use std::{cell::RefCell, rc::Rc};
 
-use ds_lib::{
-    game_state::inventory::{Inventory, UniqueItemId},
-    log,
-};
+use ds_lib::game_state::inventory::{Inventory, UniqueItemId};
 use godot::{
     engine::{Control, ControlVirtual, Label},
     prelude::*,
 };
-use owning_ref::{RefMutRef, RefRef};
+use owning_ref::RefRef;
 
 use crate::{
     di_context::di_context::DiContext,
     game_state_viz::GameStateViz,
     template_spawners::inventory_template_spawner::{
-        InventoryItemViz, InventorySpawnerType, InventoryTemplateSpawner,
+        InventorySpawnerType, InventoryTemplateSpawner,
     },
     tree_utils::walk_parents_for,
 };
 
 use super::{
     loot_viz::{LootDirection, LootViz},
-    transfer_viz::{TransferDetails, TransferType},
+    transfer_viz::TransferType,
     transferrable_inventory_item_viz::TransferrableInventoryItemViz,
 };
 
 struct Details {
-    other: Gd<TransferrableInventoryViz>,
+    _other: Gd<TransferrableInventoryViz>,
     inventory: Rc<RefCell<Inventory>>,
     direction: LootDirection,
 }
@@ -101,7 +98,7 @@ impl TransferrableInventoryViz {
         direction: LootDirection,
     ) {
         self.details = Some(Details {
-            other,
+            _other: other,
             inventory: inventory.clone(),
             direction,
         });

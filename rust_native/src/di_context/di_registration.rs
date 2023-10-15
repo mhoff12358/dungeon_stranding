@@ -1,8 +1,4 @@
-use std::{cell::RefCell, collections::HashMap};
-
 use godot::prelude::*;
-
-use crate::godot_utils;
 
 use super::di_context::DiContext;
 
@@ -33,7 +29,7 @@ impl NodeVirtual for DiRegistration {
     }
 
     fn enter_tree(&mut self) {
-        let mut parent = self.base.get_parent().unwrap();
+        let parent = self.base.get_parent().unwrap();
         if let Some(mut context) = DiContext::get_nearest_exclude_self(parent.clone()) {
             context
                 .bind_mut()
