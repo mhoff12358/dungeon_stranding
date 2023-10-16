@@ -6,6 +6,8 @@ use super::di_context::DiContext;
 #[class(base=Node)]
 pub struct DiRegistration {
     #[export]
+    type_name: GodotString,
+    #[export]
     id: GodotString,
 
     #[export]
@@ -23,6 +25,7 @@ impl NodeVirtual for DiRegistration {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             id: "".into(),
+            type_name: "".into(),
             remove_registration_object: false,
             base,
         }
@@ -31,9 +34,17 @@ impl NodeVirtual for DiRegistration {
     fn enter_tree(&mut self) {
         let parent = self.base.get_parent().unwrap();
         if let Some(mut context) = DiContext::get_nearest_exclude_self(parent.clone()) {
-            context
-                .bind_mut()
-                .register_node(parent.clone(), self.id.clone());
+            if self.type_name.chars_checked().is_empty() {
+                context
+                    .bind_mut()
+                    .register_node(parent.clone(), self.id.clone());
+            } else {
+                context.bind_mut().register_node_of_type(
+                    parent.clone(),
+                    self.type_name.clone(),
+                    self.id.clone(),
+                );
+            }
         } else {
             godot_print!("Tried to register a node with no context in its parentage.");
         }

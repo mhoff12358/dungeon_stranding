@@ -2,6 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 
 use ds_lib::game_state::{
     game_state::{GameState, InDungeon, InDungeonEvent, OngoingInteraction},
+    inputs::loot_input::LootInput,
     inventory::{Inventory, UniqueItemId},
     inventory_transfer::OngoingInventoryTransfer,
 };
@@ -67,6 +68,12 @@ impl LootViz {
         if should_clear {
             _self.clear_transfer_ui();
         }
+    }
+
+    #[func(gd_self)]
+    pub fn finish(this: Gd<Self>) {
+        let game_state = this.bind().game_state.as_ref().unwrap().clone();
+        GameStateViz::accept_input(game_state, &LootInput::finish());
     }
 }
 
@@ -150,6 +157,8 @@ impl LootViz {
         }
     }
 
+    pub fn cancel_transfer(_this: Gd<Self>) {}
+
     pub fn transfer_amount(this: Gd<Self>, details: TransferDetails) {
         let game_state: Gd<GameStateViz>;
         {
@@ -157,8 +166,17 @@ impl LootViz {
             game_state = _self.game_state.as_ref().unwrap().clone();
 
             let inventories = _self.directed_inventories(details.direction);
-            if inventories.0.borrow_mut().remove_cash(details.amount) {
-                inventories.1.borrow_mut().add_cash(details.amount);
+            match details.transfer_type {
+                TransferType::Money => {
+                    if inventories.0.borrow_mut().remove_cash(details.amount) {
+                        inventories.1.borrow_mut().add_cash(details.amount);
+                    }
+                }
+                TransferType::Food => {
+                    if inventories.0.borrow_mut().remove_food(details.amount) {
+                        inventories.1.borrow_mut().add_food(details.amount);
+                    }
+                }
             }
         }
         GameStateViz::handle_game_update(game_state);

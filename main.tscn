@@ -608,12 +608,16 @@ anchor_left = 0.5
 anchor_right = 1.0
 
 [node name="TransferViz" type="TransferViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.25
 anchor_top = 0.25
 anchor_right = 0.75
 anchor_bottom = 0.75
+
+[node name="DiContext" type="DiContext" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+verbose_logging_name = "TransferViz"
 
 [node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
 layout_mode = 1
@@ -625,76 +629,101 @@ grow_vertical = 2
 color = Color(1, 0.839216, 1, 1)
 
 [node name="Title" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
-layout_mode = 0
-offset_left = 405.0
-offset_top = 127.997
-offset_right = 527.0
-offset_bottom = 172.997
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.2
+anchor_right = 0.5
+anchor_bottom = 0.2
+grow_horizontal = 2
 text = "Transfer"
 label_settings = ExtResource("16_7ver7")
 
 [node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/Title"]
 id = "description"
 
-[node name="Min" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
-layout_mode = 0
-offset_left = 62.0001
-offset_top = 283.997
-offset_right = 184.0
-offset_bottom = 328.997
+[node name="HBoxContainer" type="HBoxContainer" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.4
+anchor_right = 0.5
+anchor_bottom = 0.4
+grow_horizontal = 2
+
+[node name="Amount" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer"]
+layout_mode = 2
+text = "Amount:"
+label_settings = ExtResource("16_7ver7")
+
+[node name="AmountDisplay" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer"]
+layout_mode = 2
+text = "100"
+label_settings = ExtResource("16_7ver7")
+
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer/AmountDisplay"]
+id = "amount"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.6
+anchor_right = 0.5
+anchor_bottom = 0.6
+grow_horizontal = 2
+
+[node name="Min" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer2"]
+layout_mode = 2
 text = "Min"
 label_settings = ExtResource("16_7ver7")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/Min"]
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer2/Min"]
 id = "min"
 
-[node name="Max" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
-layout_mode = 0
-offset_left = 793.0
-offset_top = 282.997
-offset_right = 915.0
-offset_bottom = 327.997
+[node name="SelectSlider" type="HSlider" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer2"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer2/SelectSlider"]
+type_name = "Slider"
+id = "slider"
+
+[node name="Max" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer2"]
+layout_mode = 2
 text = "Max"
 label_settings = ExtResource("16_7ver7")
 vertical_alignment = 1
 
-[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/Max"]
+[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer2/Max"]
 id = "max"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+[node name="Accept" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
 layout_mode = 0
-offset_left = 402.0
-offset_top = 218.997
-offset_right = 524.0
-offset_bottom = 263.997
+offset_left = 305.0
+offset_top = 422.997
+offset_right = 365.0
+offset_bottom = 453.997
+text = "Accept"
 
-[node name="Amount" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer"]
-layout_mode = 2
-text = "Amount"
-label_settings = ExtResource("16_7ver7")
+[node name="Cancel" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
+layout_mode = 0
+offset_left = 569.0
+offset_top = 423.997
+offset_right = 629.0
+offset_bottom = 454.997
+text = "Cancel"
 
-[node name="AmountDisplay" type="Label" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer"]
-layout_mode = 2
-
-[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer/AmountDisplay"]
-id = "amount"
-
-[node name="SelectSlider" type="HSlider" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.2
-anchor_top = 0.5
-anchor_right = 0.8
-anchor_bottom = 0.65
-offset_top = 0.00335693
-offset_bottom = -7.99567
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="DiRegistration" type="DiRegistration" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/SelectSlider"]
-id = "slider"
+[node name="Finish" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz"]
+layout_mode = 0
+offset_left = 932.0
+offset_top = 990.993
+offset_right = 986.0
+offset_bottom = 1021.99
+text = "Finish"
 
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/SelectedDescriptionPanel/SelectedItem" method="_on_shop_panel_updated_state"]
 [connection signal="toggled" from="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControlUI/FollowPlayerCheckButton" to="AspectRatioContainer/GameStateViz/InDungeonUI/FloorViz/MapControls" method="_on_follow_player_check_button_toggled"]
@@ -709,4 +738,7 @@ id = "slider"
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Up" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="dig_up"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Down" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="dig_down"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Cancel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="cancel"]
-[connection signal="value_changed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/SelectSlider" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz" method="set_proportion"]
+[connection signal="value_changed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer2/SelectSlider" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz" method="set_amount"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/Accept" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz" method="apply"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/Cancel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz" method="cancel"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/Finish" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz" method="finish"]

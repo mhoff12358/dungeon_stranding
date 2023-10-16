@@ -71,22 +71,27 @@ impl TransferrableInventoryViz {
         }
     }
 
-    #[func]
-    pub fn start_transfer_money(&mut self) {
-        self.start_transfer(TransferType::Money);
+    #[func(gd_self)]
+    pub fn start_transfer_money(this: Gd<Self>) {
+        Self::start_transfer(this, TransferType::Money);
     }
 
-    #[func]
-    pub fn start_transfer_food(&mut self) {
-        self.start_transfer(TransferType::Food);
+    #[func(gd_self)]
+    pub fn start_transfer_food(this: Gd<Self>) {
+        Self::start_transfer(this, TransferType::Food);
     }
 
-    pub fn start_transfer(&mut self, transfer_type: TransferType) {
-        self.loot_viz
-            .as_mut()
-            .unwrap()
+    pub fn start_transfer(this: Gd<Self>, transfer_type: TransferType) {
+        let mut loot_viz;
+        let direction;
+        {
+            let _self = this.bind();
+            loot_viz = _self.loot_viz.as_ref().unwrap().clone();
+            direction = _self.details.as_ref().unwrap().direction;
+        }
+        loot_viz
             .bind_mut()
-            .start_transfer_amount(transfer_type, self.details.as_ref().unwrap().direction);
+            .start_transfer_amount(transfer_type, direction);
     }
 }
 
@@ -139,9 +144,8 @@ impl ControlVirtual for TransferrableInventoryViz {
     fn ready(&mut self) {
         let di_context = DiContext::get_nearest(self.base.clone().upcast()).unwrap();
         let di_context = di_context.bind();
-        let item_template = di_context
-            .get_registered_node_template::<TransferrableInventoryItemViz>("".into())
-            .unwrap();
+        let item_template =
+            di_context.get_registered_node_template::<TransferrableInventoryItemViz>("".into());
         self.inventory_spawner = Some(RefCell::new(InventoryTemplateSpawner::new(
             item_template,
             InventorySpawnerType::All,
@@ -152,7 +156,7 @@ impl ControlVirtual for TransferrableInventoryViz {
             GameStateViz::UPDATED_STATE_SIGNAL.into(),
             self.base.callable("updated"),
         );
-        self.money_amount = di_context.get_registered_node_template("money".into());
-        self.food_amount = di_context.get_registered_node_template("food".into());
+        self.money_amount = Some(di_context.get_registered_node_template("money".into()));
+        self.food_amount = Some(di_context.get_registered_node_template("food".into()));
     }
 }

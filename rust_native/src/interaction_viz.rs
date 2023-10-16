@@ -10,14 +10,18 @@ use crate::{
     tree_utils::walk_parents_for,
 };
 
+struct Visualizers {
+    dig: Gd<DigViz>,
+    camp: Gd<CampViz>,
+    loot: Gd<LootViz>,
+}
+
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct InteractionViz {
     in_dungeon: Option<Gd<InDungeonViz>>,
 
-    dig_viz: Option<Gd<DigViz>>,
-    camp_viz: Option<Gd<CampViz>>,
-    loot_viz: Option<Gd<LootViz>>,
+    viz: Option<Visualizers>,
 
     #[base]
     base: Base<Control>,
@@ -48,13 +52,13 @@ impl InteractionViz {
             .unwrap_interaction();
         match interaction {
             OngoingInteraction::Dig => {
-                self.dig_viz.as_mut().unwrap().bind_mut().updated();
+                self.viz.as_mut().unwrap().dig.bind_mut().updated();
             }
             OngoingInteraction::Camp { amount } => {
-                self.camp_viz.as_mut().unwrap().bind_mut().updated(amount);
+                self.viz.as_mut().unwrap().camp.bind_mut().updated(amount);
             }
             OngoingInteraction::Loot(..) => {
-                self.loot_viz.as_mut().unwrap().bind_mut().updated();
+                self.viz.as_mut().unwrap().loot.bind_mut().updated();
             }
         }
     }
@@ -66,9 +70,7 @@ impl ControlVirtual for InteractionViz {
         Self {
             in_dungeon: None,
 
-            camp_viz: None,
-            dig_viz: None,
-            loot_viz: None,
+            viz: None,
 
             base,
         }
@@ -85,17 +87,11 @@ impl ControlVirtual for InteractionViz {
     }
 
     fn ready(&mut self) {
-        self.dig_viz = DiContext::get_nearest(self.base.clone().upcast())
-            .unwrap()
-            .bind()
-            .get_registered_node_template("".into());
-        self.camp_viz = DiContext::get_nearest(self.base.clone().upcast())
-            .unwrap()
-            .bind()
-            .get_registered_node_template("".into());
-        self.loot_viz = DiContext::get_nearest(self.base.clone().upcast())
-            .unwrap()
-            .bind()
-            .get_registered_node_template("".into());
+        let context = DiContext::get_nearest_bound(self.base.clone());
+        self.viz = Some(Visualizers {
+            dig: context.get_registered_node_template("".into()),
+            camp: context.get_registered_node_template("".into()),
+            loot: context.get_registered_node_template("".into()),
+        });
     }
 }

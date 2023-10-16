@@ -55,7 +55,8 @@ impl TransferViz {
         direction: LootDirection,
         directed_inventories: (Rc<RefCell<Inventory>>, Rc<RefCell<Inventory>>),
     ) {
-        let mut slider_to_zero;
+        let mut slider;
+        let (min, max): (i32, i32);
         {
             let mut _self = this.bind_mut();
             _self.details = TransferDetails {
@@ -84,21 +85,27 @@ impl TransferViz {
                 directed_inventories.0.borrow().get_display_name(),
                 directed_inventories.1.borrow().get_display_name()
             );
-            let (min, max) = (_self.min, _self.max);
+
+            _self.base.set_visible(true);
+
+            (min, max) = (_self.min, _self.max);
+            _self.set_amount(min as f32);
             let components = _self.components.as_mut().unwrap();
             components.description.set_text(description.into());
             components.min.set_text(format!("{}", min).into());
             components.max.set_text(format!("{}", max).into());
-            slider_to_zero = components.slider.clone();
-            _self.base.set_visible(true);
+
+            slider = components.slider.clone();
         }
 
-        slider_to_zero.set_value(0.0);
+        slider.set_min(min as f64);
+        slider.set_max(max as f64);
+        slider.set_value(min as f64);
     }
 
     #[func]
-    pub fn set_proportion(&mut self, proportion: f32) {
-        let amount = f32::lerp(self.min as f32, self.max as f32, proportion) as i32;
+    pub fn set_amount(&mut self, amount: f32) {
+        let amount = (amount as i32).min(self.max).max(self.min);
 
         self.details.amount = amount;
         self.components
@@ -119,6 +126,17 @@ impl TransferViz {
             _self.base.set_visible(false);
         }
         LootViz::transfer_amount(loot_viz, details);
+    }
+
+    #[func(gd_self)]
+    pub fn cancel(mut this: Gd<Self>) {
+        let loot_viz;
+        {
+            let mut _self = this.bind_mut();
+            loot_viz = _self.loot_viz.as_ref().unwrap().clone();
+            _self.base.set_visible(false);
+        }
+        LootViz::cancel_transfer(loot_viz);
     }
 }
 
@@ -145,21 +163,11 @@ impl ControlVirtual for TransferViz {
 
         let di_context = DiContext::get_nearest_bound(self.base.clone());
         self.components = Some(Components {
-            description: di_context
-                .get_registered_node_template("description".into())
-                .unwrap(),
-            min: di_context
-                .get_registered_node_template("min".into())
-                .unwrap(),
-            max: di_context
-                .get_registered_node_template("max".into())
-                .unwrap(),
-            amount: di_context
-                .get_registered_node_template("amount".into())
-                .unwrap(),
-            slider: di_context
-                .get_registered_node_template("slider".into())
-                .unwrap(),
+            description: di_context.get_registered_node_template("description".into()),
+            min: di_context.get_registered_node_template("min".into()),
+            max: di_context.get_registered_node_template("max".into()),
+            amount: di_context.get_registered_node_template("amount".into()),
+            slider: di_context.get_registered_node_template("slider".into()),
         })
     }
 }
