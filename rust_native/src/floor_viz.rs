@@ -203,5 +203,6 @@ impl ControlVirtual for FloorViz {
         self.body_entity_scene = Some(load(self.body_entity_scene_path.clone()));
         self.campfire_entity_scene = Some(load(self.campfire_entity_scene_path.clone()));
         self.gold_entity_scene = Some(load(self.gold_entity_scene_path.clone()));
+        self.chest_entity_scene = Some(load(self.chest_entity_scene_path.clone()));
     }
 }
