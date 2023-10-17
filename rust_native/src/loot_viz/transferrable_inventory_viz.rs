@@ -93,6 +93,18 @@ impl TransferrableInventoryViz {
             .bind_mut()
             .start_transfer_amount(transfer_type, direction);
     }
+
+    #[func(gd_self)]
+    pub fn transfer_all(this: Gd<Self>) {
+        let loot_viz;
+        let direction;
+        {
+            let _self = this.bind();
+            loot_viz = _self.loot_viz.as_ref().unwrap().clone();
+            direction = _self.details.as_ref().unwrap().direction;
+        }
+        LootViz::transfer_all(loot_viz, direction);
+    }
 }
 
 impl TransferrableInventoryViz {

@@ -406,7 +406,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="InteractionViz" type="InteractionViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -598,13 +597,28 @@ color = Color(0.811765, 0.815686, 1, 1)
 [node name="ToTransferrableInventoryViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz" instance=ExtResource("14_w0ts8")]
 layout_mode = 1
 
+[node name="TransferAll" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/ToTransferrableInventoryViz"]
+layout_mode = 0
+offset_left = 119.0
+offset_top = 999.993
+offset_right = 216.0
+offset_bottom = 1030.99
+text = "Transfer All"
+
 [node name="FromTransferrableInventoryViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz" instance=ExtResource("14_w0ts8")]
 layout_mode = 1
 anchor_left = 0.5
 anchor_right = 1.0
 
+[node name="TransferAll" type="Button" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/FromTransferrableInventoryViz"]
+layout_mode = 0
+offset_left = 744.0
+offset_top = 1000.99
+offset_right = 841.0
+offset_bottom = 1031.99
+text = "Transfer All"
+
 [node name="TransferViz" type="TransferViz" parent="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz"]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.25
@@ -734,6 +748,8 @@ text = "Finish"
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Up" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="dig_up"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Down" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="dig_down"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz/Cancel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/SmallInteractions/DigViz" method="cancel"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/ToTransferrableInventoryViz/TransferAll" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/ToTransferrableInventoryViz" method="transfer_all"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/FromTransferrableInventoryViz/TransferAll" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/FromTransferrableInventoryViz" method="transfer_all"]
 [connection signal="value_changed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/HBoxContainer2/SelectSlider" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz" method="set_amount"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/Accept" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz" method="apply"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz/Cancel" to="AspectRatioContainer/GameStateViz/InDungeonUI/InteractionViz/LootViz/TransferViz" method="cancel"]

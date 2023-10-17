@@ -27,6 +27,11 @@ pub enum LootDirection {
     To,
 }
 
+pub struct DirectedInventories {
+    pub from: Rc<RefCell<Inventory>>,
+    pub to: Rc<RefCell<Inventory>>,
+}
+
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct LootViz {
@@ -125,35 +130,36 @@ impl LootViz {
         TransferrableInventoryViz::updated(self.inventory_display_to.clone().unwrap());
     }
 
-    fn directed_inventories(
-        &self,
-        direction: LootDirection,
-    ) -> (Rc<RefCell<Inventory>>, Rc<RefCell<Inventory>>) {
+    fn directed_inventories(&self, direction: LootDirection) -> DirectedInventories {
         match direction {
-            LootDirection::From => (
-                self.inventory_display_from
+            LootDirection::From => DirectedInventories {
+                from: self
+                    .inventory_display_from
                     .as_ref()
                     .unwrap()
                     .bind()
                     .get_inventory_rc(),
-                self.inventory_display_to
+                to: self
+                    .inventory_display_to
                     .as_ref()
                     .unwrap()
                     .bind()
                     .get_inventory_rc(),
-            ),
-            LootDirection::To => (
-                self.inventory_display_to
+            },
+            LootDirection::To => DirectedInventories {
+                from: self
+                    .inventory_display_to
                     .as_ref()
                     .unwrap()
                     .bind()
                     .get_inventory_rc(),
-                self.inventory_display_from
+                to: self
+                    .inventory_display_from
                     .as_ref()
                     .unwrap()
                     .bind()
                     .get_inventory_rc(),
-            ),
+            },
         }
     }
 
@@ -168,13 +174,13 @@ impl LootViz {
             let inventories = _self.directed_inventories(details.direction);
             match details.transfer_type {
                 TransferType::Money => {
-                    if inventories.0.borrow_mut().remove_cash(details.amount) {
-                        inventories.1.borrow_mut().add_cash(details.amount);
+                    if inventories.from.borrow_mut().remove_cash(details.amount) {
+                        inventories.to.borrow_mut().add_cash(details.amount);
                     }
                 }
                 TransferType::Food => {
-                    if inventories.0.borrow_mut().remove_food(details.amount) {
-                        inventories.1.borrow_mut().add_food(details.amount);
+                    if inventories.from.borrow_mut().remove_food(details.amount) {
+                        inventories.to.borrow_mut().add_food(details.amount);
                     }
                 }
             }
@@ -189,10 +195,25 @@ impl LootViz {
             game_state = _self.game_state.as_ref().unwrap().clone();
 
             let inventories = _self.directed_inventories(direction);
-            let removed_item = inventories.0.borrow_mut().remove_item(item);
+            let removed_item = inventories.from.borrow_mut().remove_item(item);
             if let Some(item) = removed_item {
-                inventories.1.borrow_mut().add_item(item);
+                inventories.to.borrow_mut().add_item(item);
             }
+        }
+        GameStateViz::handle_game_update(game_state);
+    }
+
+    pub fn transfer_all(this: Gd<Self>, direction: LootDirection) {
+        let game_state: Gd<GameStateViz>;
+        {
+            let _self = this.bind();
+            game_state = _self.game_state.as_ref().unwrap().clone();
+
+            let inventories = _self.directed_inventories(direction);
+            inventories
+                .to
+                .borrow_mut()
+                .empty_other(&mut inventories.from.borrow_mut());
         }
         GameStateViz::handle_game_update(game_state);
     }

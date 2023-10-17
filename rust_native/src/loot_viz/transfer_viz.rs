@@ -1,6 +1,3 @@
-use std::{cell::RefCell, rc::Rc};
-
-use ds_lib::game_state::inventory::Inventory;
 use godot::{
     engine::{Control, ControlVirtual, Label, Slider},
     prelude::*,
@@ -8,7 +5,7 @@ use godot::{
 
 use crate::{di_context::di_context::DiContext, tree_utils::walk_parents_for};
 
-use super::loot_viz::{LootDirection, LootViz};
+use super::loot_viz::{DirectedInventories, LootDirection, LootViz};
 
 #[derive(Debug, Clone, Copy)]
 pub enum TransferType {
@@ -53,7 +50,7 @@ impl TransferViz {
         mut this: Gd<Self>,
         transfer_type: TransferType,
         direction: LootDirection,
-        directed_inventories: (Rc<RefCell<Inventory>>, Rc<RefCell<Inventory>>),
+        directed_inventories: DirectedInventories,
     ) {
         let mut slider;
         let (min, max): (i32, i32);
@@ -70,20 +67,20 @@ impl TransferViz {
                 TransferType::Money => {
                     description = "money";
                     _self.min = 0;
-                    _self.max = directed_inventories.0.borrow().get_cash();
+                    _self.max = directed_inventories.from.borrow().get_cash();
                 }
                 TransferType::Food => {
                     description = "food";
                     _self.min = 0;
-                    _self.max = directed_inventories.0.borrow().get_food();
+                    _self.max = directed_inventories.from.borrow().get_food();
                 }
             }
 
             let description = format!(
                 "Transferring {} from {} to {}",
                 description,
-                directed_inventories.0.borrow().get_display_name(),
-                directed_inventories.1.borrow().get_display_name()
+                directed_inventories.from.borrow().get_display_name(),
+                directed_inventories.to.borrow().get_display_name()
             );
 
             _self.base.set_visible(true);
@@ -100,7 +97,7 @@ impl TransferViz {
 
         slider.set_min(min as f64);
         slider.set_max(max as f64);
-        slider.set_value(min as f64);
+        slider.set_value(max as f64);
     }
 
     #[func]
