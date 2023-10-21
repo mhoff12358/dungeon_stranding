@@ -5,3 +5,5 @@ compatibility_minimum = 4.1
 [libraries]
 windows.debug.x86_64 = "res://rust_native/target/debug/rust_native.dll"
 windows.release.x86_64 = "res://rust_native/target/release/rust_native.dll"
+web.debug.wasm32 = "res://rust_native/target/wasm32-unknown-emscripten/debug/rust_native.wasm"
+web.release.wasm32 = "res://rust_native/target/wasm32-unknown-emscripten/release/rust_native.wasm"

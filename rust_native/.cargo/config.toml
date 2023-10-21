@@ -1,0 +1,10 @@
+[target.wasm32-unknown-emscripten]
+rustflags = [
+    "-Clink-arg=--no-entry",
+    "-Clink-arg=-sSIDE_MODULE=2",
+    "-Clink-arg=-sUSE_PTHREADS=1",
+    "-Clink-arg=-sSTACK_SIZE=2000MB",
+    "-Clink-arg=-sINITIAL_MEMORY=3999MB",
+    "-Clink-arg=--sALLOW_MEMORY_GROWTH=1",
+    "-Ctarget-feature=+atomics,+bulk-memory,+mutable-globals",
+]

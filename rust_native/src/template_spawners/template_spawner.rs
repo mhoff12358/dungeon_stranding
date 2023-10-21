@@ -88,7 +88,7 @@ pub trait TemplateSpawnerDefaultImplTrait {
     fn place_after(template: Gd<Self::TemplateType>, previous: &Option<Gd<Self::TemplateType>>);
 }
 
-impl<Key, Value: ToVariant, Context> TemplateSpawnerDefaultImplTrait
+impl<Key, Value: ToGodot, Context> TemplateSpawnerDefaultImplTrait
     for TemplateSpawner<Key, Value, Context, Node>
 where
     Key: Hash + Eq + PartialEq + Copy,

@@ -10,7 +10,7 @@ use ds_lib::{
 };
 use godot::{
     engine::{Control, ControlVirtual},
-    prelude::*,
+    prelude::{meta::GodotConvert, *},
 };
 use owning_ref::{OwningHandle, OwningRef, OwningRefMut};
 
@@ -24,15 +24,19 @@ use crate::{
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct ShopId(pub UniqueItemId);
 
-impl ToVariant for ShopId {
-    fn to_variant(&self) -> Variant {
-        self.0 .0.to_variant()
+impl GodotConvert for ShopId {
+    type Via = u32;
+}
+
+impl ToGodot for ShopId {
+    fn to_godot(&self) -> Self::Via {
+        self.0 .0
     }
 }
 
-impl FromVariant for ShopId {
-    fn try_from_variant(variant: &Variant) -> Result<Self, VariantConversionError> {
-        Ok(ShopId(UniqueItemId(u32::try_from_variant(variant)?)))
+impl FromGodot for ShopId {
+    fn try_from_godot(via: Self::Via) -> Option<Self> {
+        Some(ShopId(UniqueItemId(via)))
     }
 }
 

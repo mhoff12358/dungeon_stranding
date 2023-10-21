@@ -15,7 +15,7 @@ pub struct OutOfDungeonViz {
 }
 
 impl OutOfDungeonViz {
-    pub const UPDATED_STATE_SIGNAL: &str = "updated_state";
+    pub const UPDATED_STATE_SIGNAL: &'static str = "updated_state";
 }
 
 #[godot_api]

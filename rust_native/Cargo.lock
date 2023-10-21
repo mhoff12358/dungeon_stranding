@@ -369,6 +369,7 @@ dependencies = [
 name = "godot-macros"
 version = "0.1.0"
 dependencies = [
+ "godot-bindings",
  "proc-macro2",
  "quote",
  "venial",
@@ -693,6 +694,7 @@ dependencies = [
  "num-derive",
  "num-traits",
  "owning_ref",
+ "web-sys",
 ]
 
 [[package]]

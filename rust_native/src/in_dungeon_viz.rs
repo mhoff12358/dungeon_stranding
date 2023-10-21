@@ -25,9 +25,9 @@ pub struct InDungeonViz {
 }
 
 impl InDungeonViz {
-    pub const UPDATED_STATE_SIGNAL: &str = "updated_state";
-    pub const UPDATED_STATE_FIGHT_SIGNAL: &str = "updated_state_fight";
-    pub const UPDATED_STATE_INTERACTION_SIGNAL: &str = "updated_state_interaction";
+    pub const UPDATED_STATE_SIGNAL: &'static str = "updated_state";
+    pub const UPDATED_STATE_FIGHT_SIGNAL: &'static str = "updated_state_fight";
+    pub const UPDATED_STATE_INTERACTION_SIGNAL: &'static str = "updated_state_interaction";
 }
 
 #[godot_api]

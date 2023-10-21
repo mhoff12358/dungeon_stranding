@@ -30,8 +30,8 @@ enum GodotInput {
 }
 
 impl GameStateViz {
-    pub const PRE_UPDATED_STATE_SIGNAL: &str = "pre_updated_state";
-    pub const UPDATED_STATE_SIGNAL: &str = "updated_state";
+    pub const PRE_UPDATED_STATE_SIGNAL: &'static str = "pre_updated_state";
+    pub const UPDATED_STATE_SIGNAL: &'static str = "updated_state";
 }
 
 #[godot_api]
