@@ -1,7 +1,7 @@
 use std::ops::Deref;
 
 use ds_lib::{
-    dungeon_state::floor_layout::FloorLayout,
+    dungeon_state::floor_state::FloorState,
     game_state::game_state::{GameState, InDungeon},
 };
 use godot::{
@@ -64,7 +64,7 @@ impl InDungeonViz {
     #[func]
     pub fn get_tiles(&self) -> GodotString {
         let floor = self.borrow_current_floor();
-        let stairs = floor.stairs();
+        let stairs = floor.layout().stairs();
         return format!("{}, {}", stairs.up.x, stairs.up.y).into();
     }
 
@@ -109,7 +109,7 @@ impl InDungeonViz {
         )
     }
 
-    pub fn borrow_current_floor<'a>(&'a self) -> impl Deref<Target = FloorLayout> + 'a {
+    pub fn borrow_current_floor<'a>(&'a self) -> impl Deref<Target = FloorState> + 'a {
         OwningHandle::new_with_fn(
             borrow_game_state(&self.game_state.as_ref().unwrap()),
             |it: *const GameState| {

@@ -17,7 +17,7 @@ use crate::{in_dungeon_viz::InDungeonViz, tree_utils::walk_parents_for};
 
 #[derive(GodotClass)]
 #[class(base=Control)]
-pub struct FloorViz {
+pub struct FloorLayoutViz {
     in_dungeon: Option<Gd<InDungeonViz>>,
 
     #[export]
@@ -60,7 +60,7 @@ pub struct FloorViz {
 }
 
 #[godot_api]
-impl FloorViz {
+impl FloorLayoutViz {
     #[func]
     pub fn in_dungeon(&self) -> Gd<InDungeonViz> {
         self.in_dungeon.as_ref().unwrap().clone()
@@ -72,14 +72,14 @@ impl FloorViz {
         let in_dungeon = in_dungeon.bind();
         let in_dungeon = in_dungeon.borrow_in_dungeon();
         let floor = in_dungeon.get_current_floor();
-        let bounds = floor.bounds();
+        let bounds = floor.layout().bounds();
         for y in bounds.min.y..=bounds.max.y {
             for x in bounds.min.x..=bounds.max.x {
                 let tile_coord = Coord { x, y };
                 let atlas_coord = self.get_atlas_coord_for_tile(
                     &in_dungeon,
                     &tile_coord,
-                    floor.tiles().get(&tile_coord),
+                    floor.layout().tiles().get(&tile_coord),
                 );
                 let tile_map = self.tile_map.as_mut().unwrap();
                 tile_map
@@ -128,7 +128,7 @@ impl FloorViz {
     }
 }
 
-impl FloorViz {
+impl FloorLayoutViz {
     fn get_atlas_coord_for_tile(
         &self,
         in_dungeon: &InDungeon,
@@ -139,11 +139,11 @@ impl FloorViz {
             return -Vector2i::ONE;
         }
 
-        let floor = in_dungeon.get_current_floor();
+        let floor_layout = in_dungeon.get_current_floor().layout();
 
-        if floor.stairs().up == *coord {
+        if floor_layout.stairs().up == *coord {
             return self.stairs_up_atlas_coord;
-        } else if floor.stairs().down == *coord {
+        } else if floor_layout.stairs().down == *coord {
             return self.stairs_down_atlas_coord;
         }
 
@@ -164,7 +164,7 @@ impl FloorViz {
 }
 
 #[godot_api]
-impl ControlVirtual for FloorViz {
+impl ControlVirtual for FloorLayoutViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             in_dungeon: None,

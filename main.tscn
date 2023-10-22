@@ -235,6 +235,7 @@ body_entity_scene_path = "res://tile_entities/body/BodyEntity.tscn"
 campfire_entity_scene_path = "res://tile_entities/campfire/CampfireEntity.tscn"
 gold_entity_scene_path = "res://tile_entities/gold/GoldEntity.tscn"
 chest_entity_scene_path = "res://tile_entities/chest/ChestEntity.tscn"
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.3
