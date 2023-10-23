@@ -17,9 +17,7 @@ use owning_ref::{OwningHandle, OwningRef, OwningRefMut};
 use crate::{
     game_state_viz::{borrow_game_state, borrow_game_state_mut, GameStateViz},
     out_of_dungeon_viz::OutOfDungeonViz,
-    template_spawners::template_spawner::{
-        TemplateGenerics, TemplateSpawner, UpdateSpawnedTemplate,
-    },
+    template_spawners::template_spawner::{SignalsUpdate, TemplateGenerics, TemplateSpawner},
     tree_utils::walk_parents_for,
 };
 
@@ -60,7 +58,7 @@ pub struct ShopViz {
     #[export]
     shop_item_template: Option<Gd<Control>>,
     shop_item_templates:
-        Option<RefCell<TemplateSpawner<ShopIdGenerics, UpdateSpawnedTemplate<ShopIdGenerics>>>>,
+        Option<RefCell<TemplateSpawner<ShopIdGenerics, SignalsUpdate<ShopIdGenerics>>>>,
 
     #[base]
     base: Base<Control>,

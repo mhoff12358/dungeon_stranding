@@ -100,7 +100,7 @@ where
 {
     spawner: TemplateSpawner<
         InventoryGenerics<TemplateType>,
-        UpdateSpawnedTemplate<InventoryGenerics<TemplateType>, TemplateType>,
+        UpdateSpawnedTemplate<InventoryGenerics<TemplateType>>,
     >,
     spawner_type: InventorySpawnerType,
     //inventory: Option<Rc<RefCell<Inventory>>>,

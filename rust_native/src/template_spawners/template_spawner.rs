@@ -1,6 +1,5 @@
 use std::{
     collections::{HashMap, HashSet},
-    fmt::Debug,
     hash::Hash,
     marker::PhantomData,
     ops::Deref,
@@ -109,7 +108,7 @@ pub trait TemplateSpawnerDefaultImplTrait {
     fn place_after(template: Gd<Self::TemplateType>, previous: &Option<Gd<Self::TemplateType>>);
 }
 
-struct SignalsUpdate<Generics: TemplateGenerics>
+pub struct SignalsUpdate<Generics: TemplateGenerics>
 where
     Generics::Value: ToGodot,
 {
@@ -154,10 +153,9 @@ where
     _data: PhantomData<Generics>,
 }
 
-impl<
-        Generics: TemplateGenerics<TemplateType = TemplateType>,
-        TemplateType: GodotClass + Inherits<Node>,
-    > TemplateSpawnerUpdateBehavior for UpdateSpawnedTemplate<Generics>
+impl<Generics: TemplateGenerics> TemplateSpawnerUpdateBehavior for UpdateSpawnedTemplate<Generics>
+where
+    Generics::TemplateType: Template<Value = Generics::Value, Context = Generics::Context>,
 {
     type Generics = Generics;
 
@@ -266,11 +264,13 @@ impl<T> Deref for RefWrapper<T> {
 }
 
 impl<
-        Generics: TemplateGenerics,
+        'a,
+        Key: Hash + Eq + PartialEq + Copy + 'a,
+        Generics: TemplateGenerics<Key = Key, Value = Key>,
         UpdateBehavior: TemplateSpawnerUpdateBehavior<Generics = Generics>,
     > TemplateSpawner<Generics, UpdateBehavior>
 {
-    pub fn update<'a>(
+    pub fn update(
         &'a mut self,
         values: impl Iterator<Item = Generics::Value>,
         context: &Generics::Context,
@@ -278,7 +278,7 @@ impl<
         self.update_with_getter(values.map(|x| RefWrapper(x)), |x| *x, context);
     }
 
-    pub fn update_ref<'a>(
+    pub fn update_ref(
         &'a mut self,
         values: impl Iterator<Item = &'a Generics::Value>,
         context: &Generics::Context,
