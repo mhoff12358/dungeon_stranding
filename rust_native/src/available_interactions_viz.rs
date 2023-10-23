@@ -9,7 +9,9 @@ use godot::{
 use crate::{
     game_state_viz::GameStateViz,
     in_dungeon_viz::InDungeonViz,
-    template_spawners::template_spawner::{TemplateControl, TemplateSpawner},
+    template_spawners::template_spawner::{
+        TemplateControl, TemplateGenerics, TemplateSpawner, UpdateSpawnedTemplate,
+    },
     tree_utils::walk_parents_for,
 };
 
@@ -69,6 +71,15 @@ impl ControlVirtual for AvailableInteractionViz {
     }
 }
 
+struct InteractionGenerics {}
+
+impl TemplateGenerics for InteractionGenerics {
+    type Key = Interaction;
+    type Value = Interaction;
+    type Context = ();
+    type TemplateType = AvailableInteractionViz;
+}
+
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct AvailableInteractionsViz {
@@ -77,7 +88,7 @@ pub struct AvailableInteractionsViz {
     #[export]
     interaction_template: Option<Gd<AvailableInteractionViz>>,
     interactions_spawner:
-        Option<TemplateSpawner<Interaction, Interaction, (), AvailableInteractionViz>>,
+        Option<TemplateSpawner<InteractionGenerics, UpdateSpawnedTemplate<InteractionGenerics>>>,
     #[base]
     base: Base<Control>,
 }

@@ -68,15 +68,36 @@ where
     }
 }
 
-pub struct TemplateSpawner<Key, Value, Context, TemplateType: GodotClass + Inherits<Node>>
-where
-    Key: Hash + Eq + PartialEq + Copy,
-{
+pub trait TemplateSpawnerUpdateBehavior {
+    type Generics: TemplateGenerics;
+
+    fn initialize(
+        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
+        value: &<Self::Generics as TemplateGenerics>::Value,
+        context: &<Self::Generics as TemplateGenerics>::Context,
+    );
+    fn place_after(
+        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
+        previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
+    );
+}
+
+pub trait TemplateGenerics {
+    type Key: Hash + Eq + PartialEq + Copy;
+    type Value;
+    type Context;
+    type TemplateType: GodotClass + Inherits<Node>;
+}
+
+pub struct TemplateSpawner<
+    Generics: TemplateGenerics,
+    UpdateBehavior: TemplateSpawnerUpdateBehavior<Generics = Generics>,
+> {
     parent: Gd<Node>,
     template: Gd<PackedScene>,
 
-    instantiated_templates: HashMap<Key, Gd<TemplateType>>,
-    phantom: PhantomData<(Value, Context)>,
+    instantiated_templates: HashMap<Generics::Key, Gd<Generics::TemplateType>>,
+    phantom: PhantomData<(Generics, UpdateBehavior)>,
 }
 
 pub trait TemplateSpawnerDefaultImplTrait {
@@ -88,22 +109,33 @@ pub trait TemplateSpawnerDefaultImplTrait {
     fn place_after(template: Gd<Self::TemplateType>, previous: &Option<Gd<Self::TemplateType>>);
 }
 
-impl<Key, Value: ToGodot, Context> TemplateSpawnerDefaultImplTrait
-    for TemplateSpawner<Key, Value, Context, Node>
+struct SignalsUpdate<Generics: TemplateGenerics>
 where
-    Key: Hash + Eq + PartialEq + Copy,
+    Generics::Value: ToGodot,
 {
-    type Value = Value;
-    type Context = ();
-    type TemplateType = Node;
+    _data: PhantomData<Generics>,
+}
 
-    fn initialize(template: Gd<Self::TemplateType>, value: &Self::Value, _context: &Self::Context) {
+impl<Generics: TemplateGenerics> TemplateSpawnerUpdateBehavior for SignalsUpdate<Generics>
+where
+    Generics::Value: ToGodot,
+{
+    type Generics = Generics;
+
+    fn initialize(
+        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
+        value: &<Self::Generics as TemplateGenerics>::Value,
+        _context: &<Self::Generics as TemplateGenerics>::Context,
+    ) {
         template
             .upcast::<Node>()
             .emit_signal("instantiate_template".into(), &[value.to_variant()]);
     }
 
-    fn place_after(template: Gd<Self::TemplateType>, previous: &Option<Gd<Self::TemplateType>>) {
+    fn place_after(
+        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
+        previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
+    ) {
         template.upcast::<Node>().emit_signal(
             "place_after".into(),
             &[if let Some(previous) = previous {
@@ -115,42 +147,42 @@ where
     }
 }
 
-impl<Key, Value, Context, TemplateType: Template<Value = Value, Context = Context>>
-    TemplateSpawnerDefaultImplTrait for TemplateSpawner<Key, Value, Context, TemplateType>
+pub struct UpdateSpawnedTemplate<Generics: TemplateGenerics>
 where
-    Key: Hash + Eq + PartialEq + Copy,
+    Generics::TemplateType: GodotClass + Inherits<Node>,
 {
-    type Value = Value;
-    type Context = Context;
-    type TemplateType = TemplateType;
+    _data: PhantomData<Generics>,
+}
+
+impl<
+        Generics: TemplateGenerics<TemplateType = TemplateType>,
+        TemplateType: GodotClass + Inherits<Node>,
+    > TemplateSpawnerUpdateBehavior for UpdateSpawnedTemplate<Generics>
+{
+    type Generics = Generics;
 
     fn initialize(
-        mut template: Gd<Self::TemplateType>,
-        value: &Self::Value,
-        context: &Self::Context,
+        mut template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
+        value: &<Self::Generics as TemplateGenerics>::Value,
+        context: &<Self::Generics as TemplateGenerics>::Context,
     ) {
         template.bind_mut().instantiate_template(value, context);
     }
 
     fn place_after(
-        mut template: Gd<Self::TemplateType>,
-        previous: &Option<Gd<Self::TemplateType>>,
+        mut template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
+        previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
     ) {
         template.bind_mut().place_after(previous);
     }
 }
 
-impl<Key, Value, Context, TemplateType: Inherits<Node>>
-    TemplateSpawner<Key, Value, Context, TemplateType>
-where
-    Key: Hash + Eq + PartialEq + Copy + Debug,
-    Self: TemplateSpawnerDefaultImplTrait<
-        TemplateType = TemplateType,
-        Context = Context,
-        Value = Value,
-    >,
+impl<
+        Generics: TemplateGenerics,
+        UpdateBehavior: TemplateSpawnerUpdateBehavior<Generics = Generics>,
+    > TemplateSpawner<Generics, UpdateBehavior>
 {
-    pub fn new(template: Gd<TemplateType>) -> Self {
+    pub fn new(template: Gd<Generics::TemplateType>) -> Self {
         let template = template.upcast();
         let mut parent = template.get_parent().unwrap();
         parent.remove_child(template.clone());
@@ -167,31 +199,31 @@ where
     fn instantiate_template(
         parent: &mut Gd<Node>,
         template: &Gd<PackedScene>,
-        context: &Context,
-        value: &Value,
-    ) -> Gd<TemplateType> {
-        let new_node: Gd<TemplateType> = template.instantiate().unwrap().cast();
+        context: &Generics::Context,
+        value: &Generics::Value,
+    ) -> Gd<Generics::TemplateType> {
+        let new_node: Gd<Generics::TemplateType> = template.instantiate().unwrap().cast();
         parent.add_child(new_node.clone().upcast());
-        Self::initialize(new_node.clone(), value, context);
+        UpdateBehavior::initialize(new_node.clone(), value, context);
         return new_node;
     }
 
     fn place_instantiated_template_after(
-        instantiated_template: &mut Gd<TemplateType>,
-        previous: &Option<Gd<TemplateType>>,
+        instantiated_template: &mut Gd<Generics::TemplateType>,
+        previous: &Option<Gd<Generics::TemplateType>>,
     ) {
-        Self::place_after(instantiated_template.clone(), previous);
+        UpdateBehavior::place_after(instantiated_template.clone(), previous);
     }
 
     pub fn update_with_getter<'a, GetKey>(
         &'a mut self,
-        values: impl Iterator<Item = impl Deref<Target = Value> + 'a> + 'a,
+        values: impl Iterator<Item = impl Deref<Target = Generics::Value> + 'a> + 'a,
         get_key: GetKey,
-        context: &Context,
+        context: &Generics::Context,
     ) where
-        GetKey: Fn(&Value) -> Key,
+        GetKey: Fn(&Generics::Value) -> Generics::Key,
     {
-        let mut unused_keys: HashSet<Key> =
+        let mut unused_keys: HashSet<Generics::Key> =
             self.instantiated_templates.keys().map(|key| *key).collect();
 
         let mut previous_node = None;
@@ -233,24 +265,23 @@ impl<T> Deref for RefWrapper<T> {
     }
 }
 
-impl<Value, Context, TemplateType: Inherits<Node>>
-    TemplateSpawner<Value, Value, Context, TemplateType>
-where
-    Value: Hash + Eq + PartialEq + Copy + Debug,
-    Self: TemplateSpawnerDefaultImplTrait<
-        TemplateType = TemplateType,
-        Value = Value,
-        Context = Context,
-    >,
+impl<
+        Generics: TemplateGenerics,
+        UpdateBehavior: TemplateSpawnerUpdateBehavior<Generics = Generics>,
+    > TemplateSpawner<Generics, UpdateBehavior>
 {
-    pub fn update<'a>(&'a mut self, values: impl Iterator<Item = Value>, context: &Context) {
+    pub fn update<'a>(
+        &'a mut self,
+        values: impl Iterator<Item = Generics::Value>,
+        context: &Generics::Context,
+    ) {
         self.update_with_getter(values.map(|x| RefWrapper(x)), |x| *x, context);
     }
 
     pub fn update_ref<'a>(
         &'a mut self,
-        values: impl Iterator<Item = &'a Value>,
-        context: &Context,
+        values: impl Iterator<Item = &'a Generics::Value>,
+        context: &Generics::Context,
     ) {
         self.update_with_getter(values, |x| *x, context);
     }

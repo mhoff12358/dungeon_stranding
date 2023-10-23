@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{marker::PhantomData, ops::Deref};
 
 use ds_lib::game_state::inventory::{Inventory, ItemInfo, UniqueItemId};
 use godot::{
@@ -6,7 +6,9 @@ use godot::{
     prelude::*,
 };
 
-use super::template_spawner::{Template, TemplateControl, TemplateSpawner};
+use super::template_spawner::{
+    Template, TemplateControl, TemplateGenerics, TemplateSpawner, UpdateSpawnedTemplate,
+};
 
 pub enum InventorySpawnerType {
     Gear,
@@ -79,11 +81,27 @@ impl ContextProvidesInventory for Inventory {
     }
 }
 
+struct InventoryGenerics<TemplateType: Template<Value = UniqueItemId>> {
+    _data: PhantomData<TemplateType>,
+}
+
+impl<TemplateType: Template<Value = UniqueItemId>> TemplateGenerics
+    for InventoryGenerics<TemplateType>
+{
+    type Key = UniqueItemId;
+    type Value = UniqueItemId;
+    type Context = TemplateType::Context;
+    type TemplateType = TemplateType;
+}
+
 pub struct InventoryTemplateSpawner<TemplateType: Template<Value = UniqueItemId>>
 where
     TemplateType::Context: ContextProvidesInventory,
 {
-    spawner: TemplateSpawner<UniqueItemId, UniqueItemId, TemplateType::Context, TemplateType>,
+    spawner: TemplateSpawner<
+        InventoryGenerics<TemplateType>,
+        UpdateSpawnedTemplate<InventoryGenerics<TemplateType>, TemplateType>,
+    >,
     spawner_type: InventorySpawnerType,
     //inventory: Option<Rc<RefCell<Inventory>>>,
 }

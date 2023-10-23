@@ -2,10 +2,10 @@ extends Control
 
 @export var follow_player: bool = true
 
-@export var map: TileMap
-@export var in_dungeon_viz: InDungeonViz
-@export var floor_viz: FloorViz
-@onready var game_state: GameStateViz = in_dungeon_viz.game_state()
+var map: TileMap
+var in_dungeon_viz: InDungeonViz
+var floor_viz: FloorLayoutViz
+var game_state: GameStateViz
 
 func scale_map(scale_modifier):
 	var cursor_position = self.get_local_mouse_position()		
@@ -70,6 +70,11 @@ func ensure_follow_player():
 
 
 func _ready():
+	var context = DiContext.get_nearest(self)
+	self.map = context.get_registered_node("TileMap")
+	self.in_dungeon_viz = context.get_registered_node("InDungeonViz")
+	self.floor_viz = context.get_registered_node("FloorLayoutViz")
+	self.game_state = in_dungeon_viz.game_state()
 	self.in_dungeon_viz.updated_state.connect(self._on_updated_state)
 
 func _on_updated_state():

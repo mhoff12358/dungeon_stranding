@@ -17,7 +17,9 @@ use owning_ref::{OwningHandle, OwningRef, OwningRefMut};
 use crate::{
     game_state_viz::{borrow_game_state, borrow_game_state_mut, GameStateViz},
     out_of_dungeon_viz::OutOfDungeonViz,
-    template_spawners::template_spawner::TemplateSpawner,
+    template_spawners::template_spawner::{
+        TemplateGenerics, TemplateSpawner, UpdateSpawnedTemplate,
+    },
     tree_utils::walk_parents_for,
 };
 
@@ -40,6 +42,15 @@ impl FromGodot for ShopId {
     }
 }
 
+struct ShopIdGenerics {}
+
+impl TemplateGenerics for ShopIdGenerics {
+    type Key = ShopId;
+    type Value = ShopId;
+    type Context = ();
+    type TemplateType = Node;
+}
+
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct ShopViz {
@@ -48,7 +59,8 @@ pub struct ShopViz {
 
     #[export]
     shop_item_template: Option<Gd<Control>>,
-    shop_item_templates: Option<RefCell<TemplateSpawner<ShopId, ShopId, (), Node>>>,
+    shop_item_templates:
+        Option<RefCell<TemplateSpawner<ShopIdGenerics, UpdateSpawnedTemplate<ShopIdGenerics>>>>,
 
     #[base]
     base: Base<Control>,

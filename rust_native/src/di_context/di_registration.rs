@@ -13,6 +13,9 @@ pub struct DiRegistration {
     #[export]
     remove_registration_object: bool,
 
+    #[export]
+    register_into_own_context: bool,
+
     #[base]
     base: Base<Node>,
 }
@@ -27,13 +30,19 @@ impl NodeVirtual for DiRegistration {
             id: "".into(),
             type_name: "".into(),
             remove_registration_object: false,
+            register_into_own_context: false,
             base,
         }
     }
 
     fn enter_tree(&mut self) {
         let parent = self.base.get_parent().unwrap();
-        if let Some(mut context) = DiContext::get_nearest_exclude_self(parent.clone()) {
+        let context = if self.register_into_own_context {
+            DiContext::get_nearest(parent.clone())
+        } else {
+            DiContext::get_nearest_exclude_self(parent.clone())
+        };
+        if let Some(mut context) = context {
             if self.type_name.chars_checked().is_empty() {
                 context
                     .bind_mut()

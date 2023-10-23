@@ -3,8 +3,10 @@ use std::ops::Deref;
 use ds_lib::{
     coord::Coord,
     dungeon_state::{
+        encounters::wandering_encounters::WanderingEncounterOdds,
         tile_entity::TileEntity,
         tile_state::{OpenType, SpecificTS, TileState},
+        zone::ZoneId,
     },
     game_state::game_state::InDungeon,
 };
@@ -13,15 +15,19 @@ use godot::{
     prelude::*,
 };
 
-use crate::{in_dungeon_viz::InDungeonViz, tree_utils::walk_parents_for};
+use crate::{
+    di_context::di_context::DiContext, in_dungeon_viz::InDungeonViz,
+    template_spawners::template_spawner::TemplateSpawner, tree_utils::walk_parents_for,
+};
 
 #[derive(GodotClass)]
-#[class(base=Control)]
+#[class(base=Node2D)]
 pub struct EncoutnerOddsViz {
     in_dungeon: Option<Gd<InDungeonViz>>,
 
+    //spawner: Option<TemplateSpawner<ZoneId, (ZoneId, WanderingEncounterOdds), (), Node2D>>,
     #[base]
-    base: Base<Control>,
+    base: Base<Node2D>,
 }
 
 #[godot_api]
@@ -33,11 +39,12 @@ impl EncoutnerOddsViz {
 }
 
 #[godot_api]
-impl ControlVirtual for EncoutnerOddsViz {
+impl Node2DVirtual for EncoutnerOddsViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             in_dungeon: None,
 
+            //spawner: None,
             base,
         }
     }
@@ -48,5 +55,10 @@ impl ControlVirtual for EncoutnerOddsViz {
             InDungeonViz::UPDATED_STATE_SIGNAL.into(),
             self.base.callable("_on_in_dungeon_updated"),
         );
+    }
+
+    fn ready(&mut self) {
+        let di_context = DiContext::get_nearest(self.base.clone().upcast()).unwrap();
+        let di_context = di_context.bind();
     }
 }

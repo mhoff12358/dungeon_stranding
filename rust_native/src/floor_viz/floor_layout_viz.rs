@@ -13,14 +13,15 @@ use godot::{
     prelude::*,
 };
 
-use crate::{in_dungeon_viz::InDungeonViz, tree_utils::walk_parents_for};
+use crate::{
+    di_context::di_context::DiContext, in_dungeon_viz::InDungeonViz, tree_utils::walk_parents_for,
+};
 
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct FloorLayoutViz {
     in_dungeon: Option<Gd<InDungeonViz>>,
 
-    #[export]
     tile_map: Option<Gd<TileMap>>,
     #[export]
     player: Option<Gd<Node2D>>,
@@ -204,5 +205,12 @@ impl ControlVirtual for FloorLayoutViz {
         self.campfire_entity_scene = Some(load(self.campfire_entity_scene_path.clone()));
         self.gold_entity_scene = Some(load(self.gold_entity_scene_path.clone()));
         self.chest_entity_scene = Some(load(self.chest_entity_scene_path.clone()));
+    }
+
+    fn ready(&mut self) {
+        let di_context = DiContext::get_nearest(self.base.clone().upcast()).unwrap();
+        let di_context = di_context.bind();
+
+        self.tile_map = Some(di_context.get_registered_node_template::<TileMap>("".into()));
     }
 }

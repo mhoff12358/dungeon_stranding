@@ -12,6 +12,7 @@ use godot::{
 };
 
 use crate::{
+    di_context::di_context::DiContext,
     game_state_viz::{borrow_game_state, GameStateViz},
     tree_utils::walk_parents_for,
 };
@@ -39,11 +40,8 @@ pub struct LootViz {
 
     ongoing_transfer: Option<OngoingInventoryTransfer>,
 
-    #[export]
     inventory_display_from: Option<Gd<TransferrableInventoryViz>>,
-    #[export]
     inventory_display_to: Option<Gd<TransferrableInventoryViz>>,
-    #[export]
     transfer_viz: Option<Gd<TransferViz>>,
 
     #[base]
@@ -249,5 +247,15 @@ impl ControlVirtual for LootViz {
             GameStateViz::PRE_UPDATED_STATE_SIGNAL.into(),
             self.base.callable("pre_updated"),
         );
+
+        let di_context = DiContext::get_nearest(self.base.clone().upcast()).unwrap();
+        let di_context = di_context.bind();
+
+        self.inventory_display_from =
+            Some(di_context.get_registered_node_template::<TransferrableInventoryViz>("to".into()));
+        self.inventory_display_to = Some(
+            di_context.get_registered_node_template::<TransferrableInventoryViz>("from".into()),
+        );
+        self.transfer_viz = Some(di_context.get_registered_node_template::<TransferViz>("".into()));
     }
 }

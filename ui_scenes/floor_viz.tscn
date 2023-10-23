@@ -1,0 +1,156 @@
+[gd_scene load_steps=11 format=3 uid="uid://c3maqbc4pu4a0"]
+
+[ext_resource type="Script" path="res://scripts/MapControls.gd" id="1_26tfx"]
+[ext_resource type="TileSet" uid="uid://de08x02s8201g" path="res://dungeon_tileset.tres" id="2_bwjmg"]
+[ext_resource type="Texture2D" uid="uid://bgruuywc6agcg" path="res://art_assets/Blue_witch/B_witch_idle.png" id="3_xmsba"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d8r8h"]
+atlas = ExtResource("3_xmsba")
+region = Rect2(0, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4di53"]
+atlas = ExtResource("3_xmsba")
+region = Rect2(0, 48, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_840vx"]
+atlas = ExtResource("3_xmsba")
+region = Rect2(0, 96, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rp4hd"]
+atlas = ExtResource("3_xmsba")
+region = Rect2(0, 144, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aqcyk"]
+atlas = ExtResource("3_xmsba")
+region = Rect2(0, 192, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fglww"]
+atlas = ExtResource("3_xmsba")
+region = Rect2(0, 240, 32, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xu6xp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d8r8h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4di53")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_840vx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rp4hd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aqcyk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fglww")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Floor" type="Control"]
+layout_mode = 3
+anchor_left = 0.3
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FloorLayoutViz" type="FloorLayoutViz" parent="." node_paths=PackedStringArray("player", "entities")]
+player = NodePath("MapControls/Node2D/TileMap/PlayerEntity")
+entities = NodePath("MapControls/Node2D/TileMap/Entities")
+wall_atlas_coord = Vector2i(6, 17)
+hallway_atlas_coord = Vector2i(1, 25)
+room_atlas_coord = Vector2i(8, 20)
+closed_door_atlas_coord = Vector2i(6, 39)
+open_door_atlas_coord = Vector2i(6, 38)
+stairs_up_atlas_coord = Vector2i(3, 36)
+stairs_down_atlas_coord = Vector2i(4, 36)
+body_entity_scene_path = "res://tile_entities/body/BodyEntity.tscn"
+campfire_entity_scene_path = "res://tile_entities/campfire/CampfireEntity.tscn"
+gold_entity_scene_path = "res://tile_entities/gold/GoldEntity.tscn"
+chest_entity_scene_path = "res://tile_entities/chest/ChestEntity.tscn"
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiContext" type="DiContext" parent="FloorLayoutViz"]
+
+[node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz"]
+register_into_own_context = true
+
+[node name="ColorRect" type="ColorRect" parent="FloorLayoutViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.109804, 0.109804, 0.109804, 1)
+
+[node name="MapControls" type="Control" parent="FloorLayoutViz"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_force_pass_scroll_events = false
+script = ExtResource("1_26tfx")
+
+[node name="Node2D" type="Node2D" parent="FloorLayoutViz/MapControls"]
+scale = Vector2(1.5, 1.5)
+
+[node name="TileMap" type="TileMap" parent="FloorLayoutViz/MapControls/Node2D"]
+tile_set = ExtResource("2_bwjmg")
+format = 2
+layer_0/tile_data = PackedInt32Array(655369, 0, 11, 720905, 0, 11, 786442, 0, 11, 851978, 0, 11, 917514, 0, 11, 983051, 0, 11, 1048587, 0, 11, 1114123, 0, 11, 1179660, 0, 11, 1245197, 0, 11, 1245198, 0, 11, 1245199, 0, 11, 1245200, 0, 11, 1179665, 0, 11, 1179666, 0, 11, 1179667, 0, 11, 1114132, 0, 11, 1048596, 0, 11, 983060, 0, 11, 917524, 0, 11, 851988, 0, 11, 786451, 0, 11, 720915, 0, 11, 655379, 0, 11, 589842, 0, 11, 524306, 0, 11, 458770, 0, 11, 393234, 0, 11, 327698, 0, 11, 262162, 0, 11, 262161, 0, 11, 262160, 0, 11, 262159, 0, 11, 262158, 0, 11, 262157, 0, 11, 262156, 0, 11, 262155, 0, 11, 262154, 0, 11, 262153, 0, 11, 327688, 0, 11, 393223, 0, 11, 458758, 0, 11, 524293, 0, 11, 589829, 0, 11, 655365, 0, 11, 720901, 0, 11, 786438, 0, 11, 851974, 0, 11, 917511, 0, 11, 983048, 0, 11, 983049, 0, 11, 1048586, 0, 11, 1048588, 0, 11, 1114125, 0, 11, 1114126, 0, 11, 1114127, 0, 11, 1114128, 0, 11, 1179668, 0, 11, 1179669, 0, 11, 1179670, 0, 11, 1179671, 0, 11, 1179672, 0, 11, 1114136, 0, 11, 1048600, 0, 11, 1048601, 0, 11, 983065, 0, 11, 917530, 0, 11, 851995, 0, 11, 786459, 0, 11, 720923, 0, 11, 655387, 0, 11, 655386, 0, 11, 589850, 0, 11, 589849, 0, 11, 524312, 0, 11, 524311, 0, 11, 458774, 0, 11, 458773, 0, 11, 393236, 0, 11, 393235, 0, 11, 327697, 0, 11, 327696, 0, 11, 0, 0, 11, 1, 0, 11, 65537, 0, 11, 65538, 0, 11, 131075, 0, 11, 196611, 0, 11, 196612, 0, 11)
+
+[node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz/MapControls/Node2D/TileMap"]
+
+[node name="Entities" type="Node2D" parent="FloorLayoutViz/MapControls/Node2D/TileMap"]
+
+[node name="PlayerEntity" type="Node2D" parent="FloorLayoutViz/MapControls/Node2D/TileMap"]
+
+[node name="Sprite" type="AnimatedSprite2D" parent="FloorLayoutViz/MapControls/Node2D/TileMap/PlayerEntity"]
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("SpriteFrames_xu6xp")
+
+[node name="EncounterOverlays" type="Node2D" parent="FloorLayoutViz/MapControls/Node2D/TileMap"]
+
+[node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOverlays"]
+id = "encounter_overlays"
+
+[node name="MapControlUI" type="Control" parent="FloorLayoutViz"]
+layout_mode = 1
+anchors_preset = 0
+offset_right = 300.0
+offset_bottom = 100.0
+
+[node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/MapControlUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.270588, 0.270588, 0.270588, 1)
+
+[node name="FollowPlayerCheckButton" type="CheckButton" parent="FloorLayoutViz/MapControlUI"]
+layout_mode = 0
+offset_right = 44.0
+offset_bottom = 24.0
+button_pressed = true
+text = "Follow player"
+
+[connection signal="toggled" from="FloorLayoutViz/MapControlUI/FollowPlayerCheckButton" to="FloorLayoutViz/MapControls" method="_on_follow_player_check_button_toggled"]

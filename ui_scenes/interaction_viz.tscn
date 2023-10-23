@@ -1,0 +1,354 @@
+[gd_scene load_steps=3 format=3 uid="uid://cx75p07psmnvu"]
+
+[ext_resource type="LabelSettings" uid="uid://br8gvbbjg2dej" path="res://ui_scenes/styles/interaction_label_settings.tres" id="1_abrw5"]
+[ext_resource type="PackedScene" uid="uid://dnev621h4psxf" path="res://transferrable_inventory_viz.tscn" id="2_vk6h8"]
+
+[node name="InteractionViz" type="InteractionViz"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiContext" type="DiContext" parent="."]
+
+[node name="SmallInteractions" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+
+[node name="CampViz" type="CampViz" parent="SmallInteractions"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/CampViz"]
+
+[node name="ColorRect" type="ColorRect" parent="SmallInteractions/CampViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.721569, 1, 1)
+
+[node name="Label" type="Label" parent="SmallInteractions/CampViz"]
+layout_mode = 0
+offset_left = 371.0
+offset_top = 145.997
+offset_right = 585.0
+offset_bottom = 190.997
+text = "Camp amount:"
+label_settings = ExtResource("1_abrw5")
+
+[node name="Amount" type="Label" parent="SmallInteractions/CampViz"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 208.997
+offset_right = 586.0
+offset_bottom = 253.997
+text = "0"
+label_settings = ExtResource("1_abrw5")
+horizontal_alignment = 1
+
+[node name="Decrease" type="Button" parent="SmallInteractions/CampViz"]
+layout_mode = 0
+offset_left = 306.0
+offset_top = 203.0
+offset_right = 347.0
+offset_bottom = 234.0
+scale = Vector2(2, 2)
+text = "<"
+
+[node name="Increase" type="Button" parent="SmallInteractions/CampViz"]
+layout_mode = 0
+offset_left = 576.0
+offset_top = 200.997
+offset_right = 617.0
+offset_bottom = 231.997
+scale = Vector2(2, 2)
+text = ">"
+
+[node name="Camp" type="Button" parent="SmallInteractions/CampViz"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 360.997
+offset_right = 320.0
+offset_bottom = 391.997
+scale = Vector2(2, 2)
+text = "Camp"
+
+[node name="Cancel" type="Button" parent="SmallInteractions/CampViz"]
+layout_mode = 0
+offset_left = 575.0
+offset_top = 357.997
+offset_right = 635.0
+offset_bottom = 388.997
+scale = Vector2(2, 2)
+text = "Cancel"
+
+[node name="DigViz" type="DigViz" parent="SmallInteractions"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DigViz"]
+
+[node name="ColorRect" type="ColorRect" parent="SmallInteractions/DigViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.721569, 1, 1)
+
+[node name="Label" type="Label" parent="SmallInteractions/DigViz"]
+layout_mode = 0
+offset_left = 275.0
+offset_top = 101.997
+offset_right = 662.0
+offset_bottom = 146.997
+text = "Pick a direction with WASD"
+label_settings = ExtResource("1_abrw5")
+
+[node name="Left" type="Button" parent="SmallInteractions/DigViz"]
+layout_mode = 0
+offset_left = 330.0
+offset_top = 262.997
+offset_right = 353.0
+offset_bottom = 293.997
+scale = Vector2(2, 2)
+text = "<-"
+
+[node name="Right" type="Button" parent="SmallInteractions/DigViz"]
+layout_mode = 0
+offset_left = 428.0
+offset_top = 263.997
+offset_right = 451.0
+offset_bottom = 294.997
+scale = Vector2(2, 2)
+text = "->"
+
+[node name="Up" type="Button" parent="SmallInteractions/DigViz"]
+layout_mode = 0
+offset_left = 380.0
+offset_top = 200.997
+offset_right = 403.0
+offset_bottom = 231.997
+scale = Vector2(2, 2)
+text = "^"
+
+[node name="Down" type="Button" parent="SmallInteractions/DigViz"]
+layout_mode = 0
+offset_left = 379.0
+offset_top = 331.997
+offset_right = 402.0
+offset_bottom = 362.997
+scale = Vector2(2, 2)
+text = "V
+"
+
+[node name="Cancel" type="Button" parent="SmallInteractions/DigViz"]
+layout_mode = 0
+offset_left = 550.0
+offset_top = 262.997
+offset_right = 573.0
+offset_bottom = 293.997
+scale = Vector2(2, 2)
+text = "Cancel"
+
+[node name="LootViz" type="LootViz" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="LootViz"]
+
+[node name="DiContext" type="DiContext" parent="LootViz"]
+
+[node name="ColorRect" type="ColorRect" parent="LootViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.811765, 0.815686, 1, 1)
+
+[node name="ToTransferrableInventoryViz" parent="LootViz" instance=ExtResource("2_vk6h8")]
+layout_mode = 1
+
+[node name="DiRegistration" type="DiRegistration" parent="LootViz/ToTransferrableInventoryViz"]
+id = "to"
+
+[node name="TransferAll" type="Button" parent="LootViz/ToTransferrableInventoryViz"]
+layout_mode = 0
+offset_left = 119.0
+offset_top = 999.993
+offset_right = 216.0
+offset_bottom = 1030.99
+text = "Transfer All"
+
+[node name="FromTransferrableInventoryViz" parent="LootViz" instance=ExtResource("2_vk6h8")]
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 1.0
+
+[node name="DiRegistration" type="DiRegistration" parent="LootViz/FromTransferrableInventoryViz"]
+id = "from"
+
+[node name="TransferAll" type="Button" parent="LootViz/FromTransferrableInventoryViz"]
+layout_mode = 0
+offset_left = 744.0
+offset_top = 1000.99
+offset_right = 841.0
+offset_bottom = 1031.99
+text = "Transfer All"
+
+[node name="TransferViz" type="TransferViz" parent="LootViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+
+[node name="DiRegistration" type="DiRegistration" parent="LootViz/TransferViz"]
+
+[node name="DiContext" type="DiContext" parent="LootViz/TransferViz"]
+verbose_logging_name = "TransferViz"
+
+[node name="ColorRect" type="ColorRect" parent="LootViz/TransferViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.839216, 1, 1)
+
+[node name="Title" type="Label" parent="LootViz/TransferViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.2
+anchor_right = 0.5
+anchor_bottom = 0.2
+grow_horizontal = 2
+text = "Transfer"
+label_settings = ExtResource("1_abrw5")
+
+[node name="DiRegistration" type="DiRegistration" parent="LootViz/TransferViz/Title"]
+id = "description"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LootViz/TransferViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.4
+anchor_right = 0.5
+anchor_bottom = 0.4
+grow_horizontal = 2
+
+[node name="Amount" type="Label" parent="LootViz/TransferViz/HBoxContainer"]
+layout_mode = 2
+text = "Amount:"
+label_settings = ExtResource("1_abrw5")
+
+[node name="AmountDisplay" type="Label" parent="LootViz/TransferViz/HBoxContainer"]
+layout_mode = 2
+text = "100"
+label_settings = ExtResource("1_abrw5")
+
+[node name="DiRegistration" type="DiRegistration" parent="LootViz/TransferViz/HBoxContainer/AmountDisplay"]
+id = "amount"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="LootViz/TransferViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.6
+anchor_right = 0.5
+anchor_bottom = 0.6
+grow_horizontal = 2
+
+[node name="Min" type="Label" parent="LootViz/TransferViz/HBoxContainer2"]
+layout_mode = 2
+text = "Min"
+label_settings = ExtResource("1_abrw5")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="DiRegistration" type="DiRegistration" parent="LootViz/TransferViz/HBoxContainer2/Min"]
+id = "min"
+
+[node name="SelectSlider" type="HSlider" parent="LootViz/TransferViz/HBoxContainer2"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="DiRegistration" type="DiRegistration" parent="LootViz/TransferViz/HBoxContainer2/SelectSlider"]
+type_name = "Slider"
+id = "slider"
+
+[node name="Max" type="Label" parent="LootViz/TransferViz/HBoxContainer2"]
+layout_mode = 2
+text = "Max"
+label_settings = ExtResource("1_abrw5")
+vertical_alignment = 1
+
+[node name="DiRegistration" type="DiRegistration" parent="LootViz/TransferViz/HBoxContainer2/Max"]
+id = "max"
+
+[node name="Accept" type="Button" parent="LootViz/TransferViz"]
+layout_mode = 0
+offset_left = 305.0
+offset_top = 422.997
+offset_right = 365.0
+offset_bottom = 453.997
+text = "Accept"
+
+[node name="Cancel" type="Button" parent="LootViz/TransferViz"]
+layout_mode = 0
+offset_left = 569.0
+offset_top = 423.997
+offset_right = 629.0
+offset_bottom = 454.997
+text = "Cancel"
+
+[node name="Finish" type="Button" parent="LootViz"]
+layout_mode = 0
+offset_left = 932.0
+offset_top = 990.993
+offset_right = 986.0
+offset_bottom = 1021.99
+text = "Finish"
+
+[connection signal="pressed" from="SmallInteractions/CampViz/Decrease" to="SmallInteractions/CampViz" method="change_amount"]
+[connection signal="pressed" from="SmallInteractions/CampViz/Increase" to="SmallInteractions/CampViz" method="change_amount"]
+[connection signal="pressed" from="SmallInteractions/CampViz/Camp" to="SmallInteractions/CampViz" method="camp"]
+[connection signal="pressed" from="SmallInteractions/CampViz/Cancel" to="SmallInteractions/CampViz" method="cancel"]
+[connection signal="pressed" from="SmallInteractions/DigViz/Left" to="SmallInteractions/DigViz" method="dig_left"]
+[connection signal="pressed" from="SmallInteractions/DigViz/Right" to="SmallInteractions/DigViz" method="dig_right"]
+[connection signal="pressed" from="SmallInteractions/DigViz/Up" to="SmallInteractions/DigViz" method="dig_up"]
+[connection signal="pressed" from="SmallInteractions/DigViz/Down" to="SmallInteractions/DigViz" method="dig_down"]
+[connection signal="pressed" from="SmallInteractions/DigViz/Cancel" to="SmallInteractions/DigViz" method="cancel"]
+[connection signal="pressed" from="LootViz/ToTransferrableInventoryViz/TransferAll" to="LootViz/ToTransferrableInventoryViz" method="transfer_all"]
+[connection signal="pressed" from="LootViz/FromTransferrableInventoryViz/TransferAll" to="LootViz/FromTransferrableInventoryViz" method="transfer_all"]
+[connection signal="value_changed" from="LootViz/TransferViz/HBoxContainer2/SelectSlider" to="LootViz/TransferViz" method="set_amount"]
+[connection signal="pressed" from="LootViz/TransferViz/Accept" to="LootViz/TransferViz" method="apply"]
+[connection signal="pressed" from="LootViz/TransferViz/Cancel" to="LootViz/TransferViz" method="cancel"]
+[connection signal="pressed" from="LootViz/Finish" to="LootViz" method="finish"]
