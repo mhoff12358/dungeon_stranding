@@ -9,8 +9,9 @@ use godot::{
 use crate::{
     game_state_viz::GameStateViz,
     in_dungeon_viz::InDungeonViz,
-    template_spawners::template_spawner::{
-        TemplateControl, TemplateGenerics, TemplateSpawner, UpdateSpawnedTemplate,
+    template_spawners::{
+        template_spawner::{TemplateControl, TemplateGenerics, TemplateSpawner},
+        update_behavior::UpdateSpawnedTemplate,
     },
     tree_utils::walk_parents_for,
 };

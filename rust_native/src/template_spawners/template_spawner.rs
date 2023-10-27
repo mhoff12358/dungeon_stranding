@@ -13,12 +13,19 @@ use godot::{
 
 use crate::packing::pack_node;
 
+use super::update_behavior::TemplateSpawnerUpdateBehavior;
+
 pub trait Template: GodotClass<Declarer = UserDomain> + Inherits<Node> + Sized {
     type Value;
     type Context;
 
     fn instantiate_template(&mut self, value: &Self::Value, context: &Self::Context);
-    fn place_after(&mut self, previous: &Option<Gd<Self>>);
+    fn place_after(
+        &mut self,
+        value: &Self::Value,
+        context: &Self::Context,
+        previous: &Option<Gd<Self>>,
+    );
 }
 
 pub trait TemplateControl:
@@ -43,7 +50,12 @@ where
         <T as TemplateControl>::instantiate_template(self, value, context);
     }
 
-    fn place_after(&mut self, previous: &Option<Gd<Self>>) {
+    fn place_after(
+        &mut self,
+        value: &Self::Value,
+        context: &Self::Context,
+        previous: &Option<Gd<Self>>,
+    ) {
         let top;
         if let Some(previous) = previous {
             let previous = previous.bind();
@@ -67,20 +79,6 @@ where
     }
 }
 
-pub trait TemplateSpawnerUpdateBehavior {
-    type Generics: TemplateGenerics;
-
-    fn initialize(
-        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
-        value: &<Self::Generics as TemplateGenerics>::Value,
-        context: &<Self::Generics as TemplateGenerics>::Context,
-    );
-    fn place_after(
-        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
-        previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
-    );
-}
-
 pub trait TemplateGenerics {
     type Key: Hash + Eq + PartialEq + Copy;
     type Value;
@@ -97,82 +95,6 @@ pub struct TemplateSpawner<
 
     instantiated_templates: HashMap<Generics::Key, Gd<Generics::TemplateType>>,
     phantom: PhantomData<(Generics, UpdateBehavior)>,
-}
-
-pub trait TemplateSpawnerDefaultImplTrait {
-    type Value;
-    type Context;
-    type TemplateType: GodotClass + Inherits<Node>;
-
-    fn initialize(template: Gd<Self::TemplateType>, value: &Self::Value, context: &Self::Context);
-    fn place_after(template: Gd<Self::TemplateType>, previous: &Option<Gd<Self::TemplateType>>);
-}
-
-pub struct SignalsUpdate<Generics: TemplateGenerics>
-where
-    Generics::Value: ToGodot,
-{
-    _data: PhantomData<Generics>,
-}
-
-impl<Generics: TemplateGenerics> TemplateSpawnerUpdateBehavior for SignalsUpdate<Generics>
-where
-    Generics::Value: ToGodot,
-{
-    type Generics = Generics;
-
-    fn initialize(
-        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
-        value: &<Self::Generics as TemplateGenerics>::Value,
-        _context: &<Self::Generics as TemplateGenerics>::Context,
-    ) {
-        template
-            .upcast::<Node>()
-            .emit_signal("instantiate_template".into(), &[value.to_variant()]);
-    }
-
-    fn place_after(
-        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
-        previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
-    ) {
-        template.upcast::<Node>().emit_signal(
-            "place_after".into(),
-            &[if let Some(previous) = previous {
-                previous.to_variant()
-            } else {
-                Variant::nil()
-            }],
-        );
-    }
-}
-
-pub struct UpdateSpawnedTemplate<Generics: TemplateGenerics>
-where
-    Generics::TemplateType: GodotClass + Inherits<Node>,
-{
-    _data: PhantomData<Generics>,
-}
-
-impl<Generics: TemplateGenerics> TemplateSpawnerUpdateBehavior for UpdateSpawnedTemplate<Generics>
-where
-    Generics::TemplateType: Template<Value = Generics::Value, Context = Generics::Context>,
-{
-    type Generics = Generics;
-
-    fn initialize(
-        mut template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
-        value: &<Self::Generics as TemplateGenerics>::Value,
-        context: &<Self::Generics as TemplateGenerics>::Context,
-    ) {
-        template.bind_mut().instantiate_template(value, context);
-    }
-
-    fn place_after(
-        mut template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
-        previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
-    ) {
-        template.bind_mut().place_after(previous);
-    }
 }
 
 impl<
@@ -208,9 +130,11 @@ impl<
 
     fn place_instantiated_template_after(
         instantiated_template: &mut Gd<Generics::TemplateType>,
+        context: &Generics::Context,
+        value: &Generics::Value,
         previous: &Option<Gd<Generics::TemplateType>>,
     ) {
-        UpdateBehavior::place_after(instantiated_template.clone(), previous);
+        UpdateBehavior::place_after(instantiated_template.clone(), value, context, previous);
     }
 
     pub fn update_with_getter<'a, GetKey>(
@@ -238,7 +162,12 @@ impl<
                 .clone();
             unused_keys.remove(&key);
 
-            Self::place_instantiated_template_after(&mut instantiated_template, &previous_node);
+            Self::place_instantiated_template_after(
+                &mut instantiated_template,
+                context,
+                &value,
+                &previous_node,
+            );
 
             previous_node = Some(instantiated_template);
         }

@@ -17,6 +17,8 @@ use crate::{
     di_context::di_context::DiContext, in_dungeon_viz::InDungeonViz, tree_utils::walk_parents_for,
 };
 
+use super::tile_spacing::TileSpacing;
+
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct FloorLayoutViz {
@@ -91,17 +93,7 @@ impl FloorLayoutViz {
             }
         }
 
-        let tile_size = self
-            .tile_map
-            .as_mut()
-            .unwrap()
-            .get_tileset()
-            .unwrap()
-            .get_tile_size();
-        let entity_position = |coord: &Coord| {
-            (Vector2::new(coord.x as f32, coord.y as f32) + Vector2::new(0.5, 0.5))
-                * Vector2::from_vector2i(tile_size)
-        };
+        let tile_spacing = TileSpacing::new(self.tile_map.as_ref().unwrap());
 
         let entities = self.entities.as_mut().unwrap();
         let entities_children = entities.get_children();
@@ -121,11 +113,11 @@ impl FloorLayoutViz {
             let entity = entity_scene.instantiate().unwrap();
             let mut entity2d: Gd<Node2D> = entity.clone().cast();
             entities.add_child(entity);
-            entity2d.set_position(entity_position(&coord));
+            entity2d.set_position(tile_spacing.entity_position(coord));
         }
 
         let player = self.player.as_mut().unwrap();
-        player.set_position(entity_position(&in_dungeon.player_position));
+        player.set_position(tile_spacing.entity_position(in_dungeon.player_position));
     }
 }
 

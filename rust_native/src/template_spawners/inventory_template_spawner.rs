@@ -6,8 +6,9 @@ use godot::{
     prelude::*,
 };
 
-use super::template_spawner::{
-    Template, TemplateControl, TemplateGenerics, TemplateSpawner, UpdateSpawnedTemplate,
+use super::{
+    template_spawner::{Template, TemplateControl, TemplateGenerics, TemplateSpawner},
+    update_behavior::UpdateSpawnedTemplate,
 };
 
 pub enum InventorySpawnerType {

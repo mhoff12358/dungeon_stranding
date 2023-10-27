@@ -17,7 +17,10 @@ use owning_ref::{OwningHandle, OwningRef, OwningRefMut};
 use crate::{
     game_state_viz::{borrow_game_state, borrow_game_state_mut, GameStateViz},
     out_of_dungeon_viz::OutOfDungeonViz,
-    template_spawners::template_spawner::{SignalsUpdate, TemplateGenerics, TemplateSpawner},
+    template_spawners::{
+        template_spawner::{TemplateGenerics, TemplateSpawner},
+        update_behavior::SignalsUpdate,
+    },
     tree_utils::walk_parents_for,
 };
 
