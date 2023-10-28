@@ -7,7 +7,8 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-godot = { path = "deps/gdextension/godot" }
+#godot = { path = "deps/gdextension/godot" }
+godot = { git = "https://github.com/godot-rust/gdext", branch = "master" }
 dungeon_stranding = { path = "deps/dungeon_stranding" }
 owning_ref = "*"
 num-derive = "*"

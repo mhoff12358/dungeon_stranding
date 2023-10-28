@@ -1,24 +1,17 @@
-use std::{cell::RefCell, ops::Deref};
-
 use ds_lib::{
     coord::Coord,
     dungeon_state::{
-        encounters::{encounter_risk::EncounterRisk, wandering_encounters::WanderingEncounterOdds},
-        floor_layout::FloorLayout,
-        tile_entity::TileEntity,
-        tile_state::{OpenType, SpecificTS, TileState},
+        encounters::wandering_encounters::WanderingEncounterOdds,
         zone::{Zone, ZoneId},
     },
-    game_state::game_state::InDungeon,
 };
 use godot::{
-    engine::{ColorRect, Control, ControlVirtual, TileMap},
+    engine::{ColorRect, TileMap},
     prelude::*,
 };
 
 use crate::{
     di_context::di_context::DiContext,
-    floor_viz::floor_layout_viz::FloorLayoutViz,
     in_dungeon_viz::InDungeonViz,
     template_spawners::{
         template_spawner::{TemplateGenerics, TemplateSpawner},
@@ -31,10 +24,15 @@ use super::tile_spacing::TileSpacing;
 
 pub struct WanderingEncounterOddsGenerics {}
 
+pub struct Context {
+    in_dungeon: Gd<InDungeonViz>,
+    tile_map: Gd<TileMap>,
+}
+
 impl TemplateGenerics for WanderingEncounterOddsGenerics {
     type Key = ZoneId;
     type Value = (ZoneId, WanderingEncounterOdds);
-    type Context = RefCell<Gd<EncounterOddsViz>>;
+    type Context = Context;
     type TemplateType = ColorRect;
 }
 
@@ -58,8 +56,35 @@ impl EncounterOddsViz {
         self.in_dungeon.as_ref().unwrap().clone()
     }
 
-    #[func]
-    pub fn _on_in_dungeon_updated(&mut self) {}
+    #[func(gd_self)]
+    pub fn _on_in_dungeon_updated(mut this: Gd<Self>) {
+        let mut self_ = this.bind_mut();
+        let zones_with_odds: Vec<_>;
+        {
+            let in_dungeon = self_.in_dungeon.as_ref().unwrap().bind();
+            let current_floor = in_dungeon.borrow_current_floor();
+            let zones = current_floor.layout().zones().keys().cloned();
+            zones_with_odds = zones
+                .map(|zone_id| {
+                    (
+                        zone_id,
+                        current_floor
+                            .wandering_encounters()
+                            .get_encounter_odds(zone_id),
+                    )
+                })
+                .collect();
+        }
+        let context = Context {
+            tile_map: self_.tile_map.clone().unwrap(),
+            in_dungeon: self_.in_dungeon.clone().unwrap(),
+        };
+        self_.spawner.as_mut().unwrap().update_with_getter(
+            zones_with_odds.iter(),
+            |x| x.0,
+            &context,
+        );
+    }
 }
 
 impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
@@ -67,14 +92,12 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
 
     fn initialize(
         mut template: Gd<ColorRect>,
-        value: &<Self::Generics as TemplateGenerics>::Value,
-        context: &RefCell<Gd<EncounterOddsViz>>,
+        value: &(ZoneId, WanderingEncounterOdds),
+        context: &Context,
     ) {
-        let mut self_ptr = context.borrow_mut();
-        let self_ = self_ptr.bind_mut();
-        let tile_spacing = TileSpacing::new(self_.tile_map.as_ref().unwrap());
+        let tile_spacing = TileSpacing::new(&context.tile_map);
 
-        let in_dungeon = self_.in_dungeon.as_ref().unwrap().bind();
+        let in_dungeon = context.in_dungeon.bind();
         let current_floor = in_dungeon.borrow_current_floor();
 
         let zones = current_floor.layout().zones();
@@ -100,24 +123,22 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
         mut template: Gd<ColorRect>,
         value: &<Self::Generics as TemplateGenerics>::Value,
         context: &<Self::Generics as TemplateGenerics>::Context,
-        previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
+        _previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
     ) {
-        let mut self_ptr = context.borrow_mut();
-        let self_ = self_ptr.bind_mut();
-
-        let in_dungeon = self_.in_dungeon.as_ref().unwrap().bind();
+        let in_dungeon = context.in_dungeon.bind();
         let current_floor = in_dungeon.borrow_current_floor();
 
         let wandering_encounters = current_floor.wandering_encounters();
 
-        let encounter_odds = wandering_encounters.get_encounter_odds(value.0);
+        let encounter_probability = wandering_encounters
+            .get_encounter_odds(value.0)
+            .combined_probability();
 
-        let amount = 0.5;
         template.set_color(Color::from_rgba(
-            f32::lerp(0.0, 1.0, amount),
-            f32::lerp(1.0, 0.0, amount),
+            f32::lerp(0.0, 1.0, encounter_probability),
+            f32::lerp(1.0, 0.0, encounter_probability),
             0.0,
-            0.2,
+            0.5,
         ));
     }
 }
@@ -136,10 +157,6 @@ impl Node2DVirtual for EncounterOddsViz {
 
     fn ready(&mut self) {
         self.in_dungeon = Some(walk_parents_for(&self.base));
-        self.in_dungeon.as_mut().unwrap().connect(
-            InDungeonViz::UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("_on_in_dungeon_updated"),
-        );
         self.in_dungeon.as_mut().unwrap().connect(
             InDungeonViz::UPDATED_STATE_SIGNAL.into(),
             self.base.callable("_on_in_dungeon_updated"),

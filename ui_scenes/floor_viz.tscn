@@ -126,10 +126,16 @@ layer_0/tile_data = PackedInt32Array(655369, 0, 11, 720905, 0, 11, 786442, 0, 11
 scale = Vector2(0.4, 0.4)
 sprite_frames = SubResource("SpriteFrames_xu6xp")
 
-[node name="EncounterOverlays" type="Node2D" parent="FloorLayoutViz/MapControls/Node2D/TileMap"]
+[node name="EncounterOddsViz" type="EncounterOddsViz" parent="FloorLayoutViz/MapControls/Node2D/TileMap"]
 
-[node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOverlays"]
-id = "encounter_overlays"
+[node name="DiContext" type="DiContext" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz"]
+
+[node name="Template" type="ColorRect" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz/Template"]
+id = "template"
 
 [node name="MapControlUI" type="Control" parent="FloorLayoutViz"]
 layout_mode = 1

@@ -52,8 +52,8 @@ where
 
     fn place_after(
         &mut self,
-        value: &Self::Value,
-        context: &Self::Context,
+        _value: &Self::Value,
+        _context: &Self::Context,
         previous: &Option<Gd<Self>>,
     ) {
         let top;
