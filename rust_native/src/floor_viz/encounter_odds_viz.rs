@@ -2,6 +2,7 @@ use ds_lib::{
     coord::Coord,
     dungeon_state::{
         encounters::wandering_encounters::WanderingEncounterOdds,
+        hallway::Hallway,
         zone::{Zone, ZoneId},
     },
 };
@@ -103,19 +104,29 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
         let zones = current_floor.layout().zones();
 
         let zone = zones.get(&value.0).unwrap();
+        let display_coord;
         match zone {
             Zone::Room { room, .. } => {
-                let room_center = Coord::new(
+                display_coord = Some(Coord::new(
                     (room.bounds.min.x + room.bounds.max.x) / 2,
                     (room.bounds.min.y + room.bounds.max.y) / 2,
-                );
+                ));
+            }
+            Zone::Hallway { hallway, zone } => {
+                if !hallway.coords.is_empty() {
+                    display_coord = Some(hallway.coords[0]);
+                } else {
+                    display_coord = None;
+                }
+            }
+        }
 
-                template.set_position(tile_spacing.entity_position(room_center));
-                template.set_size(Vector2::from_vector2i(tile_spacing.tile_size()));
-            }
-            _ => {
-                template.set_visible(false);
-            }
+        if let Some(display_coord) = display_coord {
+            let size = Vector2::from_vector2i(tile_spacing.tile_size());
+            template.set_position(tile_spacing.entity_position(display_coord) - size / 2.0);
+            template.set_size(size);
+        } else {
+            template.set_visible(false);
         }
     }
 
@@ -140,6 +151,9 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
             0.0,
             0.5,
         ));
+        if encounter_probability <= 0.0 {
+            template.set_visible(false);
+        }
     }
 }
 
