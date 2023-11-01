@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://c3maqbc4pu4a0"]
+[gd_scene load_steps=12 format=3 uid="uid://c3maqbc4pu4a0"]
 
 [ext_resource type="Script" path="res://scripts/MapControls.gd" id="1_26tfx"]
 [ext_resource type="TileSet" uid="uid://de08x02s8201g" path="res://dungeon_tileset.tres" id="2_bwjmg"]
 [ext_resource type="Texture2D" uid="uid://bgruuywc6agcg" path="res://art_assets/Blue_witch/B_witch_idle.png" id="3_xmsba"]
+[ext_resource type="Script" path="res://scripts/FoldableControl.gd" id="4_r6kku"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d8r8h"]
 atlas = ExtResource("3_xmsba")
@@ -131,19 +132,26 @@ sprite_frames = SubResource("SpriteFrames_xu6xp")
 [node name="DiContext" type="DiContext" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz"]
 
 [node name="Template" type="ColorRect" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz"]
-offset_right = 40.0
-offset_bottom = 40.0
 
 [node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz/Template"]
 id = "template"
 
-[node name="MapControlUI" type="Control" parent="FloorLayoutViz"]
-layout_mode = 1
+[node name="MapControlUI" type="Control" parent="FloorLayoutViz" node_paths=PackedStringArray("folded_version", "unfolded_version")]
+layout_mode = 2
+anchors_preset = 0
+offset_right = 282.0
+script = ExtResource("4_r6kku")
+folded = true
+folded_version = NodePath("Folded")
+unfolded_version = NodePath("Unfolded")
+
+[node name="Folded" type="Control" parent="FloorLayoutViz/MapControlUI"]
+layout_mode = 2
 anchors_preset = 0
 offset_right = 300.0
-offset_bottom = 100.0
+offset_bottom = 40.0
 
-[node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/MapControlUI"]
+[node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/MapControlUI/Folded"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -152,11 +160,60 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.270588, 0.270588, 0.270588, 1)
 
-[node name="FollowPlayerCheckButton" type="CheckButton" parent="FloorLayoutViz/MapControlUI"]
+[node name="Label" type="Label" parent="FloorLayoutViz/MapControlUI/Folded"]
 layout_mode = 0
-offset_right = 44.0
-offset_bottom = 24.0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Map Control UI"
+
+[node name="Button" type="Button" parent="FloorLayoutViz/MapControlUI/Folded"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -18.0
+grow_horizontal = 0
+grow_vertical = 2
+text = "  +  "
+
+[node name="Unfolded" type="Control" parent="FloorLayoutViz/MapControlUI"]
+visible = false
+layout_mode = 2
+anchors_preset = 0
+offset_right = 300.0
+offset_bottom = 100.0
+
+[node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/MapControlUI/Unfolded"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.270588, 0.270588, 0.270588, 1)
+
+[node name="FollowPlayerCheckButton" type="CheckButton" parent="FloorLayoutViz/MapControlUI/Unfolded"]
+layout_mode = 0
+offset_right = 151.0
+offset_bottom = 31.0
 button_pressed = true
 text = "Follow player"
 
-[connection signal="toggled" from="FloorLayoutViz/MapControlUI/FollowPlayerCheckButton" to="FloorLayoutViz/MapControls" method="_on_follow_player_check_button_toggled"]
+[node name="Button" type="Button" parent="FloorLayoutViz/MapControlUI/Unfolded"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -34.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "  -  "
+
+[node name="Extras" type="VBoxContainer" parent="FloorLayoutViz"]
+layout_mode = 1
+
+[connection signal="pressed" from="FloorLayoutViz/MapControlUI/Folded/Button" to="FloorLayoutViz/MapControlUI" method="set_is_folded" binds= [false]]
+[connection signal="toggled" from="FloorLayoutViz/MapControlUI/Unfolded/FollowPlayerCheckButton" to="FloorLayoutViz/MapControls" method="_on_follow_player_check_button_toggled"]
+[connection signal="pressed" from="FloorLayoutViz/MapControlUI/Unfolded/Button" to="FloorLayoutViz/MapControlUI" method="set_is_folded" binds= [true]]
