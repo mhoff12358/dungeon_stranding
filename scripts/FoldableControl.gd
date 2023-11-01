@@ -15,17 +15,20 @@ signal folded_changed(value: bool)
 func _ready():
 	self.handle_folded()
 
-func set_is_folded(value: bool):
-	self.folded = value
+func set_is_folded():
+	self.folded = true
 
-func get_children_size():
-	if self.folded:
-		return self.folded_version.get_rect().size
-	else:
-		return self.unfolded_version.get_rect().size
+func set_is_unfolded():
+	self.folded = false
 
 func set_size_from_children():
-	self.size = self.get_children_size()
+	var child = null
+	if self.folded:
+		child = self.folded_version
+	else:
+		child = self.unfolded_version
+	if child:
+		self.custom_minimum_size = child.get_rect().size
 
 func handle_folded():
 	print("Handling folded")
@@ -35,3 +38,4 @@ func handle_folded():
 	if self.unfolded_version != null:
 		self.unfolded_version.visible = !self.folded
 	self.folded_changed.emit(self.folded)
+	self.set_size_from_children()
