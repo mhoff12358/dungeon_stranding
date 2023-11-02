@@ -34,7 +34,7 @@ impl ShopItemViz {
     fn instantiate_template(&self, value: Variant);
 
     #[signal]
-    fn place_after(&self, previous: Variant);
+    fn update_template(&self, previous: Variant);
 
     #[func]
     fn _on_instantiate_template(&mut self, value: Variant) {
@@ -54,7 +54,7 @@ impl ShopItemViz {
     }
 
     #[func]
-    fn _on_place_after(&mut self, previous: Variant) {
+    fn _on_update_template(&mut self, previous: Variant) {
         let top;
         if previous.is_nil() {
             top = 0.0;
@@ -118,8 +118,8 @@ impl ControlVirtual for ShopItemViz {
             self.base.connect("instantiate_template".into(), callable);
         }
         {
-            let callable = self.base.callable("_on_place_after");
-            self.base.connect("place_after".into(), callable);
+            let callable = self.base.callable("_on_update_template");
+            self.base.connect("update_template".into(), callable);
         }
     }
 

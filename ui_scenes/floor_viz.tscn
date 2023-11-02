@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://c3maqbc4pu4a0"]
+[gd_scene load_steps=13 format=3 uid="uid://c3maqbc4pu4a0"]
 
 [ext_resource type="Script" path="res://scripts/MapControls.gd" id="1_26tfx"]
 [ext_resource type="TileSet" uid="uid://de08x02s8201g" path="res://dungeon_tileset.tres" id="2_bwjmg"]
 [ext_resource type="Texture2D" uid="uid://bgruuywc6agcg" path="res://art_assets/Blue_witch/B_witch_idle.png" id="3_xmsba"]
 [ext_resource type="Script" path="res://scripts/FoldableControl.gd" id="4_r6kku"]
+[ext_resource type="Script" path="res://scripts/FloorEncounterTemplate.gd" id="5_pfexk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d8r8h"]
 atlas = ExtResource("3_xmsba")
@@ -144,6 +145,7 @@ anchor_bottom = 1.0
 grow_vertical = 2
 
 [node name="MapControlUI" type="Control" parent="FloorLayoutViz/Extras" node_paths=PackedStringArray("folded_version", "unfolded_version")]
+custom_minimum_size = Vector2(300, 40)
 layout_mode = 2
 script = ExtResource("4_r6kku")
 folded = true
@@ -217,6 +219,7 @@ grow_horizontal = 0
 text = "  -  "
 
 [node name="EncountersUI" type="Control" parent="FloorLayoutViz/Extras" node_paths=PackedStringArray("folded_version", "unfolded_version")]
+custom_minimum_size = Vector2(300, 40)
 layout_mode = 2
 script = ExtResource("4_r6kku")
 folded = true
@@ -260,7 +263,7 @@ visible = false
 layout_mode = 2
 anchors_preset = 0
 offset_right = 300.0
-offset_bottom = 100.0
+offset_bottom = 250.0
 
 [node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded"]
 layout_mode = 1
@@ -271,6 +274,53 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.270588, 0.270588, 0.270588, 1)
 
+[node name="FloorEncountersViz" type="FloorEncountersViz" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiContext" type="DiContext" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded/FloorEncountersViz"]
+verbose_logging_name = "FloorEncounterViz"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded/FloorEncountersViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Template" type="HBoxContainer" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded/FloorEncountersViz/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+script = ExtResource("5_pfexk")
+
+[node name="DiContext" type="DiContext" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded/FloorEncountersViz/VBoxContainer/Template"]
+
+[node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded/FloorEncountersViz/VBoxContainer/Template"]
+type_name = "Control"
+id = "template"
+
+[node name="Name" type="Label" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded/FloorEncountersViz/VBoxContainer/Template"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.5
+text = "Some text"
+
+[node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded/FloorEncountersViz/VBoxContainer/Template/Name"]
+id = "name"
+
+[node name="Count" type="Label" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded/FloorEncountersViz/VBoxContainer/Template"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "2"
+
+[node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded/FloorEncountersViz/VBoxContainer/Template/Count"]
+id = "count"
+
 [node name="Button" type="Button" parent="FloorLayoutViz/Extras/EncountersUI/Unfolded"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 1
@@ -278,7 +328,8 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -34.0
-offset_bottom = 31.0
+offset_right = -3.05176e-05
+offset_bottom = 40.0
 grow_horizontal = 0
 text = "  -  "
 

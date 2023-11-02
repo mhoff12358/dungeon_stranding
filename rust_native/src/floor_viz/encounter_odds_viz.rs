@@ -130,7 +130,7 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
         }
     }
 
-    fn place_after(
+    fn update_template(
         mut template: Gd<ColorRect>,
         value: &<Self::Generics as TemplateGenerics>::Value,
         context: &<Self::Generics as TemplateGenerics>::Context,

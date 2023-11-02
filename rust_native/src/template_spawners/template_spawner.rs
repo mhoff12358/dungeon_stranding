@@ -20,7 +20,7 @@ pub trait Template: GodotClass<Declarer = UserDomain> + Inherits<Node> + Sized {
     type Context;
 
     fn instantiate_template(&mut self, value: &Self::Value, context: &Self::Context);
-    fn place_after(
+    fn update_template(
         &mut self,
         value: &Self::Value,
         context: &Self::Context,
@@ -50,7 +50,7 @@ where
         <T as TemplateControl>::instantiate_template(self, value, context);
     }
 
-    fn place_after(
+    fn update_template(
         &mut self,
         _value: &Self::Value,
         _context: &Self::Context,
@@ -80,7 +80,7 @@ where
 }
 
 pub trait TemplateGenerics {
-    type Key: Hash + Eq + PartialEq + Copy;
+    type Key: Hash + Eq + PartialEq + Clone;
     type Value;
     type Context;
     type TemplateType: GodotClass + Inherits<Node>;
@@ -134,7 +134,7 @@ impl<
         value: &Generics::Value,
         previous: &Option<Gd<Generics::TemplateType>>,
     ) {
-        UpdateBehavior::place_after(instantiated_template.clone(), value, context, previous);
+        UpdateBehavior::update_template(instantiated_template.clone(), value, context, previous);
     }
 
     pub fn update_with_getter<'a, GetKey>(
@@ -145,8 +145,11 @@ impl<
     ) where
         GetKey: Fn(&Generics::Value) -> Generics::Key,
     {
-        let mut unused_keys: HashSet<Generics::Key> =
-            self.instantiated_templates.keys().map(|key| *key).collect();
+        let mut unused_keys: HashSet<Generics::Key> = self
+            .instantiated_templates
+            .keys()
+            .map(|key| key.clone())
+            .collect();
 
         let mut previous_node = None;
 
@@ -157,7 +160,7 @@ impl<
             let key = (get_key)(&value);
             let mut instantiated_template = self
                 .instantiated_templates
-                .entry(key)
+                .entry(key.clone())
                 .or_insert_with(|| Self::instantiate_template(parent, template, context, &value))
                 .clone();
             unused_keys.remove(&key);

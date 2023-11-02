@@ -31,9 +31,7 @@ func set_size_from_children():
 		self.custom_minimum_size = child.get_rect().size
 
 func handle_folded():
-	print("Handling folded")
 	if self.folded_version != null:
-		print("Updating viz")
 		self.folded_version.visible = self.folded
 	if self.unfolded_version != null:
 		self.unfolded_version.visible = !self.folded

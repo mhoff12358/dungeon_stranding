@@ -12,12 +12,49 @@ pub trait TemplateSpawnerUpdateBehavior {
         value: &<Self::Generics as TemplateGenerics>::Value,
         context: &<Self::Generics as TemplateGenerics>::Context,
     );
-    fn place_after(
+    fn update_template(
         template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
         value: &<Self::Generics as TemplateGenerics>::Value,
         context: &<Self::Generics as TemplateGenerics>::Context,
         previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
     );
+}
+
+pub trait ValueTransformedSignals {
+    type Generics: TemplateGenerics;
+
+    fn transform_value(
+        context: &<Self::Generics as TemplateGenerics>::Context,
+        value: &<Self::Generics as TemplateGenerics>::Value,
+    ) -> Vec<Variant>;
+}
+
+impl<Transformed: ValueTransformedSignals> TemplateSpawnerUpdateBehavior for Transformed {
+    type Generics = <Transformed as ValueTransformedSignals>::Generics;
+
+    fn initialize(
+        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
+        value: &<Self::Generics as TemplateGenerics>::Value,
+        context: &<Self::Generics as TemplateGenerics>::Context,
+    ) {
+        template.upcast::<Node>().emit_signal(
+            "instantiate_template".into(),
+            Self::transform_value(context, value).as_slice(),
+        );
+    }
+
+    fn update_template(
+        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
+        value: &<Self::Generics as TemplateGenerics>::Value,
+        context: &<Self::Generics as TemplateGenerics>::Context,
+        previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
+    ) {
+        let mut args = vec![previous.to_variant()];
+        args.extend(Self::transform_value(context, value));
+        template
+            .upcast::<Node>()
+            .emit_signal("update_template".into(), args.as_slice());
+    }
 }
 
 pub struct SignalsUpdate<Generics: TemplateGenerics>
@@ -27,36 +64,17 @@ where
     _data: PhantomData<Generics>,
 }
 
-impl<Generics: TemplateGenerics> TemplateSpawnerUpdateBehavior for SignalsUpdate<Generics>
+impl<Generics: TemplateGenerics> ValueTransformedSignals for SignalsUpdate<Generics>
 where
     Generics::Value: ToGodot,
 {
     type Generics = Generics;
 
-    fn initialize(
-        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
+    fn transform_value(
+        context: &<Self::Generics as TemplateGenerics>::Context,
         value: &<Self::Generics as TemplateGenerics>::Value,
-        _context: &<Self::Generics as TemplateGenerics>::Context,
-    ) {
-        template
-            .upcast::<Node>()
-            .emit_signal("instantiate_template".into(), &[value.to_variant()]);
-    }
-
-    fn place_after(
-        template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
-        _value: &<Self::Generics as TemplateGenerics>::Value,
-        _context: &<Self::Generics as TemplateGenerics>::Context,
-        previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
-    ) {
-        template.upcast::<Node>().emit_signal(
-            "place_after".into(),
-            &[if let Some(previous) = previous {
-                previous.to_variant()
-            } else {
-                Variant::nil()
-            }],
-        );
+    ) -> Vec<Variant> {
+        return vec![value.to_variant()];
     }
 }
 
@@ -81,12 +99,14 @@ where
         template.bind_mut().instantiate_template(value, context);
     }
 
-    fn place_after(
+    fn update_template(
         mut template: Gd<<Self::Generics as TemplateGenerics>::TemplateType>,
         value: &<Self::Generics as TemplateGenerics>::Value,
         context: &<Self::Generics as TemplateGenerics>::Context,
         previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
     ) {
-        template.bind_mut().place_after(value, context, previous);
+        template
+            .bind_mut()
+            .update_template(value, context, previous);
     }
 }
