@@ -13,6 +13,7 @@ pub mod floor_viz;
 pub mod game_state_viz;
 pub mod in_dungeon_viz;
 pub mod interaction_viz;
+mod interactions_viz;
 pub mod inventory_viz;
 pub mod loot_viz;
 pub mod my_gd_ref;

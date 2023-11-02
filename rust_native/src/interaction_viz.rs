@@ -1,12 +1,20 @@
-use ds_lib::game_state::game_state::OngoingInteraction;
+use ds_lib::game_state::{
+    game_state::OngoingInteraction,
+    inputs::open_close_door_input::{DoorIntent, OpenCloseDoorInput},
+};
 use godot::{
     engine::{Control, ControlVirtual},
     prelude::*,
 };
 
 use crate::{
-    camp_viz::CampViz, di_context::di_context::DiContext, dig_viz::DigViz,
-    game_state_viz::GameStateViz, in_dungeon_viz::InDungeonViz, loot_viz::loot_viz::LootViz,
+    camp_viz::CampViz,
+    di_context::di_context::DiContext,
+    dig_viz::DigViz,
+    game_state_viz::GameStateViz,
+    in_dungeon_viz::InDungeonViz,
+    interactions_viz::direction_picker_viz::{DirectionPickerConfig, DirectionPickerViz},
+    loot_viz::loot_viz::LootViz,
     tree_utils::walk_parents_for,
 };
 
@@ -14,6 +22,7 @@ struct Visualizers {
     dig: Gd<DigViz>,
     camp: Gd<CampViz>,
     loot: Gd<LootViz>,
+    direction: Gd<DirectionPickerViz>,
 }
 
 #[derive(GodotClass)]
@@ -60,6 +69,23 @@ impl InteractionViz {
             OngoingInteraction::Loot(..) => {
                 self.viz.as_mut().unwrap().loot.bind_mut().updated();
             }
+            OngoingInteraction::OpenCloseDoor { open, directions } => {
+                let display_text = format!("{} a door", if *open { "open" } else { "close" });
+                let open = *open;
+                self.viz.as_mut().unwrap().direction.bind_mut().updated(
+                    display_text,
+                    DirectionPickerConfig {
+                        cancel_input: Some(OpenCloseDoorInput::cancel()),
+                        directed_input: Box::new(move |direction| {
+                            OpenCloseDoorInput::open_close(DoorIntent {
+                                open: open,
+                                direction: direction,
+                            })
+                        }),
+                        allowed_directions: directions.clone(),
+                    },
+                );
+            }
         }
     }
 }
@@ -92,6 +118,7 @@ impl ControlVirtual for InteractionViz {
             dig: context.get_registered_node_template("".into()),
             camp: context.get_registered_node_template("".into()),
             loot: context.get_registered_node_template("".into()),
+            direction: context.get_registered_node_template("".into()),
         });
     }
 }

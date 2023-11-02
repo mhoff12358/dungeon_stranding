@@ -40,60 +40,61 @@ color = Color(1, 0.721569, 1, 1)
 
 [node name="Label" type="Label" parent="SmallInteractions/CampViz"]
 layout_mode = 0
-offset_left = 371.0
-offset_top = 145.997
-offset_right = 585.0
-offset_bottom = 190.997
+offset_left = 192.0
+offset_top = 30.0
+offset_right = 406.0
+offset_bottom = 75.0
 text = "Camp amount:"
 label_settings = ExtResource("1_abrw5")
 
 [node name="Amount" type="Label" parent="SmallInteractions/CampViz"]
 layout_mode = 0
-offset_left = 372.0
-offset_top = 208.997
-offset_right = 586.0
-offset_bottom = 253.997
+offset_left = 193.0
+offset_top = 93.0
+offset_right = 407.0
+offset_bottom = 138.0
 text = "0"
 label_settings = ExtResource("1_abrw5")
 horizontal_alignment = 1
 
 [node name="Decrease" type="Button" parent="SmallInteractions/CampViz"]
 layout_mode = 0
-offset_left = 306.0
-offset_top = 203.0
-offset_right = 347.0
-offset_bottom = 234.0
+offset_left = 127.0
+offset_top = 87.003
+offset_right = 168.0
+offset_bottom = 118.003
 scale = Vector2(2, 2)
 text = "<"
 
 [node name="Increase" type="Button" parent="SmallInteractions/CampViz"]
 layout_mode = 0
-offset_left = 576.0
-offset_top = 200.997
-offset_right = 617.0
-offset_bottom = 231.997
+offset_left = 397.0
+offset_top = 85.0
+offset_right = 438.0
+offset_bottom = 116.0
 scale = Vector2(2, 2)
 text = ">"
 
 [node name="Camp" type="Button" parent="SmallInteractions/CampViz"]
 layout_mode = 0
-offset_left = 260.0
-offset_top = 360.997
-offset_right = 320.0
-offset_bottom = 391.997
+offset_left = 81.0
+offset_top = 245.0
+offset_right = 141.0
+offset_bottom = 276.0
 scale = Vector2(2, 2)
 text = "Camp"
 
 [node name="Cancel" type="Button" parent="SmallInteractions/CampViz"]
 layout_mode = 0
-offset_left = 575.0
-offset_top = 357.997
-offset_right = 635.0
-offset_bottom = 388.997
+offset_left = 396.0
+offset_top = 242.0
+offset_right = 456.0
+offset_bottom = 273.0
 scale = Vector2(2, 2)
 text = "Cancel"
 
 [node name="DigViz" type="DigViz" parent="SmallInteractions"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -167,7 +168,112 @@ offset_bottom = 293.997
 scale = Vector2(2, 2)
 text = "Cancel"
 
+[node name="DirectionPickerViz" type="DirectionPickerViz" parent="SmallInteractions"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiContext" type="DiContext" parent="SmallInteractions/DirectionPickerViz"]
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DirectionPickerViz"]
+
+[node name="ColorRect" type="ColorRect" parent="SmallInteractions/DirectionPickerViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.721569, 1, 1)
+
+[node name="Instructions" type="Label" parent="SmallInteractions/DirectionPickerViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_top = 60.0
+grow_horizontal = 2
+text = "Pick a direction with WASD"
+label_settings = ExtResource("1_abrw5")
+
+[node name="DisplayText" type="Label" parent="SmallInteractions/DirectionPickerViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_top = 20.0
+grow_horizontal = 2
+text = "Display Text"
+label_settings = ExtResource("1_abrw5")
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DirectionPickerViz/DisplayText"]
+
+[node name="Left" type="Button" parent="SmallInteractions/DirectionPickerViz"]
+layout_mode = 0
+offset_left = 122.0
+offset_top = 180.0
+offset_right = 145.0
+offset_bottom = 211.0
+scale = Vector2(2, 2)
+text = "<-"
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DirectionPickerViz/Left"]
+id = "left"
+
+[node name="Right" type="Button" parent="SmallInteractions/DirectionPickerViz"]
+layout_mode = 0
+offset_left = 220.0
+offset_top = 181.0
+offset_right = 243.0
+offset_bottom = 212.0
+scale = Vector2(2, 2)
+text = "->"
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DirectionPickerViz/Right"]
+id = "right"
+
+[node name="Up" type="Button" parent="SmallInteractions/DirectionPickerViz"]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 118.0
+offset_right = 195.0
+offset_bottom = 149.0
+scale = Vector2(2, 2)
+text = "^"
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DirectionPickerViz/Up"]
+id = "up"
+
+[node name="Down" type="Button" parent="SmallInteractions/DirectionPickerViz"]
+layout_mode = 0
+offset_left = 171.0
+offset_top = 249.0
+offset_right = 194.0
+offset_bottom = 280.0
+scale = Vector2(2, 2)
+text = "V
+"
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DirectionPickerViz/Down"]
+id = "down"
+
+[node name="Cancel" type="Button" parent="SmallInteractions/DirectionPickerViz"]
+layout_mode = 0
+offset_left = 342.0
+offset_top = 180.0
+offset_right = 402.0
+offset_bottom = 211.0
+scale = Vector2(2, 2)
+text = "Cancel"
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DirectionPickerViz/Cancel"]
+id = "cancel"
+
 [node name="LootViz" type="LootViz" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
