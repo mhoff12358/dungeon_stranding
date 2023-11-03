@@ -27,6 +27,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="DiContext" type="DiContext" parent="SmallInteractions/CampViz"]
+
 [node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/CampViz"]
 
 [node name="ColorRect" type="ColorRect" parent="SmallInteractions/CampViz"]
@@ -56,6 +58,8 @@ offset_bottom = 138.0
 text = "0"
 label_settings = ExtResource("1_abrw5")
 horizontal_alignment = 1
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/CampViz/Amount"]
 
 [node name="Decrease" type="Button" parent="SmallInteractions/CampViz"]
 layout_mode = 0
@@ -177,6 +181,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="DiContext" type="DiContext" parent="SmallInteractions/DirectionPickerViz"]
+verbose_logging_name = "DirectionPickerViz"
 
 [node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DirectionPickerViz"]
 
@@ -194,7 +199,10 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
+offset_left = -193.5
 offset_top = 60.0
+offset_right = 193.5
+offset_bottom = 105.0
 grow_horizontal = 2
 text = "Pick a direction with WASD"
 label_settings = ExtResource("1_abrw5")
@@ -443,8 +451,8 @@ offset_right = 986.0
 offset_bottom = 1021.99
 text = "Finish"
 
-[connection signal="pressed" from="SmallInteractions/CampViz/Decrease" to="SmallInteractions/CampViz" method="change_amount"]
-[connection signal="pressed" from="SmallInteractions/CampViz/Increase" to="SmallInteractions/CampViz" method="change_amount"]
+[connection signal="pressed" from="SmallInteractions/CampViz/Decrease" to="SmallInteractions/CampViz" method="change_amount" binds= [-10]]
+[connection signal="pressed" from="SmallInteractions/CampViz/Increase" to="SmallInteractions/CampViz" method="change_amount" binds= [10]]
 [connection signal="pressed" from="SmallInteractions/CampViz/Camp" to="SmallInteractions/CampViz" method="camp"]
 [connection signal="pressed" from="SmallInteractions/CampViz/Cancel" to="SmallInteractions/CampViz" method="cancel"]
 [connection signal="pressed" from="SmallInteractions/DigViz/Left" to="SmallInteractions/DigViz" method="dig_left"]

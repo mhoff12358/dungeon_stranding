@@ -4,7 +4,9 @@ use godot::{
     prelude::*,
 };
 
-use crate::{game_state_viz::GameStateViz, tree_utils::walk_parents_for};
+use crate::{
+    di_context::di_context::DiContext, game_state_viz::GameStateViz, tree_utils::walk_parents_for,
+};
 
 #[derive(GodotClass)]
 #[class(base=Control)]
@@ -13,7 +15,6 @@ pub struct CampViz {
 
     game_state: Option<Gd<GameStateViz>>,
 
-    #[export]
     amount_label: Option<Gd<Label>>,
 
     #[base]
@@ -79,5 +80,8 @@ impl ControlVirtual for CampViz {
             .as_mut()
             .unwrap()
             .connect("pre_updated_state".into(), self.base.callable("hide"));
+
+        let context = DiContext::get_nearest_bound(self.base.clone());
+        self.amount_label = Some(context.get_registered_node_template("".into()));
     }
 }
