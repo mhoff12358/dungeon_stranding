@@ -71,7 +71,7 @@ where
     type Generics = Generics;
 
     fn transform_value(
-        context: &<Self::Generics as TemplateGenerics>::Context,
+        _context: &<Self::Generics as TemplateGenerics>::Context,
         value: &<Self::Generics as TemplateGenerics>::Value,
     ) -> Vec<Variant> {
         return vec![value.to_variant()];

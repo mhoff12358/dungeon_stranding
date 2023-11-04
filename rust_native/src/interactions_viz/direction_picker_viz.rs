@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use ds_lib::{
     directions::{Directed, Direction, DIRECTIONS},
-    game_state::inputs::{dig_input::DigInput, game_state_input::GameStateInput},
+    game_state::inputs::game_state_input::GameStateInput,
 };
 use godot::{
     engine::{Button, Control, ControlVirtual, Label},

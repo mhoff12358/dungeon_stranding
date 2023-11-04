@@ -2,7 +2,6 @@ use ds_lib::{
     coord::Coord,
     dungeon_state::{
         encounters::wandering_encounters::WanderingEncounterOdds,
-        hallway::Hallway,
         zone::{Zone, ZoneId},
     },
 };
@@ -112,7 +111,7 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
                     (room.bounds.min.y + room.bounds.max.y) / 2,
                 ));
             }
-            Zone::Hallway { hallway, zone } => {
+            Zone::Hallway { hallway, .. } => {
                 if !hallway.coords.is_empty() {
                     display_coord = Some(hallway.coords[0]);
                 } else {
