@@ -37,7 +37,7 @@ impl TemplateControl for AvailableInteractionViz {
         self.label
             .as_mut()
             .unwrap()
-            .set_text(format!("{:?}", value).into());
+            .set_text(format!("{}", value.description()).into());
     }
 
     fn control(&self) -> &Self::Base {
