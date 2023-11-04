@@ -1,6 +1,7 @@
 use ds_lib::game_state::{
     game_state::OngoingInteraction,
     inputs::{
+        dig_input::DigInput,
         open_close_door_input::{OpenCloseDoorInput, OpenCloseDoorIntent},
         piton_input::{PitonDoorInput, PitonDoorIntent},
     },
@@ -14,7 +15,6 @@ use godot::{
 use crate::{
     camp_viz::CampViz,
     di_context::di_context::DiContext,
-    dig_viz::DigViz,
     game_state_viz::GameStateViz,
     in_dungeon_viz::InDungeonViz,
     interactions_viz::direction_picker_viz::{DirectionPickerConfig, DirectionPickerViz},
@@ -23,7 +23,6 @@ use crate::{
 };
 
 struct Visualizers {
-    dig: Gd<DigViz>,
     camp: Gd<CampViz>,
     loot: Gd<LootViz>,
     direction: Gd<DirectionPickerViz>,
@@ -64,8 +63,16 @@ impl InteractionViz {
             .unwrap()
             .unwrap_interaction();
         match interaction {
-            OngoingInteraction::Dig => {
-                self.viz.as_mut().unwrap().dig.bind_mut().updated();
+            OngoingInteraction::Dig { directions } => {
+                let display_text = format!("Dig through a wall");
+                self.viz.as_mut().unwrap().direction.bind_mut().updated(
+                    display_text,
+                    DirectionPickerConfig {
+                        cancel_input: Some(DigInput::cancel()),
+                        directed_input: Box::new(|direction| DigInput::do_dig(direction)),
+                        allowed_directions: directions.clone(),
+                    },
+                );
             }
             OngoingInteraction::Camp { amount } => {
                 self.viz.as_mut().unwrap().camp.bind_mut().updated(amount);
@@ -136,7 +143,6 @@ impl ControlVirtual for InteractionViz {
     fn ready(&mut self) {
         let context = DiContext::get_nearest_bound(self.base.clone());
         self.viz = Some(Visualizers {
-            dig: context.get_registered_node_template("".into()),
             camp: context.get_registered_node_template("".into()),
             loot: context.get_registered_node_template("".into()),
             direction: context.get_registered_node_template("".into()),

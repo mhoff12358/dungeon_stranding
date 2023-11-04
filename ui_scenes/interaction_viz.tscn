@@ -97,81 +97,6 @@ offset_bottom = 273.0
 scale = Vector2(2, 2)
 text = "Cancel"
 
-[node name="DigViz" type="DigViz" parent="SmallInteractions"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DigViz"]
-
-[node name="ColorRect" type="ColorRect" parent="SmallInteractions/DigViz"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(1, 0.721569, 1, 1)
-
-[node name="Label" type="Label" parent="SmallInteractions/DigViz"]
-layout_mode = 0
-offset_left = 275.0
-offset_top = 101.997
-offset_right = 662.0
-offset_bottom = 146.997
-text = "Pick a direction with WASD"
-label_settings = ExtResource("1_abrw5")
-
-[node name="Left" type="Button" parent="SmallInteractions/DigViz"]
-layout_mode = 0
-offset_left = 330.0
-offset_top = 262.997
-offset_right = 353.0
-offset_bottom = 293.997
-scale = Vector2(2, 2)
-text = "<-"
-
-[node name="Right" type="Button" parent="SmallInteractions/DigViz"]
-layout_mode = 0
-offset_left = 428.0
-offset_top = 263.997
-offset_right = 451.0
-offset_bottom = 294.997
-scale = Vector2(2, 2)
-text = "->"
-
-[node name="Up" type="Button" parent="SmallInteractions/DigViz"]
-layout_mode = 0
-offset_left = 380.0
-offset_top = 200.997
-offset_right = 403.0
-offset_bottom = 231.997
-scale = Vector2(2, 2)
-text = "^"
-
-[node name="Down" type="Button" parent="SmallInteractions/DigViz"]
-layout_mode = 0
-offset_left = 379.0
-offset_top = 331.997
-offset_right = 402.0
-offset_bottom = 362.997
-scale = Vector2(2, 2)
-text = "V
-"
-
-[node name="Cancel" type="Button" parent="SmallInteractions/DigViz"]
-layout_mode = 0
-offset_left = 550.0
-offset_top = 262.997
-offset_right = 573.0
-offset_bottom = 293.997
-scale = Vector2(2, 2)
-text = "Cancel"
-
 [node name="DirectionPickerViz" type="DirectionPickerViz" parent="SmallInteractions"]
 layout_mode = 1
 anchors_preset = 15
@@ -455,11 +380,6 @@ text = "Finish"
 [connection signal="pressed" from="SmallInteractions/CampViz/Increase" to="SmallInteractions/CampViz" method="change_amount" binds= [10]]
 [connection signal="pressed" from="SmallInteractions/CampViz/Camp" to="SmallInteractions/CampViz" method="camp"]
 [connection signal="pressed" from="SmallInteractions/CampViz/Cancel" to="SmallInteractions/CampViz" method="cancel"]
-[connection signal="pressed" from="SmallInteractions/DigViz/Left" to="SmallInteractions/DigViz" method="dig_left"]
-[connection signal="pressed" from="SmallInteractions/DigViz/Right" to="SmallInteractions/DigViz" method="dig_right"]
-[connection signal="pressed" from="SmallInteractions/DigViz/Up" to="SmallInteractions/DigViz" method="dig_up"]
-[connection signal="pressed" from="SmallInteractions/DigViz/Down" to="SmallInteractions/DigViz" method="dig_down"]
-[connection signal="pressed" from="SmallInteractions/DigViz/Cancel" to="SmallInteractions/DigViz" method="cancel"]
 [connection signal="pressed" from="LootViz/ToTransferrableInventoryViz/TransferAll" to="LootViz/ToTransferrableInventoryViz" method="transfer_all"]
 [connection signal="pressed" from="LootViz/FromTransferrableInventoryViz/TransferAll" to="LootViz/FromTransferrableInventoryViz" method="transfer_all"]
 [connection signal="value_changed" from="LootViz/TransferViz/HBoxContainer2/SelectSlider" to="LootViz/TransferViz" method="set_amount"]
