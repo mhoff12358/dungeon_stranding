@@ -13,11 +13,13 @@ use godot::{
 };
 
 use crate::{
-    camp_viz::CampViz,
     di_context::di_context::DiContext,
     game_state_viz::GameStateViz,
     in_dungeon_viz::InDungeonViz,
-    interactions_viz::direction_picker_viz::{DirectionPickerConfig, DirectionPickerViz},
+    interactions_viz::{
+        camp_viz::CampViz,
+        direction_picker_viz::{DirectionPickerConfig, DirectionPickerViz},
+    },
     loot_viz::loot_viz::LootViz,
     tree_utils::walk_parents_for,
 };
