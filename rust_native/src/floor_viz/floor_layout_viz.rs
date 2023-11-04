@@ -12,6 +12,7 @@ use godot::{
     engine::{Control, ControlVirtual, TileMap},
     prelude::*,
 };
+use smallvec::{smallvec, SmallVec};
 
 use crate::{
     di_context::di_context::DiContext, in_dungeon_viz::InDungeonViz, tree_utils::walk_parents_for,
@@ -41,9 +42,7 @@ pub struct FloorLayoutViz {
     #[export]
     open_door_atlas_coord: Vector2i,
     #[export]
-    closed_door_pitoned_atlas_coord: Vector2i,
-    #[export]
-    open_door_pitoned_atlas_coord: Vector2i,
+    door_pitoned_atlas_coord: Vector2i,
     #[export]
     stairs_up_atlas_coord: Vector2i,
     #[export]
@@ -83,17 +82,19 @@ impl FloorLayoutViz {
         for y in bounds.min.y..=bounds.max.y {
             for x in bounds.min.x..=bounds.max.x {
                 let tile_coord = Coord { x, y };
-                let atlas_coord = self.get_atlas_coord_for_tile(
+                let atlas_coords = self.get_atlas_coords_for_tile(
                     &in_dungeon,
                     &tile_coord,
                     floor.layout().tiles().get(&tile_coord),
                 );
                 let tile_map = self.tile_map.as_mut().unwrap();
-                tile_map
-                    .set_cell_ex(0, Vector2i { x, y })
-                    .source_id(0)
-                    .atlas_coords(atlas_coord)
-                    .done();
+                for (layer, atlas_coord) in atlas_coords.into_iter().enumerate() {
+                    tile_map
+                        .set_cell_ex(layer as i32, Vector2i { x, y })
+                        .source_id(0)
+                        .atlas_coords(atlas_coord)
+                        .done();
+                }
             }
         }
 
@@ -126,35 +127,39 @@ impl FloorLayoutViz {
 }
 
 impl FloorLayoutViz {
-    fn get_atlas_coord_for_tile(
+    fn get_atlas_coords_for_tile(
         &self,
         in_dungeon: &InDungeon,
         coord: &Coord,
         tile: Option<&TileState>,
-    ) -> Vector2i {
+    ) -> SmallVec<[Vector2i; 4]> {
         if tile.is_none() {
-            return -Vector2i::ONE;
+            return smallvec![-Vector2i::ONE];
         }
 
         let floor_layout = in_dungeon.get_current_floor().layout();
 
         if floor_layout.stairs().up == *coord {
-            return self.stairs_up_atlas_coord;
+            return smallvec![self.stairs_up_atlas_coord];
         } else if floor_layout.stairs().down == *coord {
-            return self.stairs_down_atlas_coord;
+            return smallvec![self.stairs_down_atlas_coord];
         }
 
         let tile = tile.unwrap();
         match &tile.specific {
-            SpecificTS::Filled => self.wall_atlas_coord,
-            SpecificTS::Open(OpenType::Hallway) => self.hallway_atlas_coord,
-            SpecificTS::Open(OpenType::Room) => self.room_atlas_coord,
+            SpecificTS::Filled => smallvec![self.wall_atlas_coord],
+            SpecificTS::Open(OpenType::Hallway) => smallvec![self.hallway_atlas_coord],
+            SpecificTS::Open(OpenType::Room) => smallvec![self.room_atlas_coord],
             SpecificTS::Door(state) => {
-                if state.open {
+                let mut door_sprites = smallvec![if state.open {
                     self.open_door_atlas_coord
                 } else {
                     self.closed_door_atlas_coord
+                }];
+                if state.pitoned {
+                    door_sprites.push(self.door_pitoned_atlas_coord);
                 }
+                door_sprites
             }
         }
     }
@@ -174,8 +179,7 @@ impl ControlVirtual for FloorLayoutViz {
             room_atlas_coord: -Vector2i::ONE,
             closed_door_atlas_coord: -Vector2i::ONE,
             open_door_atlas_coord: -Vector2i::ONE,
-            closed_door_pitoned_atlas_coord: -Vector2i::ONE,
-            open_door_pitoned_atlas_coord: -Vector2i::ONE,
+            door_pitoned_atlas_coord: -Vector2i::ONE,
             stairs_down_atlas_coord: -Vector2i::ONE,
             stairs_up_atlas_coord: -Vector2i::ONE,
 

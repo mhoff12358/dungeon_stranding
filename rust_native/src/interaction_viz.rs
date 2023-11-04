@@ -96,7 +96,7 @@ impl InteractionViz {
                 self.viz.as_mut().unwrap().direction.bind_mut().updated(
                     display_text,
                     DirectionPickerConfig {
-                        cancel_input: Some(OpenCloseDoorInput::cancel()),
+                        cancel_input: Some(PitonDoorInput::cancel()),
                         directed_input: Box::new(move |direction| {
                             PitonDoorInput::add_remove(PitonDoorIntent {
                                 insert: insert,

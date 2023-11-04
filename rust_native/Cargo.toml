@@ -13,6 +13,7 @@ dungeon_stranding = { path = "deps/dungeon_stranding" }
 owning_ref = "*"
 num-derive = "*"
 num-traits = "*"
+smallvec = "*"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 web-sys = { version = "*", features = ["console"] }
