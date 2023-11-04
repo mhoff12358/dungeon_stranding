@@ -1,6 +1,10 @@
 use ds_lib::game_state::{
     game_state::OngoingInteraction,
-    inputs::open_close_door_input::{DoorIntent, OpenCloseDoorInput},
+    inputs::{
+        open_close_door_input::{OpenCloseDoorInput, OpenCloseDoorIntent},
+        piton_input::{PitonDoorInput, PitonDoorIntent},
+    },
+    state_updates::interactions::{add_remove_description, opening_description},
 };
 use godot::{
     engine::{Control, ControlVirtual},
@@ -70,15 +74,32 @@ impl InteractionViz {
                 self.viz.as_mut().unwrap().loot.bind_mut().updated();
             }
             OngoingInteraction::OpenCloseDoor { open, directions } => {
-                let display_text = format!("{} a door", if *open { "open" } else { "close" });
+                let display_text = format!("{} a door", opening_description(*open));
                 let open = *open;
                 self.viz.as_mut().unwrap().direction.bind_mut().updated(
                     display_text,
                     DirectionPickerConfig {
                         cancel_input: Some(OpenCloseDoorInput::cancel()),
                         directed_input: Box::new(move |direction| {
-                            OpenCloseDoorInput::open_close(DoorIntent {
+                            OpenCloseDoorInput::open_close(OpenCloseDoorIntent {
                                 open: open,
+                                direction: direction,
+                            })
+                        }),
+                        allowed_directions: directions.clone(),
+                    },
+                );
+            }
+            OngoingInteraction::PitonDoor { insert, directions } => {
+                let display_text = format!("{} a door", add_remove_description(*insert));
+                let insert = *insert;
+                self.viz.as_mut().unwrap().direction.bind_mut().updated(
+                    display_text,
+                    DirectionPickerConfig {
+                        cancel_input: Some(OpenCloseDoorInput::cancel()),
+                        directed_input: Box::new(move |direction| {
+                            PitonDoorInput::add_remove(PitonDoorIntent {
+                                insert: insert,
                                 direction: direction,
                             })
                         }),

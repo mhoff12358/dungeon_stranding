@@ -41,6 +41,10 @@ pub struct FloorLayoutViz {
     #[export]
     open_door_atlas_coord: Vector2i,
     #[export]
+    closed_door_pitoned_atlas_coord: Vector2i,
+    #[export]
+    open_door_pitoned_atlas_coord: Vector2i,
+    #[export]
     stairs_up_atlas_coord: Vector2i,
     #[export]
     stairs_down_atlas_coord: Vector2i,
@@ -145,8 +149,8 @@ impl FloorLayoutViz {
             SpecificTS::Filled => self.wall_atlas_coord,
             SpecificTS::Open(OpenType::Hallway) => self.hallway_atlas_coord,
             SpecificTS::Open(OpenType::Room) => self.room_atlas_coord,
-            SpecificTS::Door { open } => {
-                if *open {
+            SpecificTS::Door(state) => {
+                if state.open {
                     self.open_door_atlas_coord
                 } else {
                     self.closed_door_atlas_coord
@@ -170,6 +174,8 @@ impl ControlVirtual for FloorLayoutViz {
             room_atlas_coord: -Vector2i::ONE,
             closed_door_atlas_coord: -Vector2i::ONE,
             open_door_atlas_coord: -Vector2i::ONE,
+            closed_door_pitoned_atlas_coord: -Vector2i::ONE,
+            open_door_pitoned_atlas_coord: -Vector2i::ONE,
             stairs_down_atlas_coord: -Vector2i::ONE,
             stairs_up_atlas_coord: -Vector2i::ONE,
 
