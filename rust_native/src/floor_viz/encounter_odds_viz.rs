@@ -1,7 +1,7 @@
 use ds_lib::{
     coord::Coord,
     dungeon_state::{
-        encounters::wandering_encounters::WanderingEncounterOdds,
+        encounters::wandering_encounter_odds::WanderingEncounterOdds,
         zone::{Zone, ZoneId},
     },
 };
