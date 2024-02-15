@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqolk6cjmw0ld"]
+
+[ext_resource type="PackedScene" uid="uid://cq4w6tw8i05y5" path="res://child_scene.tscn" id="1_galp1"]
+
+[node name="ParentScene" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 100.0
+offset_bottom = 200.0
+
+[node name="ChildScene" parent="." instance=ExtResource("1_galp1")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 237.0
+grow_horizontal = 2
+grow_vertical = 2
