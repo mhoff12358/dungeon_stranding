@@ -29,7 +29,7 @@ anchors_preset = 0
 offset_right = 345.0
 offset_bottom = 129.0
 script = ExtResource("1_kv1lh")
-bottom_margin = Vector2(0, 0.8)
+height = Vector2(0, 0.2)
 
 [node name="ColorRect" type="ColorRect" parent="Counts"]
 layout_mode = 1
@@ -94,7 +94,7 @@ offset_right = 345.0
 offset_bottom = 388.0
 script = ExtResource("1_kv1lh")
 top_margin = Vector2(0, 0.2)
-bottom_margin = Vector2(0, 0.4)
+height = Vector2(0, 0.4)
 
 [node name="ColorRect" type="ColorRect" parent="Gear"]
 layout_mode = 1
@@ -156,6 +156,7 @@ offset_right = 345.0
 offset_bottom = 648.0
 script = ExtResource("1_kv1lh")
 top_margin = Vector2(0, 0.6)
+height = Vector2(0, 0.4)
 
 [node name="ColorRect" type="ColorRect" parent="CombatEquipment"]
 layout_mode = 1
