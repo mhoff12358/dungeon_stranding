@@ -38,6 +38,11 @@ func _ready():
 	skip_layout = false
 	self.request_layout.call_deferred()
 
+	if reference_node:
+		reference_node.resized.connect(self.request_layout)
+	else:
+		self.get_parent().resized.connect(self.request_layout)
+
 func calc_values(size_vec:Vector2, proportions:Vector2):
 	return size_vec.dot(proportions)
 

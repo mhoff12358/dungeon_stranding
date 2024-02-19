@@ -1,0 +1,136 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnev621h4psxf"]
+
+[ext_resource type="Script" path="res://scripts/UIComponents/SubsceneSizeRemember.gd" id="1_qj4t0"]
+[ext_resource type="Script" path="res://scripts/UIComponents/RelativelyPlaced.gd" id="2_dbch2"]
+
+[node name="TransferrableInventoryViz" type="TransferrableInventoryViz"]
+offset_right = 960.0
+offset_bottom = 1080.0
+
+[node name="DiContext" type="DiContext" parent="."]
+
+[node name="SubsceneSizeRememberer" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_qj4t0")
+cached_size = Vector2(960, 1080)
+
+[node name="RelativelyPlaced" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 96.0
+offset_top = 96.0
+offset_right = 864.0
+offset_bottom = 984.0
+script = ExtResource("2_dbch2")
+left_margin = Vector2(0.1, 0)
+top_margin = Vector2(0.1, 0)
+width = Vector2(0.8, 0)
+height = Vector2(-0.2, 1)
+
+[node name="ColorRect" type="ColorRect" parent="RelativelyPlaced"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.105882, 0.105882, 0.188235, 1)
+
+[node name="Buttons" type="Control" parent="RelativelyPlaced"]
+anchors_preset = 0
+offset_top = 799.0
+offset_right = 768.0
+offset_bottom = 888.0
+script = ExtResource("2_dbch2")
+top_margin = Vector2(0, 0.9)
+height = Vector2(0, 0.1)
+
+[node name="Button" type="Button" parent="RelativelyPlaced/Buttons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.425
+anchor_top = 0.35
+anchor_right = 0.575
+anchor_bottom = 0.65
+grow_horizontal = 2
+grow_vertical = 2
+text = "Transfer All"
+
+[node name="Items" type="Control" parent="RelativelyPlaced"]
+anchors_preset = 0
+offset_right = 768.0
+offset_bottom = 799.0
+script = ExtResource("2_dbch2")
+height = Vector2(0, 0.9)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RelativelyPlaced/Items"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MoneyItem" type="HBoxContainer" parent="RelativelyPlaced/Items/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="RelativelyPlaced/Items/VBoxContainer/MoneyItem"]
+layout_mode = 2
+text = "Transfer"
+
+[node name="Money" type="Label" parent="RelativelyPlaced/Items/VBoxContainer/MoneyItem"]
+layout_mode = 2
+text = "Money"
+
+[node name="Amount" type="Label" parent="RelativelyPlaced/Items/VBoxContainer/MoneyItem"]
+layout_mode = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="RelativelyPlaced/Items/VBoxContainer/MoneyItem/Amount"]
+id = "money"
+
+[node name="FoodItem" type="HBoxContainer" parent="RelativelyPlaced/Items/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="RelativelyPlaced/Items/VBoxContainer/FoodItem"]
+layout_mode = 2
+text = "Transfer"
+
+[node name="Food" type="Label" parent="RelativelyPlaced/Items/VBoxContainer/FoodItem"]
+layout_mode = 2
+text = "Food"
+
+[node name="Amount" type="Label" parent="RelativelyPlaced/Items/VBoxContainer/FoodItem"]
+layout_mode = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="RelativelyPlaced/Items/VBoxContainer/FoodItem/Amount"]
+id = "food"
+
+[node name="TransferrableInventoryItemViz" type="TransferrableInventoryItemViz" parent="RelativelyPlaced/Items/VBoxContainer" node_paths=PackedStringArray("label")]
+label = NodePath("ItemTemplate/Description")
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="RelativelyPlaced/Items/VBoxContainer/TransferrableInventoryItemViz"]
+remove_registration_object = true
+
+[node name="ItemTemplate" type="HBoxContainer" parent="RelativelyPlaced/Items/VBoxContainer/TransferrableInventoryItemViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="RelativelyPlaced/Items/VBoxContainer/TransferrableInventoryItemViz/ItemTemplate"]
+layout_mode = 2
+text = "Transfer"
+
+[node name="Description" type="Label" parent="RelativelyPlaced/Items/VBoxContainer/TransferrableInventoryItemViz/ItemTemplate"]
+layout_mode = 2
+text = "Description"
+
+[connection signal="pressed" from="RelativelyPlaced/Buttons/Button" to="." method="transfer_all"]
+[connection signal="pressed" from="RelativelyPlaced/Items/VBoxContainer/MoneyItem/Button" to="." method="start_transfer_money"]
+[connection signal="pressed" from="RelativelyPlaced/Items/VBoxContainer/FoodItem/Button" to="." method="start_transfer_food"]
+[connection signal="pressed" from="RelativelyPlaced/Items/VBoxContainer/TransferrableInventoryItemViz/ItemTemplate/Button" to="RelativelyPlaced/Items/VBoxContainer/TransferrableInventoryItemViz" method="transfer"]

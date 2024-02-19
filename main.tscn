@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/GameState.gd" id="1_giily"]
 [ext_resource type="Script" path="res://scripts/out_of_dungeon_connections.gd" id="2_1rkja"]
-[ext_resource type="PackedScene" uid="uid://clxavgj2qp884" path="res://inventory_panel.tscn" id="3_ae7ji"]
+[ext_resource type="PackedScene" uid="uid://clxavgj2qp884" path="res://ui_scenes/inventory_panel.tscn" id="3_ae7ji"]
 [ext_resource type="Script" path="res://shop_connections.gd" id="7_xuray"]
 [ext_resource type="PackedScene" uid="uid://c3maqbc4pu4a0" path="res://ui_scenes/floor_viz.tscn" id="8_se2np"]
 [ext_resource type="Script" path="res://scripts/EnterTheDungeon.gd" id="9_cpnir"]

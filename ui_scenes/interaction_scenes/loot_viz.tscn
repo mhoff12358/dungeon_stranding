@@ -1,0 +1,201 @@
+[gd_scene load_steps=4 format=3 uid="uid://5prcal70avc1"]
+
+[ext_resource type="PackedScene" uid="uid://dnev621h4psxf" path="res://ui_scenes/transferrable_inventory_viz.tscn" id="1_7hou1"]
+[ext_resource type="LabelSettings" uid="uid://br8gvbbjg2dej" path="res://ui_scenes/styles/interaction_label_settings.tres" id="2_iyao1"]
+[ext_resource type="Script" path="res://scripts/UIComponents/RelativelyPlaced.gd" id="3_jw7y5"]
+
+[node name="LootViz" type="LootViz"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="."]
+
+[node name="DiContext" type="DiContext" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.811765, 0.815686, 1, 1)
+
+[node name="ToTransfer" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 960.0
+offset_bottom = 1080.0
+script = ExtResource("3_jw7y5")
+width = Vector2(0.5, 0)
+
+[node name="ToTransferrableInventoryViz2" parent="ToTransfer" instance=ExtResource("1_7hou1")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="ToTransfer/ToTransferrableInventoryViz2"]
+id = "to"
+
+[node name="FromTransfer" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 960.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("3_jw7y5")
+left_margin = Vector2(0.5, 0)
+width = Vector2(0.5, 0)
+
+[node name="FromTransferrableInventoryViz" parent="FromTransfer" instance=ExtResource("1_7hou1")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="FromTransfer/FromTransferrableInventoryViz"]
+id = "from"
+
+[node name="TransferViz" type="TransferViz" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+
+[node name="DiRegistration" type="DiRegistration" parent="TransferViz"]
+
+[node name="DiContext" type="DiContext" parent="TransferViz"]
+verbose_logging_name = "TransferViz"
+
+[node name="ColorRect" type="ColorRect" parent="TransferViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.839216, 1, 1)
+
+[node name="Title" type="Label" parent="TransferViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.2
+anchor_right = 0.5
+anchor_bottom = 0.2
+grow_horizontal = 2
+text = "Transfer"
+label_settings = ExtResource("2_iyao1")
+
+[node name="DiRegistration" type="DiRegistration" parent="TransferViz/Title"]
+id = "description"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TransferViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.4
+anchor_right = 0.5
+anchor_bottom = 0.4
+grow_horizontal = 2
+
+[node name="Amount" type="Label" parent="TransferViz/HBoxContainer"]
+layout_mode = 2
+text = "Amount:"
+label_settings = ExtResource("2_iyao1")
+
+[node name="AmountDisplay" type="Label" parent="TransferViz/HBoxContainer"]
+layout_mode = 2
+text = "100"
+label_settings = ExtResource("2_iyao1")
+
+[node name="DiRegistration" type="DiRegistration" parent="TransferViz/HBoxContainer/AmountDisplay"]
+id = "amount"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="TransferViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.6
+anchor_right = 0.5
+anchor_bottom = 0.6
+grow_horizontal = 2
+
+[node name="Min" type="Label" parent="TransferViz/HBoxContainer2"]
+layout_mode = 2
+text = "Min"
+label_settings = ExtResource("2_iyao1")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="DiRegistration" type="DiRegistration" parent="TransferViz/HBoxContainer2/Min"]
+id = "min"
+
+[node name="SelectSlider" type="HSlider" parent="TransferViz/HBoxContainer2"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="DiRegistration" type="DiRegistration" parent="TransferViz/HBoxContainer2/SelectSlider"]
+type_name = "Slider"
+id = "slider"
+
+[node name="Max" type="Label" parent="TransferViz/HBoxContainer2"]
+layout_mode = 2
+text = "Max"
+label_settings = ExtResource("2_iyao1")
+vertical_alignment = 1
+
+[node name="DiRegistration" type="DiRegistration" parent="TransferViz/HBoxContainer2/Max"]
+id = "max"
+
+[node name="ButtonRow" type="Control" parent="TransferViz"]
+anchors_preset = 0
+offset_top = 432.0
+offset_right = 960.0
+offset_bottom = 486.0
+script = ExtResource("3_jw7y5")
+top_margin = Vector2(0, 0.8)
+height = Vector2(0, 0.1)
+
+[node name="Accept" type="Button" parent="TransferViz/ButtonRow"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_right = 0.4
+anchor_bottom = 1.0
+text = "Accept"
+
+[node name="Cancel" type="Button" parent="TransferViz/ButtonRow"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_right = 0.75
+anchor_bottom = 1.0
+text = "Cancel"
+
+[node name="Finish" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.45
+anchor_top = 0.94
+anchor_right = 0.55
+anchor_bottom = 0.975
+text = "Finish"
+
+[connection signal="value_changed" from="TransferViz/HBoxContainer2/SelectSlider" to="TransferViz" method="set_amount"]
+[connection signal="pressed" from="TransferViz/ButtonRow/Accept" to="TransferViz" method="apply"]
+[connection signal="pressed" from="TransferViz/ButtonRow/Cancel" to="TransferViz" method="cancel"]
+[connection signal="pressed" from="Finish" to="." method="finish"]
