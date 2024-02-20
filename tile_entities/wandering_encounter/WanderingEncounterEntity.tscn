@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://crfwn7fnls78l"]
+
+[ext_resource type="PackedScene" uid="uid://c03ud0q6duxk5" path="res://tile_entities/ClippedEntity.tscn" id="1_si70g"]
+[ext_resource type="Texture2D" uid="uid://dn6a0jh7vjq4c" path="res://tile_entities/wandering_encounter/wandering_encounter.png" id="2_q8wks"]
+
+[node name="GoldEntity" type="Node2D"]
+
+[node name="DiContext" type="DiContext" parent="."]
+
+[node name="BodyEntity" parent="." instance=ExtResource("1_si70g")]
+
+[node name="ColorRect" type="ColorRect" parent="BodyEntity"]
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="DiRegistration" type="DiRegistration" parent="BodyEntity/ColorRect"]
+id = "background_color"
+
+[node name="Sprite2D" type="Sprite2D" parent="BodyEntity"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_q8wks")
+
+[node name="DiRegistration" type="DiRegistration" parent="BodyEntity/Sprite2D"]

@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://c3maqbc4pu4a0"]
+[gd_scene load_steps=14 format=3 uid="uid://c3maqbc4pu4a0"]
 
 [ext_resource type="Script" path="res://scripts/MapControls.gd" id="1_26tfx"]
 [ext_resource type="TileSet" uid="uid://de08x02s8201g" path="res://dungeon_tileset.tres" id="2_bwjmg"]
 [ext_resource type="Texture2D" uid="uid://bgruuywc6agcg" path="res://art_assets/Blue_witch/B_witch_idle.png" id="3_xmsba"]
+[ext_resource type="PackedScene" uid="uid://crfwn7fnls78l" path="res://tile_entities/wandering_encounter/WanderingEncounterEntity.tscn" id="4_3wjck"]
 [ext_resource type="Script" path="res://scripts/FoldableControl.gd" id="4_r6kku"]
 [ext_resource type="Script" path="res://scripts/FloorEncounterTemplate.gd" id="5_pfexk"]
 
@@ -136,9 +137,9 @@ sprite_frames = SubResource("SpriteFrames_xu6xp")
 
 [node name="DiContext" type="DiContext" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz"]
 
-[node name="Template" type="ColorRect" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz"]
+[node name="GoldEntity" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz" instance=ExtResource("4_3wjck")]
 
-[node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz/Template"]
+[node name="DiRegistration" type="DiRegistration" parent="FloorLayoutViz/MapControls/Node2D/TileMap/EncounterOddsViz/GoldEntity"]
 id = "template"
 
 [node name="Extras" type="VBoxContainer" parent="FloorLayoutViz"]

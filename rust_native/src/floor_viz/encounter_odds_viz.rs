@@ -6,7 +6,7 @@ use ds_lib::{
     },
 };
 use godot::{
-    engine::{ColorRect, TileMap},
+    engine::{ColorRect, Sprite2D, TileMap},
     prelude::*,
 };
 
@@ -33,7 +33,7 @@ impl TemplateGenerics for WanderingEncounterOddsGenerics {
     type Key = ZoneId;
     type Value = (ZoneId, WanderingEncounterOdds);
     type Context = Context;
-    type TemplateType = ColorRect;
+    type TemplateType = Node2D;
 }
 
 #[derive(GodotClass)]
@@ -91,7 +91,7 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
     type Generics = WanderingEncounterOddsGenerics;
 
     fn initialize(
-        mut template: Gd<ColorRect>,
+        mut template: Gd<Node2D>,
         value: &(ZoneId, WanderingEncounterOdds),
         context: &Context,
     ) {
@@ -121,16 +121,14 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
         }
 
         if let Some(display_coord) = display_coord {
-            let size = Vector2::from_vector2i(tile_spacing.tile_size());
-            template.set_position(tile_spacing.entity_position(display_coord) - size / 2.0);
-            template.set_size(size);
+            template.set_position(tile_spacing.entity_position(display_coord));
         } else {
             template.set_visible(false);
         }
     }
 
     fn update_template(
-        mut template: Gd<ColorRect>,
+        mut template: Gd<Node2D>,
         value: &<Self::Generics as TemplateGenerics>::Value,
         context: &<Self::Generics as TemplateGenerics>::Context,
         _previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,
@@ -144,15 +142,23 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
             .get_encounter_odds(value.0)
             .combined_probability();
 
-        template.set_color(Color::from_rgba(
+        let encounters_in_zone = wandering_encounters.get_encounters_in_zone(value.0);
+
+        let context = DiContext::get_nearest_bound(template);
+        let mut background_color: Gd<ColorRect> =
+            context.get_registered_node_template("background_color".into());
+        let mut sprite: Gd<Sprite2D> = context.get_registered_node_template("".into());
+
+        background_color.set_color(Color::from_rgba(
             f32::lerp(0.0, 1.0, encounter_probability),
             f32::lerp(1.0, 0.0, encounter_probability),
             0.0,
             0.5,
         ));
         if encounter_probability <= 0.0 {
-            template.set_visible(false);
+            background_color.set_visible(false);
         }
+        sprite.set_visible(encounters_in_zone.is_some());
     }
 }
 
@@ -177,7 +183,7 @@ impl Node2DVirtual for EncounterOddsViz {
 
         let di_context = DiContext::get_nearest(self.base.clone().upcast()).unwrap();
         let di_context = di_context.bind();
-        let template = di_context.get_registered_node_template::<ColorRect>("template".into());
+        let template = di_context.get_registered_node_template::<Node2D>("template".into());
         self.tile_map = Some(di_context.get_registered_node_template::<TileMap>("".into()));
         self.spawner = Some(TemplateSpawner::new(template));
     }
