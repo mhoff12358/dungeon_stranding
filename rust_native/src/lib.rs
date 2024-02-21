@@ -2,6 +2,8 @@ use godot::prelude::*;
 
 #[macro_use]
 pub mod godot_utils;
+#[macro_use]
+pub mod make_id_type;
 
 pub mod app;
 pub mod available_interactions_viz;

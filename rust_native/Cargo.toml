@@ -14,6 +14,7 @@ owning_ref = "*"
 num-derive = "*"
 num-traits = "*"
 smallvec = "*"
+paste = "*"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 web-sys = { version = "*", features = ["console"] }

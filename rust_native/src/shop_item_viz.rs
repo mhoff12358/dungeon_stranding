@@ -9,7 +9,7 @@ use owning_ref::OwningHandle;
 
 use crate::{
     my_gd_ref::MyGdRef,
-    shop_viz::{ShopId, ShopViz},
+    shop_viz::{ShopViz, UniqueItemIdGodot},
     tree_utils::walk_parents_for,
 };
 
@@ -18,7 +18,7 @@ use crate::{
 pub struct ShopItemViz {
     shop: Option<Gd<ShopViz>>,
 
-    shop_id: Option<ShopId>,
+    shop_id: Option<UniqueItemIdGodot>,
     #[export]
     item_name_label: Option<Gd<Label>>,
     #[export]
@@ -38,11 +38,11 @@ impl ShopItemViz {
 
     #[func]
     fn _on_instantiate_template(&mut self, value: Variant) {
-        let shop_id: ShopId;
+        let shop_id: UniqueItemIdGodot;
         let item_text: GodotString;
         let price_text: GodotString;
         {
-            shop_id = ShopId::from_variant(&value);
+            shop_id = UniqueItemIdGodot::from_variant(&value);
             let shop = self.shop();
             let item = shop.get_item(&shop_id.0).unwrap();
             item_text = item.item.name().into();
@@ -78,7 +78,7 @@ impl ShopItemViz {
     #[func(gd_self)]
     fn buy_item(this: Gd<Self>) {
         let shop: Gd<ShopViz>;
-        let item_to_buy: ShopId;
+        let item_to_buy: UniqueItemIdGodot;
         {
             let _self = this.bind();
             shop = _self.shop.as_ref().unwrap().clone();

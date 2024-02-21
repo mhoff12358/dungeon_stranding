@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cx75p07psmnvu"]
+[gd_scene load_steps=5 format=3 uid="uid://cx75p07psmnvu"]
 
 [ext_resource type="LabelSettings" uid="uid://br8gvbbjg2dej" path="res://ui_scenes/styles/interaction_label_settings.tres" id="1_abrw5"]
 [ext_resource type="Script" path="res://scripts/UIComponents/RelativelyPlaced.gd" id="2_rcqxo"]
 [ext_resource type="PackedScene" uid="uid://5prcal70avc1" path="res://ui_scenes/interaction_scenes/loot_viz.tscn" id="2_yssc6"]
+[ext_resource type="LabelSettings" uid="uid://c842tflm3t8nf" path="res://ui_scenes/styles/interaction_contents_settings.tres" id="3_bgcuo"]
 
 [node name="InteractionViz" type="InteractionViz"]
 anchors_preset = 15
@@ -235,6 +236,123 @@ text = "Cancel"
 [node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/DirectionPickerViz/Buttons/Cancel/Cancel"]
 id = "cancel"
 
+[node name="ScoutViz" type="ScoutViz" parent="SmallInteractions"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiContext" type="DiContext" parent="SmallInteractions/ScoutViz"]
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/ScoutViz"]
+
+[node name="ColorRect" type="ColorRect" parent="SmallInteractions/ScoutViz"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.721569, 1, 1)
+
+[node name="Encounters" type="Label" parent="SmallInteractions/ScoutViz"]
+layout_mode = 0
+offset_left = 380.0
+offset_top = 23.0
+offset_right = 594.0
+offset_bottom = 68.0
+text = "Encounters:"
+label_settings = ExtResource("1_abrw5")
+
+[node name="Cancel" type="Button" parent="SmallInteractions/ScoutViz"]
+layout_mode = 0
+offset_left = 794.0
+offset_top = 28.0
+offset_right = 854.0
+offset_bottom = 59.0
+scale = Vector2(2, 2)
+text = "Cancel"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SmallInteractions/ScoutViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.2
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColumnLabels" type="Control" parent="SmallInteractions/ScoutViz/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="SmallInteractions/ScoutViz/VBoxContainer/ColumnLabels"]
+layout_mode = 2
+offset_right = 194.0
+offset_bottom = 34.0
+text = "Encounter Name"
+label_settings = ExtResource("3_bgcuo")
+
+[node name="Distance" type="Label" parent="SmallInteractions/ScoutViz/VBoxContainer/ColumnLabels"]
+layout_mode = 2
+offset_left = 400.0
+offset_right = 501.0
+offset_bottom = 34.0
+text = "Distance"
+label_settings = ExtResource("3_bgcuo")
+
+[node name="Id" type="Label" parent="SmallInteractions/ScoutViz/VBoxContainer/ColumnLabels"]
+layout_mode = 2
+offset_left = 550.0
+offset_right = 572.0
+offset_bottom = 34.0
+text = "Id"
+label_settings = ExtResource("3_bgcuo")
+
+[node name="TemplateEncounterInfo" type="Control" parent="SmallInteractions/ScoutViz/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="DiContext" type="DiContext" parent="SmallInteractions/ScoutViz/VBoxContainer/TemplateEncounterInfo"]
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/ScoutViz/VBoxContainer/TemplateEncounterInfo"]
+id = "template"
+
+[node name="Name" type="Label" parent="SmallInteractions/ScoutViz/VBoxContainer/TemplateEncounterInfo"]
+layout_mode = 2
+offset_right = 1.0
+offset_bottom = 23.0
+text = "Encounter Name"
+label_settings = ExtResource("3_bgcuo")
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/ScoutViz/VBoxContainer/TemplateEncounterInfo/Name"]
+id = "name"
+
+[node name="Distance" type="Label" parent="SmallInteractions/ScoutViz/VBoxContainer/TemplateEncounterInfo"]
+layout_mode = 2
+offset_left = 400.0
+offset_right = 428.0
+offset_bottom = 34.0
+text = "10"
+label_settings = ExtResource("3_bgcuo")
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/ScoutViz/VBoxContainer/TemplateEncounterInfo/Distance"]
+id = "distance"
+
+[node name="Id" type="Label" parent="SmallInteractions/ScoutViz/VBoxContainer/TemplateEncounterInfo"]
+layout_mode = 2
+offset_left = 550.0
+offset_right = 564.0
+offset_bottom = 34.0
+text = "0"
+label_settings = ExtResource("3_bgcuo")
+
+[node name="DiRegistration" type="DiRegistration" parent="SmallInteractions/ScoutViz/VBoxContainer/TemplateEncounterInfo/Id"]
+id = "id"
+
 [node name="LootViz" parent="." instance=ExtResource("2_yssc6")]
 visible = false
 layout_mode = 1
@@ -243,3 +361,4 @@ layout_mode = 1
 [connection signal="pressed" from="SmallInteractions/CampViz/Increase" to="SmallInteractions/CampViz" method="change_amount" binds= [10]]
 [connection signal="pressed" from="SmallInteractions/CampViz/Camp" to="SmallInteractions/CampViz" method="camp"]
 [connection signal="pressed" from="SmallInteractions/CampViz/Cancel" to="SmallInteractions/CampViz" method="cancel"]
+[connection signal="pressed" from="SmallInteractions/ScoutViz/Cancel" to="SmallInteractions/ScoutViz" method="cancel"]

@@ -24,30 +24,13 @@ use crate::{
     tree_utils::walk_parents_for,
 };
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
-pub struct ShopId(pub UniqueItemId);
-
-impl GodotConvert for ShopId {
-    type Via = u32;
-}
-
-impl ToGodot for ShopId {
-    fn to_godot(&self) -> Self::Via {
-        self.0 .0
-    }
-}
-
-impl FromGodot for ShopId {
-    fn try_from_godot(via: Self::Via) -> Option<Self> {
-        Some(ShopId(UniqueItemId(via)))
-    }
-}
+make_id_type!(UniqueItemId);
 
 struct ShopIdGenerics {}
 
 impl TemplateGenerics for ShopIdGenerics {
-    type Key = ShopId;
-    type Value = ShopId;
+    type Key = UniqueItemIdGodot;
+    type Value = UniqueItemIdGodot;
     type Context = ();
     type TemplateType = Node;
 }
@@ -90,7 +73,7 @@ impl ShopViz {
         )
     }
 
-    pub fn buy_item(mut shop_viz: Gd<ShopViz>, item_to_buy: ShopId) {
+    pub fn buy_item(mut shop_viz: Gd<ShopViz>, item_to_buy: UniqueItemIdGodot) {
         let game_state: Gd<GameStateViz>;
         {
             let _self = shop_viz.bind_mut();
@@ -121,7 +104,10 @@ impl ShopViz {
             .as_ref()
             .unwrap()
             .borrow_mut()
-            .update(shop.display_order().iter().map(|x| ShopId(*x)), &());
+            .update(
+                shop.display_order().iter().map(|x| UniqueItemIdGodot(*x)),
+                &(),
+            );
     }
 
     #[func(gd_self)]

@@ -128,7 +128,7 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
     }
 
     fn update_template(
-        mut template: Gd<Node2D>,
+        template: Gd<Node2D>,
         value: &<Self::Generics as TemplateGenerics>::Value,
         context: &<Self::Generics as TemplateGenerics>::Context,
         _previous: &Option<Gd<<Self::Generics as TemplateGenerics>::TemplateType>>,

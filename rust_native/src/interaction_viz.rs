@@ -19,6 +19,7 @@ use crate::{
     interactions_viz::{
         camp_viz::CampViz,
         direction_picker_viz::{DirectionPickerConfig, DirectionPickerViz},
+        scout_viz::ScoutViz,
     },
     loot_viz::loot_viz::LootViz,
     tree_utils::walk_parents_for,
@@ -28,6 +29,7 @@ struct Visualizers {
     camp: Gd<CampViz>,
     loot: Gd<LootViz>,
     direction: Gd<DirectionPickerViz>,
+    scout: Gd<ScoutViz>,
 }
 
 #[derive(GodotClass)]
@@ -116,6 +118,9 @@ impl InteractionViz {
                     },
                 );
             }
+            OngoingInteraction::ScoutMonsters { results } => {
+                self.viz.as_mut().unwrap().scout.bind_mut().updated(results);
+            }
         }
     }
 }
@@ -148,6 +153,7 @@ impl ControlVirtual for InteractionViz {
             camp: context.get_registered_node_template("".into()),
             loot: context.get_registered_node_template("".into()),
             direction: context.get_registered_node_template("".into()),
+            scout: context.get_registered_node_template("".into()),
         });
     }
 }

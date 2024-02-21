@@ -728,6 +728,7 @@ dependencies = [
  "num-derive",
  "num-traits",
  "owning_ref",
+ "paste",
  "smallvec",
  "web-sys",
 ]
