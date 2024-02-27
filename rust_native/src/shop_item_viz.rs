@@ -33,7 +33,7 @@ impl ShopItemViz {
     fn instantiate_template(&self, value: Variant);
 
     #[signal]
-    fn update_template(&self, previous: Variant);
+    fn update_template(&self, previous: Variant, value: Variant);
 
     #[func]
     fn _on_instantiate_template(&mut self, value: Variant) {
@@ -53,7 +53,7 @@ impl ShopItemViz {
     }
 
     #[func]
-    fn _on_update_template(&mut self, previous: Variant) {
+    fn _on_update_template(&mut self, previous: Variant, _value: Variant) {
         let top;
         if previous.is_nil() {
             top = 0.0;

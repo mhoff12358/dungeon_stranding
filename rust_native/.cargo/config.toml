@@ -1,10 +1,8 @@
 [target.wasm32-unknown-emscripten]
 rustflags = [
-    "-C",
-    "link-arg=-sSIDE_MODULE=2",
-    "-C",
-    "link-arg=-sUSE_PTHREADS=1",
-    "-C",
-    "target-feature=+atomics,+bulk-memory,+mutable-globals",
+    "-Clink-arg=-sSIDE_MODULE=2",
+    #"-Clink-arg=-pthread",
+    "-Clink-arg=-sUSE_PTHREADS=1",
+    "-Ctarget-feature=+atomics,+bulk-memory,+mutable-globals",
     "-Zlink-native-libraries=no",
 ]
