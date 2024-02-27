@@ -2,7 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 
 use ds_lib::game_state::inventory::Inventory;
 use godot::{
-    engine::{Control, ControlVirtual, Label},
+    engine::{Control, IControl, Label},
     prelude::*,
 };
 
@@ -36,7 +36,6 @@ pub struct InventoryViz {
     #[export]
     food_label: Option<Gd<Label>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -89,7 +88,7 @@ impl InventoryViz {
 }
 
 #[godot_api]
-impl ControlVirtual for InventoryViz {
+impl IControl for InventoryViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             game_state: None,
@@ -105,10 +104,10 @@ impl ControlVirtual for InventoryViz {
     }
 
     fn enter_tree(&mut self) {
-        let mut game_state: Gd<GameStateViz> = walk_parents_for(&self.base);
+        let mut game_state: Gd<GameStateViz> = walk_parents_for(&self.to_gd());
         game_state.connect(
             GameStateViz::UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("update"),
+            self.base().callable("update"),
         );
         self.game_state = Some(game_state);
     }

@@ -22,17 +22,17 @@ impl<T: GodotClass> Deref for MyGd<T> {
 
 unsafe impl<T: GodotClass> owning_ref::StableAddress for MyGd<T> {}
 
-pub struct MyGdRef<'a, T> {
+pub struct MyGdRef<'a, T: GodotClass> {
     inner: GdRef<'a, T>,
 }
 
-impl<'a, T> MyGdRef<'a, T> {
+impl<'a, T: GodotClass> MyGdRef<'a, T> {
     pub fn new(inner: GdRef<'a, T>) -> Self {
         Self { inner }
     }
 }
 
-impl<'a, T> Deref for MyGdRef<'a, T> {
+impl<'a, T: GodotClass> Deref for MyGdRef<'a, T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -40,4 +40,4 @@ impl<'a, T> Deref for MyGdRef<'a, T> {
     }
 }
 
-unsafe impl<'a, T> owning_ref::StableAddress for MyGdRef<'a, T> {}
+unsafe impl<'a, T: GodotClass> owning_ref::StableAddress for MyGdRef<'a, T> {}

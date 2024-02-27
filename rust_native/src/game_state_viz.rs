@@ -8,7 +8,7 @@ use ds_lib::game_state::game_state::GameState;
 use ds_lib::game_state::game_state_input::accept_game_state_input;
 use ds_lib::game_state::inputs::game_state_input::GameStateInput;
 use ds_lib::input::keycode::KeyCode;
-use godot::engine::{Control, ControlVirtual};
+use godot::engine::{Control, IControl};
 use godot::prelude::*;
 use owning_ref::{OwningHandle, StableAddress};
 
@@ -17,7 +17,6 @@ use owning_ref::{OwningHandle, StableAddress};
 pub struct GameStateViz {
     app: Option<Gd<App>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -181,16 +180,16 @@ pub fn borrow_game_state_mut<'a>(
 }
 
 #[godot_api]
-impl ControlVirtual for GameStateViz {
+impl IControl for GameStateViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self { base, app: None }
     }
 
     fn ready(&mut self) {
-        self.app = Some(App::find_app(&self.base.clone().upcast()));
+        self.app = Some(App::find_app(&self.to_gd().upcast()));
     }
 
-    fn to_string(&self) -> godot::builtin::GodotString {
-        self.base.to_string().into()
+    fn to_string(&self) -> godot::builtin::GString {
+        self.base().to_string().into()
     }
 }

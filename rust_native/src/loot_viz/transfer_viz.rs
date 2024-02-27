@@ -1,5 +1,5 @@
 use godot::{
-    engine::{Control, ControlVirtual, Label, Slider},
+    engine::{Control, IControl, Label, Slider},
     prelude::*,
 };
 
@@ -40,7 +40,6 @@ pub struct TransferViz {
 
     components: Option<Components>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -83,7 +82,7 @@ impl TransferViz {
                 directed_inventories.to.borrow().get_display_name()
             );
 
-            _self.base.set_visible(true);
+            _self.base_mut().set_visible(true);
 
             (min, max) = (_self.min, _self.max);
             _self.set_amount(min as f32);
@@ -120,7 +119,7 @@ impl TransferViz {
             let mut _self = this.bind_mut();
             loot_viz = _self.loot_viz.as_ref().unwrap().clone();
             details = _self.details;
-            _self.base.set_visible(false);
+            _self.base_mut().set_visible(false);
         }
         LootViz::transfer_amount(loot_viz, details);
     }
@@ -131,14 +130,14 @@ impl TransferViz {
         {
             let mut _self = this.bind_mut();
             loot_viz = _self.loot_viz.as_ref().unwrap().clone();
-            _self.base.set_visible(false);
+            _self.base_mut().set_visible(false);
         }
         LootViz::cancel_transfer(loot_viz);
     }
 }
 
 #[godot_api]
-impl ControlVirtual for TransferViz {
+impl IControl for TransferViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             details: TransferDetails {
@@ -155,10 +154,10 @@ impl ControlVirtual for TransferViz {
     }
 
     fn ready(&mut self) {
-        self.loot_viz = Some(walk_parents_for(&self.base));
-        self.base.set_visible(false);
+        self.loot_viz = Some(walk_parents_for(&self.to_gd()));
+        self.base_mut().set_visible(false);
 
-        let di_context = DiContext::get_nearest_bound(self.base.clone());
+        let di_context = DiContext::get_nearest_bound(self.base().clone());
         self.components = Some(Components {
             description: di_context.get_registered_node_template("description".into()),
             min: di_context.get_registered_node_template("min".into()),

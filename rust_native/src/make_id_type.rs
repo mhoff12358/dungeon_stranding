@@ -4,7 +4,7 @@ macro_rules! make_id_type {
             #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
             pub struct [<$IdType Godot>](pub $IdType);
 
-            impl GodotConvert for [<$IdType Godot>] {
+            impl godot::builtin::meta::GodotConvert for [<$IdType Godot>] {
                 type Via = u32;
             }
 
@@ -15,8 +15,8 @@ macro_rules! make_id_type {
             }
 
             impl FromGodot for [<$IdType Godot>] {
-                fn try_from_godot(via: Self::Via) -> Option<Self> {
-                    Some([<$IdType Godot>]($IdType(via)))
+                fn try_from_godot(via: Self::Via) -> Result<Self, godot::builtin::meta::ConvertError> {
+                    Ok([<$IdType Godot>]($IdType(via)))
                 }
             }
 

@@ -2,7 +2,7 @@ use ds_lib::cli_args::CliArgs;
 use ds_lib::game_state::state_updates::update_algos::check_invariants;
 use ds_lib::input::keycode::KeyCode;
 use ds_lib::log;
-use godot::engine::{Node, NodeVirtual};
+use godot::engine::{INode, Node};
 use godot::prelude::*;
 
 use crate::godot_utils::set_logger;
@@ -12,11 +12,10 @@ use crate::godot_utils::set_logger;
 pub struct App {
     app: Option<ds_lib::app::App>,
 
-    name: GodotString,
+    name: GString,
     #[export]
-    seed: GodotString,
+    seed: GString,
 
-    #[base]
     base: Base<Node>,
 }
 
@@ -24,7 +23,7 @@ pub struct App {
 impl App {}
 
 #[godot_api]
-impl NodeVirtual for App {
+impl INode for App {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         set_logger();
         log!("Creating App");
@@ -55,8 +54,8 @@ impl NodeVirtual for App {
         );
     }
 
-    fn to_string(&self) -> godot::builtin::GodotString {
-        self.base.to_string().into()
+    fn to_string(&self) -> godot::builtin::GString {
+        self.base().to_string().into()
     }
 }
 
@@ -67,7 +66,7 @@ impl App {
         return look_for_app(&scene_tree).unwrap();
     }
 
-    pub fn get_name(&self) -> &GodotString {
+    pub fn get_name(&self) -> &GString {
         return &self.name;
     }
 
@@ -86,7 +85,7 @@ impl App {
 }
 
 fn look_for_app(node: &Gd<Node>) -> Option<Gd<App>> {
-    if node.is_class(App::class_name().to_godot_string()) {
+    if node.is_class(App::class_name().to_gstring()) {
         return Some(node.clone().cast());
     }
     for child_index in 0..node.get_child_count() {

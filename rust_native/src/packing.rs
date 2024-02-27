@@ -1,7 +1,7 @@
 use godot::prelude::*;
 
 pub fn pack_node(node: Gd<Node>) -> Gd<PackedScene> {
-    let mut packed_scene = PackedScene::new();
+    let mut packed_scene = PackedScene::new_gd();
     set_childrens_owner(&node, &node);
     packed_scene.pack(node);
     return packed_scene;

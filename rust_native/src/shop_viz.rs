@@ -9,8 +9,8 @@ use ds_lib::{
     shop::{shop::Shop, shop_interface::ShopInterface},
 };
 use godot::{
-    engine::{Control, ControlVirtual},
-    prelude::{meta::GodotConvert, *},
+    engine::{Control, IControl},
+    prelude::*,
 };
 use owning_ref::{OwningHandle, OwningRef, OwningRefMut};
 
@@ -46,7 +46,6 @@ pub struct ShopViz {
     shop_item_templates:
         Option<RefCell<TemplateSpawner<ShopIdGenerics, SignalsUpdate<ShopIdGenerics>>>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -124,7 +123,7 @@ impl ShopViz {
 }
 
 #[godot_api]
-impl ControlVirtual for ShopViz {
+impl IControl for ShopViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             game_state: None,
@@ -136,11 +135,13 @@ impl ControlVirtual for ShopViz {
     }
 
     fn enter_tree(&mut self) {
-        self.game_state = Some(walk_parents_for(&self.base));
-        self.out_of_dungeon = Some(walk_parents_for(&self.base));
+        self.game_state = Some(walk_parents_for(&self.base()));
+        self.out_of_dungeon = Some(walk_parents_for(&self.base()));
+        let _on_out_of_dungeon_state_updated =
+            self.base().callable("_on_out_of_dungeon_state_updated");
         self.out_of_dungeon.as_mut().unwrap().connect(
             OutOfDungeonViz::UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("_on_out_of_dungeon_state_updated"),
+            _on_out_of_dungeon_state_updated,
         );
         self.shop_item_templates = Some(RefCell::new(TemplateSpawner::new(
             self.shop_item_template.as_ref().unwrap().clone().upcast(),

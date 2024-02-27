@@ -8,7 +8,7 @@ use ds_lib::game_state::{
     state_updates::interactions::{add_remove_description, opening_description},
 };
 use godot::{
-    engine::{Control, ControlVirtual},
+    engine::{Control, IControl},
     prelude::*,
 };
 
@@ -39,7 +39,6 @@ pub struct InteractionViz {
 
     viz: Option<Visualizers>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -52,12 +51,12 @@ impl InteractionViz {
 
     #[func]
     pub fn hide(&mut self) {
-        self.base.set_visible(false);
+        self.base_mut().set_visible(false);
     }
 
     #[func]
     pub fn _on_in_dungeon_updated_interaction(&mut self) {
-        self.base.set_visible(true);
+        self.base_mut().set_visible(true);
         let in_dungeon = self.in_dungeon();
         let in_dungeon = in_dungeon.bind();
         let in_dungeon = in_dungeon.borrow_in_dungeon();
@@ -126,7 +125,7 @@ impl InteractionViz {
 }
 
 #[godot_api]
-impl ControlVirtual for InteractionViz {
+impl IControl for InteractionViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             in_dungeon: None,
@@ -138,17 +137,19 @@ impl ControlVirtual for InteractionViz {
     }
 
     fn enter_tree(&mut self) {
-        walk_parents_for::<GameStateViz>(&self.base)
-            .connect("pre_updated_state".into(), self.base.callable("hide"));
-        self.in_dungeon = Some(walk_parents_for(&self.base));
+        walk_parents_for::<GameStateViz, _>(&self.to_gd())
+            .connect("pre_updated_state".into(), self.base().callable("hide"));
+        self.in_dungeon = Some(walk_parents_for(&self.to_gd()));
+        let _on_in_dungeon_updated_interaction =
+            self.base().callable("_on_in_dungeon_updated_interaction");
         self.in_dungeon.as_mut().unwrap().connect(
             "updated_state_interaction".into(),
-            self.base.callable("_on_in_dungeon_updated_interaction"),
+            _on_in_dungeon_updated_interaction,
         );
     }
 
     fn ready(&mut self) {
-        let context = DiContext::get_nearest_bound(self.base.clone());
+        let context = DiContext::get_nearest_bound(self.base().clone());
         self.viz = Some(Visualizers {
             camp: context.get_registered_node_template("".into()),
             loot: context.get_registered_node_template("".into()),

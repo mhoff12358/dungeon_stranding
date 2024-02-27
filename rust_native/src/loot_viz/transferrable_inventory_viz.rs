@@ -2,7 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 
 use ds_lib::game_state::inventory::{Inventory, UniqueItemId};
 use godot::{
-    engine::{Control, ControlVirtual, Label},
+    engine::{Control, IControl, Label},
     prelude::*,
 };
 use owning_ref::RefRef;
@@ -39,7 +39,6 @@ pub struct TransferrableInventoryViz {
     money_amount: Option<Gd<Label>>,
     food_amount: Option<Gd<Label>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -141,7 +140,7 @@ impl TransferrableInventoryViz {
 }
 
 #[godot_api]
-impl ControlVirtual for TransferrableInventoryViz {
+impl IControl for TransferrableInventoryViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             loot_viz: None,
@@ -154,7 +153,7 @@ impl ControlVirtual for TransferrableInventoryViz {
     }
 
     fn ready(&mut self) {
-        let di_context = DiContext::get_nearest(self.base.clone().upcast()).unwrap();
+        let di_context = DiContext::get_nearest(self.base().clone().upcast()).unwrap();
         let di_context = di_context.bind();
         let item_template =
             di_context.get_registered_node_template::<TransferrableInventoryItemViz>("".into());
@@ -162,11 +161,11 @@ impl ControlVirtual for TransferrableInventoryViz {
             item_template,
             InventorySpawnerType::All,
         )));
-        self.loot_viz = Some(walk_parents_for(&self.base));
-        let mut game_state: Gd<GameStateViz> = walk_parents_for(&self.base);
+        self.loot_viz = Some(walk_parents_for(&self.to_gd()));
+        let mut game_state: Gd<GameStateViz> = walk_parents_for(&self.to_gd());
         game_state.connect(
             GameStateViz::UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("updated"),
+            self.base().callable("updated"),
         );
         self.money_amount = Some(di_context.get_registered_node_template("money".into()));
         self.food_amount = Some(di_context.get_registered_node_template("food".into()));

@@ -7,7 +7,7 @@ use std::{
 
 use godot::{
     engine::{global::Side, Control},
-    obj::dom::UserDomain,
+    obj::{bounds::DeclUser, WithBaseField},
     prelude::*,
 };
 
@@ -15,7 +15,7 @@ use crate::packing::pack_node;
 
 use super::update_behavior::TemplateSpawnerUpdateBehavior;
 
-pub trait Template: GodotClass<Declarer = UserDomain> + Inherits<Node> + Sized {
+pub trait Template: GodotClass<Declarer = DeclUser> + Inherits<Node> + Sized {
     type Value;
     type Context;
 
@@ -29,13 +29,15 @@ pub trait Template: GodotClass<Declarer = UserDomain> + Inherits<Node> + Sized {
 }
 
 pub trait TemplateControl:
-    GodotClass<Declarer = UserDomain, Base = Control> + Inherits<Node> + Inherits<Control> + Sized
+    GodotClass<Declarer = DeclUser, Base = Control>
+    + Inherits<Node>
+    + Inherits<Control>
+    + WithBaseField
+    + Sized
 {
     type Value;
     type Context;
 
-    fn control(&self) -> &Self::Base;
-    fn control_mut(&mut self) -> &mut Self::Base;
     fn instantiate_template(&mut self, value: &Self::Value, context: &Self::Context);
 }
 
@@ -59,21 +61,21 @@ where
         let top;
         if let Some(previous) = previous {
             let previous = previous.bind();
-            let previous_control = previous.control();
-            top = previous_control.get_anchor(Side::SIDE_BOTTOM);
+            let previous_control = previous.base();
+            top = previous_control.get_anchor(Side::BOTTOM);
         } else {
             top = 0.0;
         }
 
-        let size = self.control().get_anchor(Side::SIDE_BOTTOM)
-            - self.control().get_anchor(Side::SIDE_TOP);
+        let mut control = self.base_mut();
+        let size = control.get_anchor(Side::BOTTOM) - control.get_anchor(Side::TOP);
 
-        self.control_mut()
-            .set_anchor_ex(Side::SIDE_TOP, top)
+        control
+            .set_anchor_ex(Side::TOP, top)
             .keep_offset(true)
             .done();
-        self.control_mut()
-            .set_anchor_ex(Side::SIDE_BOTTOM, top + size)
+        control
+            .set_anchor_ex(Side::BOTTOM, top + size)
             .keep_offset(true)
             .done();
     }

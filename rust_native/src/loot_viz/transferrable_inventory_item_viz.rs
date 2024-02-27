@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use ds_lib::game_state::inventory::{Inventory, ItemInfo, UniqueItemId};
 use godot::{
-    engine::{Control, ControlVirtual, Label},
+    engine::{Control, IControl, Label},
     prelude::*,
 };
 use owning_ref::{OwningHandle, StableAddress};
@@ -59,14 +59,6 @@ impl TemplateControl for TransferrableInventoryItemViz {
     type Value = UniqueItemId;
     type Context = Gd<TransferrableInventoryViz>;
 
-    fn control(&self) -> &Self::Base {
-        &self.base
-    }
-
-    fn control_mut(&mut self) -> &mut Self::Base {
-        &mut self.base
-    }
-
     fn instantiate_template(&mut self, value: &Self::Value, context: &Self::Context) {
         self.info = Some(TransferInfo {
             transferer: context.clone(),
@@ -82,7 +74,7 @@ impl TemplateControl for TransferrableInventoryItemViz {
 }
 
 #[godot_api]
-impl ControlVirtual for TransferrableInventoryItemViz {
+impl IControl for TransferrableInventoryItemViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             base,

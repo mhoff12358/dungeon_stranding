@@ -2,7 +2,7 @@ use std::{marker::PhantomData, ops::Deref};
 
 use ds_lib::game_state::inventory::{Inventory, ItemInfo, UniqueItemId};
 use godot::{
-    engine::{Control, ControlVirtual, Label},
+    engine::{Control, IControl, Label},
     prelude::*,
 };
 
@@ -33,14 +33,6 @@ impl TemplateControl for InventoryItemViz {
     type Value = UniqueItemId;
     type Context = Inventory;
 
-    fn control(&self) -> &Self::Base {
-        &self.base
-    }
-
-    fn control_mut(&mut self) -> &mut Self::Base {
-        &mut self.base
-    }
-
     fn instantiate_template(&mut self, value: &Self::Value, context: &Self::Context) {
         let item = context.get_item(value).unwrap();
         if let Some(label) = self.label.as_mut() {
@@ -50,7 +42,7 @@ impl TemplateControl for InventoryItemViz {
 }
 
 #[godot_api]
-impl ControlVirtual for InventoryItemViz {
+impl IControl for InventoryItemViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self { label: None, base }
     }

@@ -2,7 +2,7 @@ use ds_lib::game_state::{
     inputs::in_dungeon_input::InDungeonInput, state_updates::interactions::Interaction,
 };
 use godot::{
-    engine::{Control, ControlVirtual, Label},
+    engine::{Control, IControl, Label},
     prelude::*,
 };
 
@@ -24,7 +24,6 @@ pub struct AvailableInteractionViz {
     #[export]
     label: Option<Gd<Label>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -38,14 +37,6 @@ impl TemplateControl for AvailableInteractionViz {
             .as_mut()
             .unwrap()
             .set_text(format!("{}", value.description()).into());
-    }
-
-    fn control(&self) -> &Self::Base {
-        &self.base
-    }
-
-    fn control_mut(&mut self) -> &mut Self::Base {
-        &mut self.base
     }
 }
 
@@ -62,7 +53,7 @@ impl AvailableInteractionViz {
 }
 
 #[godot_api]
-impl ControlVirtual for AvailableInteractionViz {
+impl IControl for AvailableInteractionViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             interaction: None,
@@ -90,7 +81,6 @@ pub struct AvailableInteractionsViz {
     interaction_template: Option<Gd<AvailableInteractionViz>>,
     interactions_spawner:
         Option<TemplateSpawner<InteractionGenerics, UpdateSpawnedTemplate<InteractionGenerics>>>,
-    #[base]
     base: Base<Control>,
 }
 
@@ -103,7 +93,7 @@ impl AvailableInteractionsViz {
 
     #[func]
     pub fn _on_in_dungeon_updated(&mut self) {
-        self.base.set_visible(true);
+        self.base_mut().set_visible(true);
         let in_dungeon = self.in_dungeon();
         let in_dungeon = in_dungeon.bind();
         let in_dungeon = in_dungeon.borrow_in_dungeon();
@@ -113,7 +103,7 @@ impl AvailableInteractionsViz {
 }
 
 #[godot_api]
-impl ControlVirtual for AvailableInteractionsViz {
+impl IControl for AvailableInteractionsViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             in_dungeon: None,
@@ -126,10 +116,11 @@ impl ControlVirtual for AvailableInteractionsViz {
     }
 
     fn ready(&mut self) {
-        self.in_dungeon = Some(walk_parents_for(&self.base));
+        self.in_dungeon = Some(walk_parents_for(&self.to_gd()));
+        let _on_in_dungeon_updated = self.base().callable("_on_in_dungeon_updated");
         self.in_dungeon.as_mut().unwrap().connect(
             InDungeonViz::UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("_on_in_dungeon_updated"),
+            _on_in_dungeon_updated,
         );
 
         self.interactions_spawner = Some(TemplateSpawner::new(

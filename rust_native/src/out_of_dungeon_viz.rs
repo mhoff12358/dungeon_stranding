@@ -1,5 +1,5 @@
 use godot::{
-    engine::{Control, ControlVirtual},
+    engine::{Control, IControl},
     prelude::*,
 };
 
@@ -10,7 +10,6 @@ use crate::game_state_viz::{borrow_game_state, GameStateViz};
 pub struct OutOfDungeonViz {
     game_state: Option<Gd<GameStateViz>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -42,7 +41,7 @@ impl OutOfDungeonViz {
         {
             let mut _self = this.bind_mut();
             is_out_of_dungeon = Self::is_out_of_dungeon_impl(&_self);
-            _self.base.set_visible(is_out_of_dungeon);
+            _self.base_mut().set_visible(is_out_of_dungeon);
         }
         if is_out_of_dungeon {
             this.emit_signal(Self::UPDATED_STATE_SIGNAL.into(), &[]);
@@ -51,7 +50,7 @@ impl OutOfDungeonViz {
 }
 
 #[godot_api]
-impl ControlVirtual for OutOfDungeonViz {
+impl IControl for OutOfDungeonViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             game_state: None,
@@ -60,10 +59,11 @@ impl ControlVirtual for OutOfDungeonViz {
     }
 
     fn enter_tree(&mut self) {
-        self.game_state = Some(self.base.get_parent().unwrap().cast());
+        self.game_state = Some(self.base().get_parent().unwrap().cast());
+        let _on_game_state_updated = self.base().callable("_on_game_state_updated");
         self.game_state.as_mut().unwrap().connect(
             GameStateViz::UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("_on_game_state_updated"),
+            _on_game_state_updated,
         );
     }
 }

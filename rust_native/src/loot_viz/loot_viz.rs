@@ -7,7 +7,7 @@ use ds_lib::game_state::{
     inventory_transfer::OngoingInventoryTransfer,
 };
 use godot::{
-    engine::{Control, ControlVirtual},
+    engine::{Control, IControl},
     prelude::*,
 };
 
@@ -44,7 +44,6 @@ pub struct LootViz {
     inventory_display_to: Option<Gd<TransferrableInventoryViz>>,
     transfer_viz: Option<Gd<TransferViz>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -52,7 +51,7 @@ pub struct LootViz {
 impl LootViz {
     #[func(gd_self)]
     pub fn pre_updated(mut this: Gd<Self>) {
-        this.bind_mut().base.set_visible(false);
+        this.set_visible(false);
 
         let mut _self = this.bind_mut();
 
@@ -101,7 +100,7 @@ impl LootViz {
     }
 
     pub fn updated(&mut self) {
-        self.base.set_visible(true);
+        self.base_mut().set_visible(true);
 
         let game_state_transfer;
         {
@@ -228,7 +227,7 @@ impl LootViz {
 }
 
 #[godot_api]
-impl ControlVirtual for LootViz {
+impl IControl for LootViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             game_state: None,
@@ -241,14 +240,14 @@ impl ControlVirtual for LootViz {
     }
 
     fn ready(&mut self) {
-        let mut game_state: Gd<GameStateViz> = walk_parents_for(&self.base);
+        let mut game_state: Gd<GameStateViz> = walk_parents_for(&self.to_gd());
         self.game_state = Some(game_state.clone());
         game_state.connect(
             GameStateViz::PRE_UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("pre_updated"),
+            self.base().callable("pre_updated"),
         );
 
-        let di_context = DiContext::get_nearest(self.base.clone().upcast()).unwrap();
+        let di_context = DiContext::get_nearest(self.base().clone().upcast()).unwrap();
         let di_context = di_context.bind();
 
         self.inventory_display_from =

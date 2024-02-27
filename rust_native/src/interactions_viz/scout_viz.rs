@@ -3,8 +3,8 @@ use ds_lib::{
     game_state::{inputs::scout_input::ScoutInput, state_updates::scout_results::ScoutResults},
 };
 use godot::{
-    engine::{Control, ControlVirtual, Label},
-    prelude::{meta::GodotConvert, *},
+    engine::{Control, IControl, Label},
+    prelude::*,
 };
 
 use crate::{
@@ -35,7 +35,6 @@ pub struct ScoutViz {
 
     spawner: Option<TemplateSpawner<ScoutedEncounterGenerics, ScoutViz>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -83,7 +82,7 @@ impl ScoutViz {
 
     #[func]
     pub fn hide(&mut self) {
-        self.base.set_visible(false);
+        self.to_gd().set_visible(false);
     }
 }
 
@@ -93,7 +92,7 @@ impl ScoutViz {
     }
 
     pub fn updated(&mut self, results: &ScoutResults) {
-        self.base.set_visible(true);
+        self.to_gd().set_visible(true);
         self.spawner.as_mut().unwrap().update(
             results
                 .encounters
@@ -105,7 +104,7 @@ impl ScoutViz {
 }
 
 #[godot_api]
-impl ControlVirtual for ScoutViz {
+impl IControl for ScoutViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             game_state: None,
@@ -115,13 +114,14 @@ impl ControlVirtual for ScoutViz {
     }
 
     fn ready(&mut self) {
-        self.game_state = Some(walk_parents_for(&self.base));
+        let gd_self = self.to_gd();
+        self.game_state = Some(walk_parents_for(&gd_self));
         self.game_state
             .as_mut()
             .unwrap()
-            .connect("pre_updated_state".into(), self.base.callable("hide"));
+            .connect("pre_updated_state".into(), gd_self.callable("hide"));
 
-        let context = DiContext::get_nearest_bound(self.base.clone());
+        let context = DiContext::get_nearest_bound(self.base().clone());
         let template: Gd<Control> = context.get_registered_node_template("template".into());
         self.spawner = Some(TemplateSpawner::new(template));
     }

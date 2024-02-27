@@ -1,6 +1,6 @@
 use ds_lib::game_state::inputs::camp_input::CampInput;
 use godot::{
-    engine::{Control, ControlVirtual, Label},
+    engine::{Control, IControl, Label},
     prelude::*,
 };
 
@@ -17,7 +17,6 @@ pub struct CampViz {
 
     amount_label: Option<Gd<Label>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -48,13 +47,13 @@ impl CampViz {
 
     #[func]
     pub fn hide(&mut self) {
-        self.base.set_visible(false);
+        self.to_gd().set_visible(false);
     }
 }
 
 impl CampViz {
     pub fn updated(&mut self, amount: &i32) {
-        self.base.set_visible(true);
+        self.to_gd().set_visible(true);
         self.amount_label
             .as_mut()
             .unwrap()
@@ -64,7 +63,7 @@ impl CampViz {
 }
 
 #[godot_api]
-impl ControlVirtual for CampViz {
+impl IControl for CampViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             amount: 0,
@@ -75,13 +74,15 @@ impl ControlVirtual for CampViz {
     }
 
     fn ready(&mut self) {
-        self.game_state = Some(walk_parents_for(&self.base));
+        let gd_self = self.to_gd();
+
+        self.game_state = Some(walk_parents_for(&gd_self));
         self.game_state
             .as_mut()
             .unwrap()
-            .connect("pre_updated_state".into(), self.base.callable("hide"));
+            .connect("pre_updated_state".into(), gd_self.callable("hide"));
 
-        let context = DiContext::get_nearest_bound(self.base.clone());
+        let context = DiContext::get_nearest_bound(self.base().clone());
         self.amount_label = Some(context.get_registered_node_template("".into()));
     }
 }

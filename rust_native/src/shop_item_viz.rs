@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use ds_lib::{game_state::inventory::ItemInfo, shop::shop::Shop};
 use godot::{
-    engine::{global::Side, Control, ControlVirtual, Label},
+    engine::{global::Side, Control, IControl, Label},
     prelude::*,
 };
 use owning_ref::OwningHandle;
@@ -24,7 +24,6 @@ pub struct ShopItemViz {
     #[export]
     price_label: Option<Gd<Label>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -39,8 +38,8 @@ impl ShopItemViz {
     #[func]
     fn _on_instantiate_template(&mut self, value: Variant) {
         let shop_id: UniqueItemIdGodot;
-        let item_text: GodotString;
-        let price_text: GodotString;
+        let item_text: GString;
+        let price_text: GString;
         {
             shop_id = UniqueItemIdGodot::from_variant(&value);
             let shop = self.shop();
@@ -60,17 +59,17 @@ impl ShopItemViz {
             top = 0.0;
         } else {
             let previous_control = Gd::<Control>::from_variant(&previous);
-            top = previous_control.get_anchor(Side::SIDE_BOTTOM);
+            top = previous_control.get_anchor(Side::BOTTOM);
         }
 
-        let size = self.base.get_anchor(Side::SIDE_BOTTOM) - self.base.get_anchor(Side::SIDE_TOP);
+        let size = self.base().get_anchor(Side::BOTTOM) - self.base().get_anchor(Side::TOP);
 
-        self.base
-            .set_anchor_ex(Side::SIDE_TOP, top)
+        self.base_mut()
+            .set_anchor_ex(Side::TOP, top)
             .keep_offset(true)
             .done();
-        self.base
-            .set_anchor_ex(Side::SIDE_BOTTOM, top + size)
+        self.base_mut()
+            .set_anchor_ex(Side::BOTTOM, top + size)
             .keep_offset(true)
             .done();
     }
@@ -101,7 +100,7 @@ impl ShopItemViz {
 }
 
 #[godot_api]
-impl ControlVirtual for ShopItemViz {
+impl IControl for ShopItemViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             shop: None,
@@ -114,16 +113,17 @@ impl ControlVirtual for ShopItemViz {
 
     fn enter_tree(&mut self) {
         {
-            let callable = self.base.callable("_on_instantiate_template");
-            self.base.connect("instantiate_template".into(), callable);
+            let callable = self.base().callable("_on_instantiate_template");
+            self.base_mut()
+                .connect("instantiate_template".into(), callable);
         }
         {
-            let callable = self.base.callable("_on_update_template");
-            self.base.connect("update_template".into(), callable);
+            let callable = self.base().callable("_on_update_template");
+            self.base_mut().connect("update_template".into(), callable);
         }
     }
 
     fn ready(&mut self) {
-        self.shop = Some(walk_parents_for(&self.base));
+        self.shop = Some(walk_parents_for(&self.to_gd().upcast::<Node>()));
     }
 }

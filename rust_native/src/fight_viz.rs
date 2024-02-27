@@ -3,7 +3,7 @@ use ds_lib::{
     game_state::inputs::fight_input::FightInput,
 };
 use godot::{
-    engine::{Control, ControlVirtual, Label},
+    engine::{Control, IControl, Label},
     prelude::*,
 };
 
@@ -19,7 +19,6 @@ pub struct FightViz {
     #[export]
     fight_description_label: Option<Gd<Label>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -32,12 +31,12 @@ impl FightViz {
 
     #[func]
     pub fn _on_in_dungeon_updated(&mut self) {
-        self.base.set_visible(false);
+        self.base_mut().set_visible(false);
     }
 
     #[func]
     pub fn _on_in_dungeon_updated_fight(&mut self) {
-        self.base.set_visible(true);
+        self.base_mut().set_visible(true);
         let in_dungeon = self.in_dungeon();
         let in_dungeon = in_dungeon.bind();
         let in_dungeon = in_dungeon.borrow_in_dungeon();
@@ -57,7 +56,7 @@ impl FightViz {
 }
 
 impl FightViz {
-    fn get_fight_description(fight: &Fight) -> GodotString {
+    fn get_fight_description(fight: &Fight) -> GString {
         let fight_description = match fight.phase() {
             FightPhase::Pre => {
                 format!("You are attacked by a {}.", fight.enemy().name.as_str())
@@ -88,7 +87,7 @@ impl FightViz {
 }
 
 #[godot_api]
-impl ControlVirtual for FightViz {
+impl IControl for FightViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             in_dungeon: None,
@@ -99,14 +98,16 @@ impl ControlVirtual for FightViz {
     }
 
     fn enter_tree(&mut self) {
-        self.in_dungeon = Some(walk_parents_for(&self.base));
+        self.in_dungeon = Some(walk_parents_for(&self.to_gd()));
+        let _on_in_dungeon_updated = self.base().callable("_on_in_dungeon_updated");
         self.in_dungeon.as_mut().unwrap().connect(
             InDungeonViz::UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("_on_in_dungeon_updated"),
+            _on_in_dungeon_updated,
         );
+        let _on_in_dungeon_updated_fight = self.base().callable("_on_in_dungeon_updated_fight");
         self.in_dungeon.as_mut().unwrap().connect(
             InDungeonViz::UPDATED_STATE_FIGHT_SIGNAL.into(),
-            self.base.callable("_on_in_dungeon_updated_fight"),
+            _on_in_dungeon_updated_fight,
         );
     }
 }

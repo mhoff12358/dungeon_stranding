@@ -9,7 +9,7 @@ use ds_lib::{
     game_state::game_state::InDungeon,
 };
 use godot::{
-    engine::{Control, ControlVirtual, TileMap},
+    engine::{Control, IControl, TileMap},
     prelude::*,
 };
 use smallvec::{smallvec, SmallVec};
@@ -49,19 +49,18 @@ pub struct FloorLayoutViz {
     stairs_down_atlas_coord: Vector2i,
 
     #[export]
-    body_entity_scene_path: GodotString,
+    body_entity_scene_path: GString,
     body_entity_scene: Option<Gd<PackedScene>>,
     #[export]
-    campfire_entity_scene_path: GodotString,
+    campfire_entity_scene_path: GString,
     campfire_entity_scene: Option<Gd<PackedScene>>,
     #[export]
-    gold_entity_scene_path: GodotString,
+    gold_entity_scene_path: GString,
     gold_entity_scene: Option<Gd<PackedScene>>,
     #[export]
-    chest_entity_scene_path: GodotString,
+    chest_entity_scene_path: GString,
     chest_entity_scene: Option<Gd<PackedScene>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -166,7 +165,7 @@ impl FloorLayoutViz {
 }
 
 #[godot_api]
-impl ControlVirtual for FloorLayoutViz {
+impl IControl for FloorLayoutViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             in_dungeon: None,
@@ -197,10 +196,12 @@ impl ControlVirtual for FloorLayoutViz {
     }
 
     fn enter_tree(&mut self) {
-        self.in_dungeon = Some(walk_parents_for(&self.base));
+        let gd_self = self.to_gd();
+
+        self.in_dungeon = Some(walk_parents_for(&gd_self));
         self.in_dungeon.as_mut().unwrap().connect(
             InDungeonViz::UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("_on_in_dungeon_updated"),
+            gd_self.callable("_on_in_dungeon_updated"),
         );
 
         self.body_entity_scene = Some(load(self.body_entity_scene_path.clone()));
@@ -210,7 +211,7 @@ impl ControlVirtual for FloorLayoutViz {
     }
 
     fn ready(&mut self) {
-        let di_context = DiContext::get_nearest(self.base.clone().upcast()).unwrap();
+        let di_context = DiContext::get_nearest(self.base().clone().upcast()).unwrap();
         let di_context = di_context.bind();
 
         self.tile_map = Some(di_context.get_registered_node_template::<TileMap>("".into()));

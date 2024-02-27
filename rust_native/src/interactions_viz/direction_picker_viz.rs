@@ -5,7 +5,7 @@ use ds_lib::{
     game_state::inputs::game_state_input::GameStateInput,
 };
 use godot::{
-    engine::{Button, Control, ControlVirtual, Label},
+    engine::{Button, Control, IControl, Label},
     prelude::*,
 };
 
@@ -34,7 +34,6 @@ pub struct DirectionPickerViz {
 
     config: Option<DirectionPickerConfig>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -83,13 +82,13 @@ impl DirectionPickerViz {
 
     #[func]
     pub fn hide(&mut self) {
-        self.base.set_visible(false);
+        self.to_gd().set_visible(false);
     }
 }
 
 impl DirectionPickerViz {
     pub fn updated(&mut self, display_text: String, config: DirectionPickerConfig) {
-        self.base.set_visible(true);
+        self.to_gd().set_visible(true);
         self.config = Some(config);
 
         let objects = self.objects.as_mut().unwrap();
@@ -114,7 +113,7 @@ impl DirectionPickerViz {
 }
 
 #[godot_api]
-impl ControlVirtual for DirectionPickerViz {
+impl IControl for DirectionPickerViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             game_state: None,
@@ -125,13 +124,15 @@ impl ControlVirtual for DirectionPickerViz {
     }
 
     fn ready(&mut self) {
-        self.game_state = Some(walk_parents_for(&self.base));
+        let gd_self = self.to_gd();
+
+        self.game_state = Some(walk_parents_for(&gd_self));
         self.game_state
             .as_mut()
             .unwrap()
-            .connect("pre_updated_state".into(), self.base.callable("hide"));
+            .connect("pre_updated_state".into(), gd_self.callable("hide"));
 
-        let context = DiContext::get_nearest_bound(self.base.clone());
+        let context = DiContext::get_nearest_bound(self.base().clone());
         self.objects = Some(GodotObjects {
             label: context.get_registered_node_template("".into()),
             cancel: context.get_registered_node_template("cancel".into()),
@@ -145,7 +146,7 @@ impl ControlVirtual for DirectionPickerViz {
 
         self.objects.as_mut().unwrap().cancel.connect(
             "pressed".into(),
-            Callable::from_object_method(self.base.clone(), "cancel"),
+            Callable::from_object_method(&gd_self, "cancel"),
         );
 
         let directed_callbacks = Directed::new(["pick_right", "pick_up", "pick_left", "pick_down"]);
@@ -153,10 +154,7 @@ impl ControlVirtual for DirectionPickerViz {
             let button = self.objects.as_mut().unwrap().directed.get_mut(*direction);
             button.connect(
                 "pressed".into(),
-                Callable::from_object_method(
-                    self.base.clone(),
-                    directed_callbacks.get_ref(*direction),
-                ),
+                Callable::from_object_method(&gd_self, directed_callbacks.get_ref(*direction)),
             );
         }
     }

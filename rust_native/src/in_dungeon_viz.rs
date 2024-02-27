@@ -5,7 +5,7 @@ use ds_lib::{
     game_state::game_state::{GameState, InDungeon},
 };
 use godot::{
-    engine::{Control, ControlVirtual},
+    engine::{Control, IControl},
     prelude::*,
 };
 use owning_ref::OwningHandle;
@@ -20,7 +20,6 @@ pub struct InDungeonViz {
     #[export]
     map_controlable: bool,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -62,7 +61,7 @@ impl InDungeonViz {
     }
 
     #[func]
-    pub fn get_tiles(&self) -> GodotString {
+    pub fn get_tiles(&self) -> GString {
         let floor = self.borrow_current_floor();
         let stairs = floor.layout().stairs();
         return format!("{}, {}", stairs.up.x, stairs.up.y).into();
@@ -76,7 +75,7 @@ impl InDungeonViz {
         {
             let mut _self = this.bind_mut();
             is_in_dungeon = _self.is_in_dungeon();
-            _self.base.set_visible(is_in_dungeon);
+            _self.base_mut().set_visible(is_in_dungeon);
             if is_in_dungeon {
                 let in_dungeon = _self.borrow_in_dungeon();
                 if let Some(event) = in_dungeon.ongoing_event.as_ref() {
@@ -121,7 +120,7 @@ impl InDungeonViz {
 }
 
 #[godot_api]
-impl ControlVirtual for InDungeonViz {
+impl IControl for InDungeonViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             game_state: None,
@@ -131,10 +130,12 @@ impl ControlVirtual for InDungeonViz {
     }
 
     fn enter_tree(&mut self) {
-        self.game_state = Some(self.base.get_parent().unwrap().cast());
+        self.game_state = Some(self.to_gd().get_parent().unwrap().cast());
+
+        let _on_game_state_updated = self.base().callable("_on_game_state_updated");
         self.game_state.as_mut().unwrap().connect(
             GameStateViz::UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("_on_game_state_updated"),
+            _on_game_state_updated,
         );
     }
 }

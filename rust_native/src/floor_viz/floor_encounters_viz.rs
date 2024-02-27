@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use ds_lib::bestiary::monster_stats::MonsterStats;
 use godot::{
-    engine::{Control, ControlVirtual},
+    engine::{Control, IControl},
     prelude::*,
 };
 
@@ -32,7 +32,6 @@ pub struct FloorEncountersViz {
 
     spawner: Option<TemplateSpawner<AllFloorEncountersGenerics, Self>>,
 
-    #[base]
     base: Base<Control>,
 }
 
@@ -79,7 +78,7 @@ impl FloorEncountersViz {
 }
 
 #[godot_api]
-impl ControlVirtual for FloorEncountersViz {
+impl IControl for FloorEncountersViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             in_dungeon: None,
@@ -90,13 +89,15 @@ impl ControlVirtual for FloorEncountersViz {
     }
 
     fn ready(&mut self) {
-        self.in_dungeon = Some(walk_parents_for(&self.base));
+        let gd_self = self.to_gd();
+
+        self.in_dungeon = Some(walk_parents_for(&gd_self));
         self.in_dungeon.as_mut().unwrap().connect(
             InDungeonViz::UPDATED_STATE_SIGNAL.into(),
-            self.base.callable("_on_in_dungeon_updated"),
+            gd_self.callable("_on_in_dungeon_updated"),
         );
 
-        let di_context = DiContext::get_nearest(self.base.clone().upcast()).unwrap();
+        let di_context = DiContext::get_nearest(self.base().clone().upcast()).unwrap();
         let di_context = di_context.bind();
         let template = di_context.get_registered_node_template::<Control>("template".into());
         self.spawner = Some(TemplateSpawner::new(template));
