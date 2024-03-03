@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://clxavgj2qp884"]
+[gd_scene load_steps=2 format=3 uid="uid://clxavgj2qp884"]
 
 [ext_resource type="Script" path="res://scripts/UIComponents/RelativelyPlaced.gd" id="1_kv1lh"]
-[ext_resource type="Script" path="res://scripts/UIComponents/SubsceneSizeRemember.gd" id="1_upfmj"]
 
 [node name="InventoryPanel" type="InventoryViz" node_paths=PackedStringArray("gear_template", "equipment_template", "weight_label", "gold_label", "food_label")]
 gear_template = NodePath("Gear/VBoxContainer/Control/Gear/InventoryItemViz")
@@ -18,17 +17,10 @@ offset_bottom = 1080.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SubsceneSizeRememberer" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("1_upfmj")
-cached_size = Vector2(576, 1080)
-
 [node name="Counts" type="Control" parent="."]
 anchors_preset = 0
-offset_right = 576.0
-offset_bottom = 216.0
+offset_right = 1152.0
+offset_bottom = 432.0
 script = ExtResource("1_kv1lh")
 height = Vector2(0, 0.2)
 
@@ -90,9 +82,9 @@ size_flags_horizontal = 3
 
 [node name="Gear" type="Control" parent="."]
 anchors_preset = 0
-offset_top = 216.0
-offset_right = 576.0
-offset_bottom = 648.0
+offset_top = 432.0
+offset_right = 1152.0
+offset_bottom = 1296.0
 script = ExtResource("1_kv1lh")
 top_margin = Vector2(0, 0.2)
 height = Vector2(0, 0.4)
@@ -152,9 +144,9 @@ grow_vertical = 2
 
 [node name="CombatEquipment" type="Control" parent="."]
 anchors_preset = 0
-offset_top = 648.0
-offset_right = 576.0
-offset_bottom = 1080.0
+offset_top = 1296.0
+offset_right = 1152.0
+offset_bottom = 2160.0
 script = ExtResource("1_kv1lh")
 top_margin = Vector2(0, 0.6)
 height = Vector2(0, 0.4)

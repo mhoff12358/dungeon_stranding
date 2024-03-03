@@ -53,6 +53,7 @@ script = ExtResource("2_1rkja")
 layout_mode = 1
 offset_left = 0.0
 offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 1
 grow_vertical = 1
 
@@ -182,6 +183,7 @@ layout_mode = 1
 anchor_bottom = 0.7
 offset_left = 0.0
 offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 1
 grow_vertical = 1
 

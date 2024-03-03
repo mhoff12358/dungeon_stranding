@@ -6,6 +6,10 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib"]
 
+[profile.release-with-debug]
+inherits = "release"
+debug = true
+
 [dependencies]
 #godot = { path = "deps/gdextension/godot" }
 godot = { git = "https://github.com/godot-rust/gdext", branch = "master" }
