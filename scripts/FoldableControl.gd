@@ -22,18 +22,17 @@ func set_is_unfolded():
 	self.folded = false
 
 func set_size_from_children():
-	var child = null
-	if self.folded:
-		child = self.folded_version
-	else:
-		child = self.unfolded_version
-	if child:
-		self.custom_minimum_size = child.get_rect().size
+	if self.folded_version == null or self.unfolded_version == null:
+		return
+		
+	self.custom_minimum_size = self.folded_version.get_rect().size
+	if not self.folded:
+		var unfolded_size = self.unfolded_version.get_rect().size
+		self.custom_minimum_size.y += unfolded_size.y
+		self.custom_minimum_size.x = max(self.custom_minimum_size.x, unfolded_size.x)
 
 func handle_folded():
-	if self.folded_version != null:
-		self.folded_version.visible = self.folded
 	if self.unfolded_version != null:
 		self.unfolded_version.visible = !self.folded
-	self.folded_changed.emit(self.folded)
 	self.set_size_from_children()
+	self.folded_changed.emit(self.folded)
