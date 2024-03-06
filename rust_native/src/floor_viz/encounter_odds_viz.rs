@@ -1,7 +1,9 @@
 use ds_lib::{
     coord::Coord,
     dungeon_state::{
-        encounters::wandering_encounter_odds::WanderingEncounterOdds,
+        encounters::{
+            wandering_encounter_odds::WanderingEncounterOdds, wandering_encounters::OddsType,
+        },
         zone::{Zone, ZoneId},
     },
 };
@@ -69,7 +71,7 @@ impl EncounterOddsViz {
                         zone_id,
                         current_floor
                             .wandering_encounters()
-                            .get_encounter_odds(zone_id),
+                            .get_encounter_odds(zone_id, OddsType::ExcludeRecentEncounters),
                     )
                 })
                 .collect();
@@ -138,7 +140,7 @@ impl TemplateSpawnerUpdateBehavior for EncounterOddsViz {
         let wandering_encounters = current_floor.wandering_encounters();
 
         let encounter_probability = wandering_encounters
-            .get_encounter_odds(value.0)
+            .get_encounter_odds(value.0, OddsType::ExcludeRecentEncounters)
             .combined_probability();
 
         let encounters_in_zone = wandering_encounters.get_encounters_in_zone(value.0);
