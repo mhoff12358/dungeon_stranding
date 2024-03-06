@@ -149,16 +149,18 @@ anchor_right = 0.35
 anchor_bottom = 1.0
 grow_vertical = 2
 
-[node name="MapControlUI" type="Container" parent="FloorLayoutViz/Extras" node_paths=PackedStringArray("folded_version", "unfolded_version")]
-custom_minimum_size = Vector2(300, 40)
+[node name="MapControlUI" type="Control" parent="FloorLayoutViz/Extras" node_paths=PackedStringArray("folded_version", "unfolded_version")]
 layout_mode = 2
+mouse_filter = 1
 script = ExtResource("4_r6kku")
 folded = true
 folded_version = NodePath("Folded")
 unfolded_version = NodePath("Folded/Unfolded")
 
-[node name="Folded" type="Container" parent="FloorLayoutViz/Extras/MapControlUI"]
+[node name="Folded" type="Control" parent="FloorLayoutViz/Extras/MapControlUI"]
 layout_mode = 2
+anchors_preset = 0
+mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/Extras/MapControlUI/Folded"]
 layout_mode = 2
@@ -172,9 +174,11 @@ text = "Map Control UI"
 layout_mode = 2
 text = "  +  "
 
-[node name="Unfolded" type="Container" parent="FloorLayoutViz/Extras/MapControlUI/Folded"]
+[node name="Unfolded" type="Control" parent="FloorLayoutViz/Extras/MapControlUI/Folded"]
 visible = false
 layout_mode = 2
+anchors_preset = 0
+mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/Extras/MapControlUI/Folded/Unfolded"]
 layout_mode = 2
@@ -190,16 +194,18 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "  -  "
 
-[node name="EncountersUI" type="Container" parent="FloorLayoutViz/Extras" node_paths=PackedStringArray("folded_version", "unfolded_version")]
-custom_minimum_size = Vector2(300, 40)
+[node name="EncountersUI" type="Control" parent="FloorLayoutViz/Extras" node_paths=PackedStringArray("folded_version", "unfolded_version")]
 layout_mode = 2
+mouse_filter = 1
 script = ExtResource("4_r6kku")
 folded = true
 folded_version = NodePath("Folded")
 unfolded_version = NodePath("Folded/Unfolded")
 
-[node name="Folded" type="Container" parent="FloorLayoutViz/Extras/EncountersUI"]
+[node name="Folded" type="Control" parent="FloorLayoutViz/Extras/EncountersUI"]
 layout_mode = 2
+anchors_preset = 0
+mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/Extras/EncountersUI/Folded"]
 layout_mode = 2
@@ -213,9 +219,11 @@ text = "Encounters UI"
 layout_mode = 2
 text = "  +  "
 
-[node name="Unfolded" type="Container" parent="FloorLayoutViz/Extras/EncountersUI/Folded"]
+[node name="Unfolded" type="Control" parent="FloorLayoutViz/Extras/EncountersUI/Folded"]
 visible = false
 layout_mode = 2
+anchors_preset = 0
+mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/Extras/EncountersUI/Folded/Unfolded"]
 layout_mode = 2

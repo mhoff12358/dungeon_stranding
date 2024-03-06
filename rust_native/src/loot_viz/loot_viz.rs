@@ -251,9 +251,9 @@ impl IControl for LootViz {
         let di_context = DiContext::get_nearest(self.base().clone().upcast()).unwrap();
         let di_context = di_context.bind();
 
-        self.inventory_display_from =
+        self.inventory_display_to =
             Some(di_context.get_registered_node_template::<TransferrableInventoryViz>("to".into()));
-        self.inventory_display_to = Some(
+        self.inventory_display_from = Some(
             di_context.get_registered_node_template::<TransferrableInventoryViz>("from".into()),
         );
         self.transfer_viz = Some(di_context.get_registered_node_template::<TransferViz>("".into()));

@@ -141,7 +141,7 @@ impl IControl for InventoryViz {
         let context = context.bind();
         self.weight_bar_filled = Some(
             context
-                .get_registered_node_template::<ColorRect>("WeightBarFilled".into())
+                .get_registered_node_template::<ColorRect>("weight_bar_filled".into())
                 .upcast(),
         );
     }

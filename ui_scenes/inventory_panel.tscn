@@ -102,7 +102,7 @@ grow_vertical = 2
 color = Color(0.670588, 0.207843, 0.207843, 1)
 
 [node name="DiRegistration" type="DiRegistration" parent="Counts/Counts/Weight/Container/WeightBarFilled"]
-id = "WeightBarFilled"
+id = "weight_bar_filled"
 
 [node name="CenterContainer" type="CenterContainer" parent="Counts/Counts/Weight/Container"]
 layout_mode = 1

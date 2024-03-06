@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dnev621h4psxf"]
+[gd_scene load_steps=4 format=3 uid="uid://dnev621h4psxf"]
 
 [ext_resource type="Script" path="res://scripts/UIComponents/SubsceneSizeRemember.gd" id="1_qj4t0"]
 [ext_resource type="Script" path="res://scripts/UIComponents/RelativelyPlaced.gd" id="2_dbch2"]
+[ext_resource type="Theme" uid="uid://btfhe8v4fst55" path="res://ui_scenes/styles/heading_label.tres" id="3_ng5vk"]
 
 [node name="TransferrableInventoryViz" type="TransferrableInventoryViz"]
 offset_right = 960.0
@@ -71,6 +72,71 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="InventoryName" type="Label" parent="RelativelyPlaced/Items/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_ng5vk")
+text = "Inventory Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DiRegistration" type="DiRegistration" parent="RelativelyPlaced/Items/VBoxContainer/InventoryName"]
+id = "inventory_name"
+
+[node name="Weight" type="HBoxContainer" parent="RelativelyPlaced/Items/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="RelativelyPlaced/Items/VBoxContainer/Weight"]
+layout_mode = 2
+text = "Weight:"
+
+[node name="Control" type="Control" parent="RelativelyPlaced/Items/VBoxContainer/Weight"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="WeightBar" type="Control" parent="RelativelyPlaced/Items/VBoxContainer/Weight/Control"]
+layout_mode = 1
+anchor_left = 0.2
+anchor_right = 0.8
+anchor_bottom = 1.0
+
+[node name="WeightBarBackground" type="ColorRect" parent="RelativelyPlaced/Items/VBoxContainer/Weight/Control/WeightBar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.25098, 0.0784314, 0.0784314, 1)
+
+[node name="WeightBarFilled" type="ColorRect" parent="RelativelyPlaced/Items/VBoxContainer/Weight/Control/WeightBar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.670588, 0.207843, 0.207843, 1)
+
+[node name="DiRegistration" type="DiRegistration" parent="RelativelyPlaced/Items/VBoxContainer/Weight/Control/WeightBar/WeightBarFilled"]
+id = "weight_bar_filled"
+
+[node name="CenterContainer" type="CenterContainer" parent="RelativelyPlaced/Items/VBoxContainer/Weight/Control/WeightBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="RelativelyPlaced/Items/VBoxContainer/Weight/Control/WeightBar/CenterContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "10/10"
+
+[node name="DiRegistration" type="DiRegistration" parent="RelativelyPlaced/Items/VBoxContainer/Weight/Control/WeightBar/CenterContainer/Value"]
+id = "weight"
 
 [node name="MoneyItem" type="HBoxContainer" parent="RelativelyPlaced/Items/VBoxContainer"]
 layout_mode = 2

@@ -2,7 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 
 use ds_lib::game_state::items::{inventory::Inventory, unique_id::UniqueItemId};
 use godot::{
-    engine::{Control, IControl, Label},
+    engine::{global::Side, ColorRect, Control, IControl, Label},
     prelude::*,
 };
 use owning_ref::RefRef;
@@ -28,6 +28,14 @@ struct Details {
     direction: LootDirection,
 }
 
+struct RegisteredNodes {
+    inventory_name: Gd<Label>,
+    money_amount: Gd<Label>,
+    food_amount: Gd<Label>,
+    weight_amount: Gd<Label>,
+    weight_bar_filled: Gd<Control>,
+}
+
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct TransferrableInventoryViz {
@@ -36,14 +44,17 @@ pub struct TransferrableInventoryViz {
     details: Option<Details>,
 
     inventory_spawner: Option<RefCell<InventoryTemplateSpawner<TransferrableInventoryItemViz>>>,
-    money_amount: Option<Gd<Label>>,
-    food_amount: Option<Gd<Label>>,
+    registered_nodes: Option<RegisteredNodes>,
 
     base: Base<Control>,
 }
 
 #[godot_api]
 impl TransferrableInventoryViz {
+    fn reg_mut(&mut self) -> &mut RegisteredNodes {
+        self.registered_nodes.as_mut().unwrap()
+    }
+
     #[func(gd_self)]
     pub fn updated(mut this: Gd<Self>) {
         {
@@ -52,15 +63,34 @@ impl TransferrableInventoryViz {
                 let inventory_shared = details.inventory.clone();
                 let inventory = inventory_shared.borrow();
                 _self
+                    .reg_mut()
+                    .inventory_name
+                    .set_text(inventory.get_display_name().into());
+                _self
+                    .reg_mut()
                     .money_amount
-                    .as_mut()
-                    .unwrap()
                     .set_text(format!("{}", inventory.get_cash()).into());
                 _self
+                    .reg_mut()
                     .food_amount
-                    .as_mut()
-                    .unwrap()
                     .set_text(format!("{}", inventory.get_food()).into());
+
+                let total_weight = inventory.total_weight();
+                let weight_capacity = if let Some(weight_capacity) = inventory.weight_capacity() {
+                    weight_capacity
+                } else {
+                    999999
+                };
+                _self
+                    .reg_mut()
+                    .weight_amount
+                    .set_text(format!("{}/{}", total_weight, weight_capacity,).into());
+                _self
+                    .reg_mut()
+                    .weight_bar_filled
+                    .set_anchor_ex(Side::RIGHT, total_weight as f32 / weight_capacity as f32)
+                    .keep_offset(true)
+                    .done();
             }
         }
         let _self = this.bind();
@@ -146,8 +176,7 @@ impl IControl for TransferrableInventoryViz {
             loot_viz: None,
             details: None,
             inventory_spawner: None,
-            money_amount: None,
-            food_amount: None,
+            registered_nodes: None,
             base,
         }
     }
@@ -167,7 +196,14 @@ impl IControl for TransferrableInventoryViz {
             GameStateViz::UPDATED_STATE_SIGNAL.into(),
             self.base().callable("updated"),
         );
-        self.money_amount = Some(di_context.get_registered_node_template("money".into()));
-        self.food_amount = Some(di_context.get_registered_node_template("food".into()));
+        self.registered_nodes = Some(RegisteredNodes {
+            inventory_name: di_context.get_registered_node_template("inventory_name".into()),
+            money_amount: di_context.get_registered_node_template("money".into()),
+            food_amount: di_context.get_registered_node_template("food".into()),
+            weight_amount: di_context.get_registered_node_template("weight".into()),
+            weight_bar_filled: di_context
+                .get_registered_node_template::<ColorRect>("weight_bar_filled".into())
+                .upcast(),
+        });
     }
 }

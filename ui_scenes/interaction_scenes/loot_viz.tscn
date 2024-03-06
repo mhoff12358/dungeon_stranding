@@ -31,7 +31,7 @@ offset_bottom = 1080.0
 script = ExtResource("3_jw7y5")
 width = Vector2(0.5, 0)
 
-[node name="ToTransferrableInventoryViz2" parent="ToTransfer" instance=ExtResource("1_7hou1")]
+[node name="ToTransferrableInventoryViz" parent="ToTransfer" instance=ExtResource("1_7hou1")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,7 +41,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="DiRegistration" type="DiRegistration" parent="ToTransfer/ToTransferrableInventoryViz2"]
+[node name="DiRegistration" type="DiRegistration" parent="ToTransfer/ToTransferrableInventoryViz"]
 id = "to"
 
 [node name="FromTransfer" type="Control" parent="."]
