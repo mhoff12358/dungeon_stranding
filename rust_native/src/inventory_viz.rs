@@ -2,13 +2,14 @@ use std::{cell::RefCell, rc::Rc};
 
 use ds_lib::game_state::items::inventory::Inventory;
 use godot::{
-    engine::{global::Side, ColorRect, Control, IControl, Label},
+    engine::{ColorRect, Control, IControl, Label},
     prelude::*,
 };
 
 use crate::{
     di_context::di_context::DiContext,
     game_state_viz::{borrow_game_state, GameStateViz},
+    inventory_weight_display::update_weight_display,
     template_spawners::inventory_template_spawner::{
         InventoryItemViz, InventorySpawnerType, InventoryTemplateSpawner,
     },
@@ -79,22 +80,11 @@ impl InventoryViz {
             .unwrap()
             .set_text(format!("{}", gold).into());
 
-        let total_weight = inventory.total_weight();
-        let weight_capacity = if let Some(weight_capacity) = inventory.weight_capacity() {
-            weight_capacity
-        } else {
-            999999
-        };
-        self.weight_label
-            .as_mut()
-            .unwrap()
-            .set_text(format!("{}/{}", total_weight, weight_capacity).into());
-        self.weight_bar_filled
-            .as_mut()
-            .unwrap()
-            .set_anchor_ex(Side::RIGHT, total_weight as f32 / weight_capacity as f32)
-            .keep_offset(true)
-            .done();
+        update_weight_display(
+            &inventory,
+            self.weight_label.as_mut().unwrap(),
+            self.weight_bar_filled.as_mut().unwrap(),
+        );
 
         self.equipment_spawner.as_mut().unwrap().update(&inventory);
         self.gear_spawner.as_mut().unwrap().update(&inventory);

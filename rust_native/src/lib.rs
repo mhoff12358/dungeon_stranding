@@ -15,6 +15,7 @@ pub mod in_dungeon_viz;
 pub mod interaction_viz;
 mod interactions_viz;
 pub mod inventory_viz;
+pub mod inventory_weight_display;
 pub mod loot_viz;
 pub mod my_gd_ref;
 pub mod out_of_dungeon_viz;

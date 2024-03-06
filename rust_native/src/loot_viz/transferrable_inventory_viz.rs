@@ -2,7 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 
 use ds_lib::game_state::items::{inventory::Inventory, unique_id::UniqueItemId};
 use godot::{
-    engine::{global::Side, ColorRect, Control, IControl, Label},
+    engine::{ColorRect, Control, IControl, Label},
     prelude::*,
 };
 use owning_ref::RefRef;
@@ -10,6 +10,7 @@ use owning_ref::RefRef;
 use crate::{
     di_context::di_context::DiContext,
     game_state_viz::GameStateViz,
+    inventory_weight_display::update_weight_display,
     template_spawners::inventory_template_spawner::{
         InventorySpawnerType, InventoryTemplateSpawner,
     },
@@ -75,22 +76,12 @@ impl TransferrableInventoryViz {
                     .food_amount
                     .set_text(format!("{}", inventory.get_food()).into());
 
-                let total_weight = inventory.total_weight();
-                let weight_capacity = if let Some(weight_capacity) = inventory.weight_capacity() {
-                    weight_capacity
-                } else {
-                    999999
-                };
-                _self
-                    .reg_mut()
-                    .weight_amount
-                    .set_text(format!("{}/{}", total_weight, weight_capacity,).into());
-                _self
-                    .reg_mut()
-                    .weight_bar_filled
-                    .set_anchor_ex(Side::RIGHT, total_weight as f32 / weight_capacity as f32)
-                    .keep_offset(true)
-                    .done();
+                let registered_nodes = _self.reg_mut();
+                update_weight_display(
+                    &inventory,
+                    &mut registered_nodes.weight_amount,
+                    &mut registered_nodes.weight_bar_filled,
+                );
             }
         }
         let _self = this.bind();
