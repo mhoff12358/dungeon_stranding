@@ -3,8 +3,9 @@ use std::{cell::RefCell, rc::Rc};
 use ds_lib::game_state::{
     game_state::{GameState, InDungeon, InDungeonEvent, OngoingInteraction},
     inputs::loot_input::LootInput,
-    inventory::{Inventory, UniqueItemId},
-    inventory_transfer::OngoingInventoryTransfer,
+    items::{
+        inventory::Inventory, inventory_transfer::OngoingInventoryTransfer, unique_id::UniqueItemId,
+    },
 };
 use godot::{
     engine::{Control, IControl},

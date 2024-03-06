@@ -4,7 +4,7 @@ use std::{
 };
 
 use ds_lib::{
-    game_state::{game_state::GameState, inventory::UniqueItemId},
+    game_state::{game_state::GameState, items::unique_id::UniqueItemId},
     out_of_dungeon_algos::{enter_dungeon, purchase_from_shop},
     shop::{shop::Shop, shop_interface::ShopInterface},
 };

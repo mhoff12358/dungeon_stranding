@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use ds_lib::{game_state::inventory::ItemInfo, shop::shop::Shop};
+use ds_lib::{game_state::items::items::ItemInfo, shop::shop::Shop};
 use godot::{
     engine::{global::Side, Control, IControl, Label},
     prelude::*,

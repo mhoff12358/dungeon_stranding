@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use ds_lib::game_state::inventory::Inventory;
+use ds_lib::game_state::items::inventory::Inventory;
 use godot::{
     engine::{Control, IControl, Label},
     prelude::*,

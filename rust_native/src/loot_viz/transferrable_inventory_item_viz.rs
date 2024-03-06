@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use ds_lib::game_state::inventory::{Inventory, ItemInfo, UniqueItemId};
+use ds_lib::game_state::items::{inventory::Inventory, items::ItemInfo, unique_id::UniqueItemId};
 use godot::{
     engine::{Control, IControl, Label},
     prelude::*,
