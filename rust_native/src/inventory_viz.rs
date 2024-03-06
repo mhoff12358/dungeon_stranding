@@ -2,11 +2,12 @@ use std::{cell::RefCell, rc::Rc};
 
 use ds_lib::game_state::items::inventory::Inventory;
 use godot::{
-    engine::{Control, IControl, Label},
+    engine::{global::Side, ColorRect, Control, IControl, Label},
     prelude::*,
 };
 
 use crate::{
+    di_context::di_context::DiContext,
     game_state_viz::{borrow_game_state, GameStateViz},
     template_spawners::inventory_template_spawner::{
         InventoryItemViz, InventorySpawnerType, InventoryTemplateSpawner,
@@ -36,6 +37,8 @@ pub struct InventoryViz {
     #[export]
     food_label: Option<Gd<Label>>,
 
+    weight_bar_filled: Option<Gd<Control>>,
+
     base: Base<Control>,
 }
 
@@ -64,12 +67,6 @@ impl InventoryViz {
     pub fn update(&mut self) {
         let inventory_rc = self.inventory();
         let inventory = inventory_rc.borrow();
-        let weight = inventory.total_weight();
-        self.weight_label
-            .as_mut()
-            .unwrap()
-            .set_text(format!("{}", weight).into());
-
         let food = inventory.get_food();
         self.food_label
             .as_mut()
@@ -81,6 +78,23 @@ impl InventoryViz {
             .as_mut()
             .unwrap()
             .set_text(format!("{}", gold).into());
+
+        let total_weight = inventory.total_weight();
+        let weight_capacity = if let Some(weight_capacity) = inventory.weight_capacity() {
+            weight_capacity
+        } else {
+            999999
+        };
+        self.weight_label
+            .as_mut()
+            .unwrap()
+            .set_text(format!("{}/{}", total_weight, weight_capacity).into());
+        self.weight_bar_filled
+            .as_mut()
+            .unwrap()
+            .set_anchor_ex(Side::RIGHT, total_weight as f32 / weight_capacity as f32)
+            .keep_offset(true)
+            .done();
 
         self.equipment_spawner.as_mut().unwrap().update(&inventory);
         self.gear_spawner.as_mut().unwrap().update(&inventory);
@@ -99,6 +113,7 @@ impl IControl for InventoryViz {
             gold_label: None,
             weight_label: None,
             food_label: None,
+            weight_bar_filled: None,
             base,
         }
     }
@@ -121,5 +136,13 @@ impl IControl for InventoryViz {
             self.equipment_template.as_ref().unwrap().clone(),
             InventorySpawnerType::CombatEquipment,
         ));
+
+        let context = DiContext::get_nearest(self.to_gd().upcast()).unwrap();
+        let context = context.bind();
+        self.weight_bar_filled = Some(
+            context
+                .get_registered_node_template::<ColorRect>("WeightBarFilled".into())
+                .upcast(),
+        );
     }
 }
