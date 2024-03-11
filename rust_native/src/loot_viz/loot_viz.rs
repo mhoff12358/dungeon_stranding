@@ -39,17 +39,28 @@ pub struct DirectedInventories {
 pub struct LootViz {
     game_state: Option<Gd<GameStateViz>>,
 
-    ongoing_transfer: Option<OngoingInventoryTransfer>,
+    ongoing_transfer: Option<Rc<RefCell<OngoingInventoryTransfer>>>,
 
     inventory_display_from: Option<Gd<TransferrableInventoryViz>>,
     inventory_display_to: Option<Gd<TransferrableInventoryViz>>,
     transfer_viz: Option<Gd<TransferViz>>,
+    failed_to_finish_popup: Option<Gd<Control>>,
 
     base: Base<Control>,
 }
 
 #[godot_api]
 impl LootViz {
+    fn game_in_looting_interaction(&self, game_state: &GameState) -> bool {
+        return match game_state {
+            GameState::InDungeon(InDungeon {
+                ongoing_event: Some(InDungeonEvent::Interaction(OngoingInteraction::Loot(..))),
+                ..
+            }) => true,
+            _ => false,
+        };
+    }
+
     #[func(gd_self)]
     pub fn pre_updated(mut this: Gd<Self>) {
         this.set_visible(false);
@@ -59,14 +70,7 @@ impl LootViz {
         let should_clear;
         {
             let game_state = borrow_game_state(_self.game_state.as_ref().unwrap());
-            let game_state: &GameState = &game_state;
-            should_clear = match game_state {
-                GameState::InDungeon(InDungeon {
-                    ongoing_event: Some(InDungeonEvent::Interaction(OngoingInteraction::Loot(..))),
-                    ..
-                }) => false,
-                _ => true,
-            };
+            should_clear = _self.game_in_looting_interaction(&game_state);
         }
         if should_clear {
             _self.clear_transfer_ui();
@@ -74,25 +78,52 @@ impl LootViz {
     }
 
     #[func(gd_self)]
-    pub fn finish(this: Gd<Self>) {
-        let game_state = this.bind().game_state.as_ref().unwrap().clone();
+    pub fn finish(mut this: Gd<Self>) {
+        let game_state;
+        {
+            let mut _self = this.bind_mut();
+            game_state = _self.game_state.as_ref().unwrap().clone();
+        }
         GameStateViz::accept_input(game_state, &LootInput::finish());
+        let mut _self = this.bind_mut();
+        if _self.game_in_looting_interaction(&borrow_game_state(_self.game_state.as_ref().unwrap()))
+        {
+            _self
+                .failed_to_finish_popup
+                .as_mut()
+                .unwrap()
+                .set_visible(true);
+        }
     }
 }
 
 impl LootViz {
-    pub fn clear_transfer_ui(&mut self) {}
+    pub fn clear_transfer_ui(&mut self) {
+        self.ongoing_transfer = None;
+    }
 
-    pub fn set_transfer_ui(&mut self, ongoing_transfer: OngoingInventoryTransfer) {
+    pub fn set_transfer_ui(&mut self, ongoing_transfer: Rc<RefCell<OngoingInventoryTransfer>>) {
+        if let Some(previous_transfer) = self.ongoing_transfer.as_ref() {
+            if Rc::ptr_eq(previous_transfer, &ongoing_transfer) {
+                return;
+            }
+        }
         match (
             &mut self.inventory_display_from,
             &mut self.inventory_display_to,
         ) {
             (Some(from), Some(to)) => {
-                from.bind_mut()
-                    .init(to.clone(), ongoing_transfer.from, LootDirection::From);
-                to.bind_mut()
-                    .init(from.clone(), ongoing_transfer.to, LootDirection::To);
+                from.bind_mut().init(
+                    to.clone(),
+                    ongoing_transfer.borrow().from.clone(),
+                    LootDirection::From,
+                );
+                to.bind_mut().init(
+                    from.clone(),
+                    ongoing_transfer.borrow().to.clone(),
+                    LootDirection::To,
+                );
+                self.ongoing_transfer = Some(ongoing_transfer);
             }
             _ => {
                 panic!("Setting transfer UI missing either a from or to display.");
@@ -236,6 +267,7 @@ impl IControl for LootViz {
             inventory_display_from: None,
             inventory_display_to: None,
             transfer_viz: None,
+            failed_to_finish_popup: None,
             base,
         }
     }
@@ -257,5 +289,8 @@ impl IControl for LootViz {
             di_context.get_registered_node_template::<TransferrableInventoryViz>("from".into()),
         );
         self.transfer_viz = Some(di_context.get_registered_node_template::<TransferViz>("".into()));
+        self.failed_to_finish_popup = Some(
+            di_context.get_registered_node_template::<Control>("failed_to_finish_popup".into()),
+        );
     }
 }

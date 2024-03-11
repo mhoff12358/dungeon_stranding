@@ -13,7 +13,10 @@ pub fn update_weight_display(
     if let Some(weight_capacity) = inventory.weight_capacity() {
         text.set_text(format!("{}/{}", total_weight, weight_capacity,).into());
         bar_foreground
-            .set_anchor_ex(Side::RIGHT, total_weight as f32 / weight_capacity as f32)
+            .set_anchor_ex(
+                Side::RIGHT,
+                f32::min(1.0, total_weight as f32 / weight_capacity as f32),
+            )
             .keep_offset(true)
             .done();
     } else {
