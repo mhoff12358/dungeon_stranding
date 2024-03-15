@@ -1,3 +1,6 @@
+use ds_lib::game_state::items::inventory_transfer::{
+    InventoryTransfer, Transfer, TransferIdentifier,
+};
 use godot::{
     engine::{Control, IControl, Label, Slider},
     prelude::*,
@@ -5,7 +8,7 @@ use godot::{
 
 use crate::{di_context::di_context::DiContext, tree_utils::walk_parents_for};
 
-use super::loot_viz::{DirectedInventories, LootDirection, LootViz};
+use super::loot_viz::{DirectedInventories, LootViz};
 
 #[derive(Debug, Clone, Copy)]
 pub enum TransferType {
@@ -16,7 +19,7 @@ pub enum TransferType {
 #[derive(Debug, Clone, Copy)]
 pub struct TransferDetails {
     pub transfer_type: TransferType,
-    pub direction: LootDirection,
+    pub source: TransferIdentifier,
     pub amount: i32,
 }
 
@@ -48,7 +51,7 @@ impl TransferViz {
     pub fn init(
         mut this: Gd<Self>,
         transfer_type: TransferType,
-        direction: LootDirection,
+        source: TransferIdentifier,
         directed_inventories: DirectedInventories,
     ) {
         let mut slider;
@@ -57,7 +60,7 @@ impl TransferViz {
             let mut _self = this.bind_mut();
             _self.details = TransferDetails {
                 transfer_type,
-                direction,
+                source,
                 amount: 0,
             };
 
@@ -121,18 +124,20 @@ impl TransferViz {
             details = _self.details;
             _self.base_mut().set_visible(false);
         }
-        LootViz::transfer_amount(loot_viz, details);
-    }
-
-    #[func(gd_self)]
-    pub fn cancel(mut this: Gd<Self>) {
-        let loot_viz;
-        {
-            let mut _self = this.bind_mut();
-            loot_viz = _self.loot_viz.as_ref().unwrap().clone();
-            _self.base_mut().set_visible(false);
-        }
-        LootViz::cancel_transfer(loot_viz);
+        LootViz::transfer(
+            loot_viz,
+            InventoryTransfer {
+                source_inventory: details.source,
+                transfer: match details.transfer_type {
+                    TransferType::Food => Transfer::Food {
+                        amount: details.amount,
+                    },
+                    TransferType::Money => Transfer::Gold {
+                        amount: details.amount,
+                    },
+                },
+            },
+        );
     }
 }
 
@@ -141,7 +146,7 @@ impl IControl for TransferViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
             details: TransferDetails {
-                direction: LootDirection::From,
+                source: TransferIdentifier::From,
                 transfer_type: TransferType::Money,
                 amount: 0,
             },

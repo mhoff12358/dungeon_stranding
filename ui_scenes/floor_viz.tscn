@@ -150,20 +150,28 @@ anchor_bottom = 1.0
 grow_vertical = 2
 
 [node name="MapControlUI" type="Control" parent="FloorLayoutViz/Extras" node_paths=PackedStringArray("folded_version", "unfolded_version")]
+custom_minimum_size = Vector2(470, 250)
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("4_r6kku")
-folded = true
 folded_version = NodePath("Folded")
 unfolded_version = NodePath("Folded/Unfolded")
 
 [node name="Folded" type="Control" parent="FloorLayoutViz/Extras/MapControlUI"]
-layout_mode = 2
-anchors_preset = 0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+grow_horizontal = 2
 mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/Extras/MapControlUI/Folded"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.270588, 0.270588, 0.564706, 1)
 
 [node name="Label" type="Label" parent="FloorLayoutViz/Extras/MapControlUI/Folded"]
@@ -171,17 +179,34 @@ layout_mode = 2
 text = "Map Control UI"
 
 [node name="Button" type="Button" parent="FloorLayoutViz/Extras/MapControlUI/Folded"]
-layout_mode = 2
-text = "  +  "
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -34.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "+"
 
 [node name="Unfolded" type="Control" parent="FloorLayoutViz/Extras/MapControlUI/Folded"]
-visible = false
-layout_mode = 2
-anchors_preset = 0
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 0
 mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/Extras/MapControlUI/Folded/Unfolded"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.270588, 0.270588, 0.270588, 1)
 
 [node name="FollowPlayerCheckButton" type="CheckButton" parent="FloorLayoutViz/Extras/MapControlUI/Folded/Unfolded"]
@@ -190,25 +215,39 @@ button_pressed = true
 text = "Follow player"
 
 [node name="Button" type="Button" parent="FloorLayoutViz/Extras/MapControlUI/Folded/Unfolded"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-text = "  -  "
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -30.0
+offset_bottom = 40.0
+grow_horizontal = 0
+text = "-"
 
 [node name="EncountersUI" type="Control" parent="FloorLayoutViz/Extras" node_paths=PackedStringArray("folded_version", "unfolded_version")]
+custom_minimum_size = Vector2(470, 250)
 layout_mode = 2
 mouse_filter = 1
 script = ExtResource("4_r6kku")
-folded = true
 folded_version = NodePath("Folded")
 unfolded_version = NodePath("Folded/Unfolded")
 
 [node name="Folded" type="Control" parent="FloorLayoutViz/Extras/EncountersUI"]
-layout_mode = 2
-anchors_preset = 0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 50.0
+grow_horizontal = 2
 mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/Extras/EncountersUI/Folded"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.270588, 0.270588, 0.564706, 1)
 
 [node name="Label" type="Label" parent="FloorLayoutViz/Extras/EncountersUI/Folded"]
@@ -216,21 +255,40 @@ layout_mode = 2
 text = "Encounters UI"
 
 [node name="Button" type="Button" parent="FloorLayoutViz/Extras/EncountersUI/Folded"]
-layout_mode = 2
-text = "  +  "
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -34.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "+"
 
 [node name="Unfolded" type="Control" parent="FloorLayoutViz/Extras/EncountersUI/Folded"]
-visible = false
-layout_mode = 2
-anchors_preset = 0
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 0
 mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="FloorLayoutViz/Extras/EncountersUI/Folded/Unfolded"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.270588, 0.270588, 0.270588, 1)
 
 [node name="FloorEncountersViz" type="FloorEncountersViz" parent="FloorLayoutViz/Extras/EncountersUI/Folded/Unfolded"]
 layout_mode = 2
+offset_top = -300.0
+offset_bottom = -300.0
 
 [node name="DiContext" type="DiContext" parent="FloorLayoutViz/Extras/EncountersUI/Folded/Unfolded/FloorEncountersViz"]
 verbose_logging_name = "FloorEncounterViz"
@@ -272,9 +330,15 @@ text = "2"
 id = "count"
 
 [node name="Button" type="Button" parent="FloorLayoutViz/Extras/EncountersUI/Folded/Unfolded"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-text = "  -  "
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -30.0
+offset_bottom = 40.0
+grow_horizontal = 0
+text = "-"
 
 [connection signal="pressed" from="FloorLayoutViz/Extras/MapControlUI/Folded/Button" to="FloorLayoutViz/Extras/MapControlUI" method="set_is_unfolded"]
 [connection signal="toggled" from="FloorLayoutViz/Extras/MapControlUI/Folded/Unfolded/FollowPlayerCheckButton" to="FloorLayoutViz/MapControls" method="_on_follow_player_check_button_toggled"]

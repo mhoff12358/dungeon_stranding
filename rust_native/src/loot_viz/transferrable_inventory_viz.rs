@@ -1,6 +1,10 @@
 use std::{cell::RefCell, rc::Rc};
 
-use ds_lib::game_state::items::{inventory::Inventory, unique_id::UniqueItemId};
+use ds_lib::game_state::items::{
+    inventory::Inventory,
+    inventory_transfer::{InventoryTransfer, Transfer, TransferIdentifier},
+    unique_id::UniqueItemId,
+};
 use godot::{
     engine::{ColorRect, Control, IControl, Label},
     prelude::*,
@@ -18,15 +22,14 @@ use crate::{
 };
 
 use super::{
-    loot_viz::{LootDirection, LootViz},
-    transfer_viz::TransferType,
+    loot_viz::LootViz, transfer_viz::TransferType,
     transferrable_inventory_item_viz::TransferrableInventoryItemViz,
 };
 
 struct Details {
     _other: Gd<TransferrableInventoryViz>,
     inventory: Rc<RefCell<Inventory>>,
-    direction: LootDirection,
+    direction: TransferIdentifier,
 }
 
 struct RegisteredNodes {
@@ -123,7 +126,13 @@ impl TransferrableInventoryViz {
             loot_viz = _self.loot_viz.as_ref().unwrap().clone();
             direction = _self.details.as_ref().unwrap().direction;
         }
-        LootViz::transfer_all(loot_viz, direction);
+        LootViz::transfer(
+            loot_viz,
+            InventoryTransfer {
+                source_inventory: direction,
+                transfer: Transfer::Everything,
+            },
+        );
     }
 }
 
@@ -132,7 +141,7 @@ impl TransferrableInventoryViz {
         &mut self,
         other: Gd<TransferrableInventoryViz>,
         inventory: Rc<RefCell<Inventory>>,
-        direction: LootDirection,
+        direction: TransferIdentifier,
     ) {
         self.details = Some(Details {
             _other: other,
@@ -156,7 +165,13 @@ impl TransferrableInventoryViz {
     pub fn transfer_item(this: Gd<Self>, item: UniqueItemId) {
         let loot_viz = this.bind().loot_viz.as_ref().unwrap().clone();
         let direction = this.bind().details.as_ref().unwrap().direction;
-        LootViz::transfer_item(loot_viz, item, direction);
+        LootViz::transfer(
+            loot_viz,
+            InventoryTransfer {
+                source_inventory: direction,
+                transfer: Transfer::Item(item),
+            },
+        );
     }
 }
 

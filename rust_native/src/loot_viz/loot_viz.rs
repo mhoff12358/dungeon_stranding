@@ -4,7 +4,8 @@ use ds_lib::game_state::{
     game_state::{GameState, InDungeon, InDungeonEvent, OngoingInteraction},
     inputs::loot_input::LootInput,
     items::{
-        inventory::Inventory, inventory_transfer::OngoingInventoryTransfer, unique_id::UniqueItemId,
+        inventory::Inventory,
+        inventory_transfer::{InventoryTransfer, OngoingInventoryTransfer, TransferIdentifier},
     },
 };
 use godot::{
@@ -19,15 +20,9 @@ use crate::{
 };
 
 use super::{
-    transfer_viz::{TransferDetails, TransferType, TransferViz},
+    transfer_viz::{TransferType, TransferViz},
     transferrable_inventory_viz::TransferrableInventoryViz,
 };
-
-#[derive(Debug, Clone, Copy)]
-pub enum LootDirection {
-    From,
-    To,
-}
 
 pub struct DirectedInventories {
     pub from: Rc<RefCell<Inventory>>,
@@ -116,12 +111,12 @@ impl LootViz {
                 from.bind_mut().init(
                     to.clone(),
                     ongoing_transfer.borrow().from.clone(),
-                    LootDirection::From,
+                    TransferIdentifier::From,
                 );
                 to.bind_mut().init(
                     from.clone(),
                     ongoing_transfer.borrow().to.clone(),
-                    LootDirection::To,
+                    TransferIdentifier::To,
                 );
                 self.ongoing_transfer = Some(ongoing_transfer);
             }
@@ -159,9 +154,9 @@ impl LootViz {
         TransferrableInventoryViz::updated(self.inventory_display_to.clone().unwrap());
     }
 
-    fn directed_inventories(&self, direction: LootDirection) -> DirectedInventories {
+    fn directed_inventories(&self, direction: TransferIdentifier) -> DirectedInventories {
         match direction {
-            LootDirection::From => DirectedInventories {
+            TransferIdentifier::From => DirectedInventories {
                 from: self
                     .inventory_display_from
                     .as_ref()
@@ -175,7 +170,7 @@ impl LootViz {
                     .bind()
                     .get_inventory_rc(),
             },
-            LootDirection::To => DirectedInventories {
+            TransferIdentifier::To => DirectedInventories {
                 from: self
                     .inventory_display_to
                     .as_ref()
@@ -192,47 +187,16 @@ impl LootViz {
         }
     }
 
-    pub fn cancel_transfer(_this: Gd<Self>) {}
-
-    pub fn transfer_amount(this: Gd<Self>, details: TransferDetails) {
-        let game_state: Gd<GameStateViz>;
+    pub fn transfer(mut this: Gd<Self>, details: InventoryTransfer) {
+        let game_state;
         {
-            let _self = this.bind();
+            let mut _self = this.bind_mut();
             game_state = _self.game_state.as_ref().unwrap().clone();
-
-            let inventories = _self.directed_inventories(details.direction);
-            match details.transfer_type {
-                TransferType::Money => {
-                    if inventories.from.borrow_mut().remove_cash(details.amount) {
-                        inventories.to.borrow_mut().add_cash(details.amount);
-                    }
-                }
-                TransferType::Food => {
-                    if inventories.from.borrow_mut().remove_food(details.amount) {
-                        inventories.to.borrow_mut().add_food(details.amount);
-                    }
-                }
-            }
         }
-        GameStateViz::handle_game_update(game_state);
+        GameStateViz::accept_input(game_state, &LootInput::transfer(details));
     }
 
-    pub fn transfer_item(this: Gd<Self>, item: UniqueItemId, direction: LootDirection) {
-        let game_state: Gd<GameStateViz>;
-        {
-            let _self = this.bind();
-            game_state = _self.game_state.as_ref().unwrap().clone();
-
-            let inventories = _self.directed_inventories(direction);
-            let removed_item = inventories.from.borrow_mut().remove_item(item);
-            if let Some(item) = removed_item {
-                inventories.to.borrow_mut().add_item(item);
-            }
-        }
-        GameStateViz::handle_game_update(game_state);
-    }
-
-    pub fn transfer_all(this: Gd<Self>, direction: LootDirection) {
+    /*pub fn transfer_all(this: Gd<Self>, direction: TransferIdentifier) {
         let game_state: Gd<GameStateViz>;
         {
             let _self = this.bind();
@@ -245,9 +209,13 @@ impl LootViz {
                 .empty_other(&mut inventories.from.borrow_mut());
         }
         GameStateViz::handle_game_update(game_state);
-    }
+    }*/
 
-    pub fn start_transfer_amount(&mut self, transfer_type: TransferType, direction: LootDirection) {
+    pub fn start_transfer_amount(
+        &mut self,
+        transfer_type: TransferType,
+        direction: TransferIdentifier,
+    ) {
         let inventories = self.directed_inventories(direction);
         TransferViz::init(
             self.transfer_viz.as_mut().unwrap().clone(),

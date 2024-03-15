@@ -87,6 +87,20 @@ impl FloorLayoutViz {
                     floor.layout().tiles().get(&tile_coord),
                 );
                 let tile_map = self.tile_map.as_mut().unwrap();
+                for layer in 0..TILE_LAYERS {
+                    if layer < atlas_coords.len() {
+                        tile_map
+                            .set_cell_ex(layer as i32, Vector2i { x, y })
+                            .source_id(0)
+                            .atlas_coords(atlas_coords[layer])
+                            .done();
+                    } else {
+                        tile_map
+                            .set_cell_ex(layer as i32, Vector2i { x, y })
+                            .source_id(-1)
+                            .done();
+                    }
+                }
                 for (layer, atlas_coord) in atlas_coords.into_iter().enumerate() {
                     tile_map
                         .set_cell_ex(layer as i32, Vector2i { x, y })
@@ -124,6 +138,8 @@ impl FloorLayoutViz {
         player.set_position(tile_spacing.entity_position(in_dungeon.player_position));
     }
 }
+const TILE_LAYERS: usize = 4;
+type AtlasCoordsForTile = SmallVec<[Vector2i; TILE_LAYERS]>;
 
 impl FloorLayoutViz {
     fn get_atlas_coords_for_tile(
@@ -131,7 +147,7 @@ impl FloorLayoutViz {
         in_dungeon: &InDungeon,
         coord: &Coord,
         tile: Option<&TileState>,
-    ) -> SmallVec<[Vector2i; 4]> {
+    ) -> AtlasCoordsForTile {
         if tile.is_none() {
             return smallvec![-Vector2i::ONE];
         }

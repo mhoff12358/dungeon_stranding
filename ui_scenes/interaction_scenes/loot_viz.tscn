@@ -203,10 +203,8 @@ verbose_logging_name = "TransferViz"
 [node name="BlockInteractions" type="Control" parent="FailedToFinish" node_paths=PackedStringArray("reference_node")]
 layout_mode = 3
 anchors_preset = 0
-offset_left = -480.0
-offset_top = -270.0
-offset_right = 1440.0
-offset_bottom = 810.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 script = ExtResource("3_jw7y5")
 reference_node = NodePath("../..")
 position_at_relative = true
