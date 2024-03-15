@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://d3h1eupfohnd1"]
+[gd_scene load_steps=10 format=3 uid="uid://d3h1eupfohnd1"]
 
 [ext_resource type="Script" path="res://scripts/GameState.gd" id="1_giily"]
 [ext_resource type="Script" path="res://scripts/out_of_dungeon_connections.gd" id="2_1rkja"]
@@ -6,7 +6,6 @@
 [ext_resource type="Script" path="res://shop_connections.gd" id="7_xuray"]
 [ext_resource type="PackedScene" uid="uid://c3maqbc4pu4a0" path="res://ui_scenes/floor_viz.tscn" id="8_se2np"]
 [ext_resource type="Script" path="res://scripts/EnterTheDungeon.gd" id="9_cpnir"]
-[ext_resource type="Script" path="res://ShopItemViz.gd" id="9_g1ov6"]
 [ext_resource type="Script" path="res://SelectedItem.gd" id="9_mks4e"]
 [ext_resource type="PackedScene" uid="uid://cx2edce5f3qbo" path="res://ui_scenes/fight_viz.tscn" id="11_1ih0a"]
 [ext_resource type="PackedScene" uid="uid://cx75p07psmnvu" path="res://ui_scenes/interaction_viz.tscn" id="13_qa2tb"]
@@ -98,19 +97,28 @@ price_label = NodePath("Price")
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 0.025
+anchor_bottom = 0.035
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("9_g1ov6")
+
+[node name="Button" type="Button" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/PurchasableItems/ShopItemViz"]
+layout_mode = 0
+offset_right = 38.0
+offset_bottom = 31.0
+text = "Buy"
 
 [node name="ItemName" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/PurchasableItems/ShopItemViz"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.7
 anchor_bottom = 1.0
+offset_left = 65.0
+offset_right = -0.47998
+offset_bottom = -0.299698
 grow_horizontal = 2
 grow_vertical = 2
 text = "Item name"
+vertical_alignment = 1
 
 [node name="Price" type="Label" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/PurchasableItems/ShopItemViz"]
 layout_mode = 1
@@ -121,6 +129,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "10g"
+vertical_alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/PurchasableItems/ShopItemViz"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.839216, 0.839216, 0.839216, 1)
 
 [node name="EnterTheDungeon" type="Button" parent="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel" node_paths=PackedStringArray("shop")]
 layout_mode = 1
@@ -163,6 +183,7 @@ autowrap_mode = 2
 script = ExtResource("9_mks4e")
 
 [node name="InDungeonUI" type="InDungeonViz" parent="AspectRatioContainer/GameStateViz"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -250,4 +271,5 @@ visible = false
 layout_mode = 1
 
 [connection signal="updated_state" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/SelectedDescriptionPanel/SelectedItem" method="_on_shop_panel_updated_state"]
+[connection signal="pressed" from="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/PurchasableItems/ShopItemViz/Button" to="AspectRatioContainer/GameStateViz/OutOfDungeonUI/ShopPanel/ItemsPanel/PurchasableItems/ShopItemViz" method="buy_item"]
 [connection signal="pressed" from="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz/Button" to="AspectRatioContainer/GameStateViz/InDungeonUI/AvailableInteractionsViz/ColorRect/Options/AvailableInteractionViz" method="do_interaction"]

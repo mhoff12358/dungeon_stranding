@@ -15,7 +15,14 @@ grow_vertical = 2
 
 [node name="DiContext" type="DiContext" parent="."]
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ToTransfer" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 960.0
+offset_bottom = 1080.0
+script = ExtResource("3_jw7y5")
+width = Vector2(0.5, 0)
+
+[node name="ColorRect" type="ColorRect" parent="ToTransfer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,13 +30,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.811765, 0.815686, 1, 1)
-
-[node name="ToTransfer" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 960.0
-offset_bottom = 1080.0
-script = ExtResource("3_jw7y5")
-width = Vector2(0.5, 0)
 
 [node name="ToTransferrableInventoryViz" parent="ToTransfer" instance=ExtResource("1_7hou1")]
 layout_mode = 1
@@ -52,6 +52,15 @@ offset_bottom = 1080.0
 script = ExtResource("3_jw7y5")
 left_margin = Vector2(0.5, 0)
 width = Vector2(0.5, 0)
+
+[node name="ColorRect" type="ColorRect" parent="FromTransfer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.811765, 0.815686, 1, 1)
 
 [node name="FromTransferrableInventoryViz" parent="FromTransfer" instance=ExtResource("1_7hou1")]
 layout_mode = 1
@@ -203,8 +212,10 @@ verbose_logging_name = "TransferViz"
 [node name="BlockInteractions" type="Control" parent="FailedToFinish" node_paths=PackedStringArray("reference_node")]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+offset_left = -480.0
+offset_top = -270.0
+offset_right = 1440.0
+offset_bottom = 810.0
 script = ExtResource("3_jw7y5")
 reference_node = NodePath("../..")
 position_at_relative = true

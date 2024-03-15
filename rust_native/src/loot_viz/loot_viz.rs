@@ -49,7 +49,7 @@ impl LootViz {
     fn game_in_looting_interaction(&self, game_state: &GameState) -> bool {
         return match game_state {
             GameState::InDungeon(InDungeon {
-                ongoing_event: Some(InDungeonEvent::Interaction(OngoingInteraction::Loot(..))),
+                ongoing_event: Some(InDungeonEvent::Interaction(OngoingInteraction::Loot { .. })),
                 ..
             }) => true,
             _ => false,
@@ -132,7 +132,7 @@ impl LootViz {
         let game_state_transfer;
         {
             let game_state = borrow_game_state(self.game_state.as_ref().unwrap());
-            if let OngoingInteraction::Loot(transfer) = game_state
+            if let OngoingInteraction::Loot { transfer, .. } = game_state
                 .unwrap_in_dungeon()
                 .ongoing_event
                 .as_ref()

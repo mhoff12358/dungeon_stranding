@@ -78,7 +78,7 @@ impl ShopViz {
             let _self = shop_viz.bind_mut();
             game_state = _self.game_state();
             let mut game_state = borrow_game_state_mut(&game_state);
-            purchase_from_shop(game_state.unwrap_out_of_dungeon_mut(), item_to_buy.0);
+            purchase_from_shop(&mut game_state, item_to_buy.0);
         }
         GameStateViz::handle_game_update(game_state);
     }

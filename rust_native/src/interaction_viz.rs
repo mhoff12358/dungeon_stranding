@@ -80,7 +80,7 @@ impl InteractionViz {
             OngoingInteraction::Camp { amount } => {
                 self.viz.as_mut().unwrap().camp.bind_mut().updated(amount);
             }
-            OngoingInteraction::Loot(..) => {
+            OngoingInteraction::Loot { .. } => {
                 self.viz.as_mut().unwrap().loot.bind_mut().updated();
             }
             OngoingInteraction::OpenCloseDoor { open, directions } => {

@@ -49,10 +49,7 @@ impl InventoryViz {
         if game_state.is_in_dungeon() {
             game_state.unwrap_in_dungeon().party_stats.inventory.clone()
         } else {
-            game_state
-                .unwrap_out_of_dungeon()
-                .purchased_inventory
-                .clone()
+            game_state.unwrap_out_of_dungeon().party_inventory.clone()
         }
     }
 }
