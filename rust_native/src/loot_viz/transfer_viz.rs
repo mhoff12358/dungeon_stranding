@@ -8,7 +8,7 @@ use godot::{
 
 use crate::{di_context::di_context::DiContext, tree_utils::walk_parents_for};
 
-use super::loot_viz::{DirectedInventories, LootViz};
+use super::ongoing_transfer_viz::{DirectedInventories, OngoingTransferViz};
 
 #[derive(Debug, Clone, Copy)]
 pub enum TransferType {
@@ -35,7 +35,7 @@ struct Components {
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct TransferViz {
-    loot_viz: Option<Gd<LootViz>>,
+    ongoing_transfer_viz: Option<Gd<OngoingTransferViz>>,
 
     details: TransferDetails,
     min: i32,
@@ -120,11 +120,11 @@ impl TransferViz {
         let loot_viz;
         {
             let mut _self = this.bind_mut();
-            loot_viz = _self.loot_viz.as_ref().unwrap().clone();
+            loot_viz = _self.ongoing_transfer_viz.as_ref().unwrap().clone();
             details = _self.details;
             _self.base_mut().set_visible(false);
         }
-        LootViz::transfer(
+        OngoingTransferViz::transfer(
             loot_viz,
             InventoryTransfer {
                 source_inventory: details.source,
@@ -153,13 +153,13 @@ impl IControl for TransferViz {
             min: 0,
             max: 0,
             components: None,
-            loot_viz: None,
+            ongoing_transfer_viz: None,
             base,
         }
     }
 
     fn ready(&mut self) {
-        self.loot_viz = Some(walk_parents_for(&self.to_gd()));
+        self.ongoing_transfer_viz = Some(walk_parents_for(&self.to_gd()));
         self.base_mut().set_visible(false);
 
         let di_context = DiContext::get_nearest_bound(self.base().clone());

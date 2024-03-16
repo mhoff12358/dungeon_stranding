@@ -22,7 +22,7 @@ use crate::{
 };
 
 use super::{
-    loot_viz::LootViz, transfer_viz::TransferType,
+    ongoing_transfer_viz::OngoingTransferViz, transfer_viz::TransferType,
     transferrable_inventory_item_viz::TransferrableInventoryItemViz,
 };
 
@@ -43,7 +43,7 @@ struct RegisteredNodes {
 #[derive(GodotClass)]
 #[class(base=Control)]
 pub struct TransferrableInventoryViz {
-    loot_viz: Option<Gd<LootViz>>,
+    ongoing_transfer_viz: Option<Gd<OngoingTransferViz>>,
 
     details: Option<Details>,
 
@@ -105,29 +105,29 @@ impl TransferrableInventoryViz {
     }
 
     pub fn start_transfer(this: Gd<Self>, transfer_type: TransferType) {
-        let mut loot_viz;
+        let mut ongoing_transfer_viz;
         let direction;
         {
             let _self = this.bind();
-            loot_viz = _self.loot_viz.as_ref().unwrap().clone();
+            ongoing_transfer_viz = _self.ongoing_transfer_viz.as_ref().unwrap().clone();
             direction = _self.details.as_ref().unwrap().direction;
         }
-        loot_viz
+        ongoing_transfer_viz
             .bind_mut()
             .start_transfer_amount(transfer_type, direction);
     }
 
     #[func(gd_self)]
     pub fn transfer_all(this: Gd<Self>) {
-        let loot_viz;
+        let ongoing_transfer_viz;
         let direction;
         {
             let _self = this.bind();
-            loot_viz = _self.loot_viz.as_ref().unwrap().clone();
+            ongoing_transfer_viz = _self.ongoing_transfer_viz.as_ref().unwrap().clone();
             direction = _self.details.as_ref().unwrap().direction;
         }
-        LootViz::transfer(
-            loot_viz,
+        OngoingTransferViz::transfer(
+            ongoing_transfer_viz,
             InventoryTransfer {
                 source_inventory: direction,
                 transfer: Transfer::Everything,
@@ -163,10 +163,10 @@ impl TransferrableInventoryViz {
     }
 
     pub fn transfer_item(this: Gd<Self>, item: UniqueItemId) {
-        let loot_viz = this.bind().loot_viz.as_ref().unwrap().clone();
+        let ongoing_transfer_viz = this.bind().ongoing_transfer_viz.as_ref().unwrap().clone();
         let direction = this.bind().details.as_ref().unwrap().direction;
-        LootViz::transfer(
-            loot_viz,
+        OngoingTransferViz::transfer(
+            ongoing_transfer_viz,
             InventoryTransfer {
                 source_inventory: direction,
                 transfer: Transfer::Item(item),
@@ -179,7 +179,7 @@ impl TransferrableInventoryViz {
 impl IControl for TransferrableInventoryViz {
     fn init(base: godot::obj::Base<Self::Base>) -> Self {
         Self {
-            loot_viz: None,
+            ongoing_transfer_viz: None,
             details: None,
             inventory_spawner: None,
             registered_nodes: None,
@@ -196,7 +196,7 @@ impl IControl for TransferrableInventoryViz {
             item_template,
             InventorySpawnerType::All,
         )));
-        self.loot_viz = Some(walk_parents_for(&self.to_gd()));
+        self.ongoing_transfer_viz = Some(walk_parents_for(&self.to_gd()));
         let mut game_state: Gd<GameStateViz> = walk_parents_for(&self.to_gd());
         game_state.connect(
             GameStateViz::UPDATED_STATE_SIGNAL.into(),

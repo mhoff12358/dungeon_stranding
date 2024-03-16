@@ -15,14 +15,24 @@ grow_vertical = 2
 
 [node name="DiContext" type="DiContext" parent="."]
 
-[node name="ToTransfer" type="Control" parent="."]
+[node name="OngoingTransferViz" type="OngoingTransferViz" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DiRegistration" type="DiRegistration" parent="OngoingTransferViz"]
+
+[node name="ToTransfer" type="Control" parent="OngoingTransferViz"]
 anchors_preset = 0
 offset_right = 960.0
 offset_bottom = 1080.0
 script = ExtResource("3_jw7y5")
 width = Vector2(0.5, 0)
 
-[node name="ColorRect" type="ColorRect" parent="ToTransfer"]
+[node name="ColorRect" type="ColorRect" parent="OngoingTransferViz/ToTransfer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,7 +41,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.811765, 0.815686, 1, 1)
 
-[node name="ToTransferrableInventoryViz" parent="ToTransfer" instance=ExtResource("1_7hou1")]
+[node name="ToTransferrableInventoryViz" parent="OngoingTransferViz/ToTransfer" instance=ExtResource("1_7hou1")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,10 +51,10 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="DiRegistration" type="DiRegistration" parent="ToTransfer/ToTransferrableInventoryViz"]
+[node name="DiRegistration" type="DiRegistration" parent="OngoingTransferViz/ToTransfer/ToTransferrableInventoryViz"]
 id = "to"
 
-[node name="FromTransfer" type="Control" parent="."]
+[node name="FromTransfer" type="Control" parent="OngoingTransferViz"]
 anchors_preset = 0
 offset_left = 960.0
 offset_right = 1920.0
@@ -53,7 +63,7 @@ script = ExtResource("3_jw7y5")
 left_margin = Vector2(0.5, 0)
 width = Vector2(0.5, 0)
 
-[node name="ColorRect" type="ColorRect" parent="FromTransfer"]
+[node name="ColorRect" type="ColorRect" parent="OngoingTransferViz/FromTransfer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -62,7 +72,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.811765, 0.815686, 1, 1)
 
-[node name="FromTransferrableInventoryViz" parent="FromTransfer" instance=ExtResource("1_7hou1")]
+[node name="FromTransferrableInventoryViz" parent="OngoingTransferViz/FromTransfer" instance=ExtResource("1_7hou1")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -72,10 +82,10 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="DiRegistration" type="DiRegistration" parent="FromTransfer/FromTransferrableInventoryViz"]
+[node name="DiRegistration" type="DiRegistration" parent="OngoingTransferViz/FromTransfer/FromTransferrableInventoryViz"]
 id = "from"
 
-[node name="TransferViz" type="TransferViz" parent="."]
+[node name="TransferViz" type="TransferViz" parent="OngoingTransferViz"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.25
@@ -83,12 +93,12 @@ anchor_top = 0.25
 anchor_right = 0.75
 anchor_bottom = 0.75
 
-[node name="DiRegistration" type="DiRegistration" parent="TransferViz"]
+[node name="DiRegistration" type="DiRegistration" parent="OngoingTransferViz/TransferViz"]
 
-[node name="DiContext" type="DiContext" parent="TransferViz"]
+[node name="DiContext" type="DiContext" parent="OngoingTransferViz/TransferViz"]
 verbose_logging_name = "TransferViz"
 
-[node name="ColorRect" type="ColorRect" parent="TransferViz"]
+[node name="ColorRect" type="ColorRect" parent="OngoingTransferViz/TransferViz"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -97,7 +107,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 0.839216, 1, 1)
 
-[node name="Title" type="Label" parent="TransferViz"]
+[node name="Title" type="Label" parent="OngoingTransferViz/TransferViz"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -108,10 +118,10 @@ grow_horizontal = 2
 text = "Transfer"
 label_settings = ExtResource("2_iyao1")
 
-[node name="DiRegistration" type="DiRegistration" parent="TransferViz/Title"]
+[node name="DiRegistration" type="DiRegistration" parent="OngoingTransferViz/TransferViz/Title"]
 id = "description"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TransferViz"]
+[node name="HBoxContainer" type="HBoxContainer" parent="OngoingTransferViz/TransferViz"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -120,20 +130,20 @@ anchor_right = 0.5
 anchor_bottom = 0.4
 grow_horizontal = 2
 
-[node name="Amount" type="Label" parent="TransferViz/HBoxContainer"]
+[node name="Amount" type="Label" parent="OngoingTransferViz/TransferViz/HBoxContainer"]
 layout_mode = 2
 text = "Amount:"
 label_settings = ExtResource("2_iyao1")
 
-[node name="AmountDisplay" type="Label" parent="TransferViz/HBoxContainer"]
+[node name="AmountDisplay" type="Label" parent="OngoingTransferViz/TransferViz/HBoxContainer"]
 layout_mode = 2
 text = "100"
 label_settings = ExtResource("2_iyao1")
 
-[node name="DiRegistration" type="DiRegistration" parent="TransferViz/HBoxContainer/AmountDisplay"]
+[node name="DiRegistration" type="DiRegistration" parent="OngoingTransferViz/TransferViz/HBoxContainer/AmountDisplay"]
 id = "amount"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="TransferViz"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="OngoingTransferViz/TransferViz"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -142,35 +152,35 @@ anchor_right = 0.5
 anchor_bottom = 0.6
 grow_horizontal = 2
 
-[node name="Min" type="Label" parent="TransferViz/HBoxContainer2"]
+[node name="Min" type="Label" parent="OngoingTransferViz/TransferViz/HBoxContainer2"]
 layout_mode = 2
 text = "Min"
 label_settings = ExtResource("2_iyao1")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="DiRegistration" type="DiRegistration" parent="TransferViz/HBoxContainer2/Min"]
+[node name="DiRegistration" type="DiRegistration" parent="OngoingTransferViz/TransferViz/HBoxContainer2/Min"]
 id = "min"
 
-[node name="SelectSlider" type="HSlider" parent="TransferViz/HBoxContainer2"]
+[node name="SelectSlider" type="HSlider" parent="OngoingTransferViz/TransferViz/HBoxContainer2"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="DiRegistration" type="DiRegistration" parent="TransferViz/HBoxContainer2/SelectSlider"]
+[node name="DiRegistration" type="DiRegistration" parent="OngoingTransferViz/TransferViz/HBoxContainer2/SelectSlider"]
 type_name = "Slider"
 id = "slider"
 
-[node name="Max" type="Label" parent="TransferViz/HBoxContainer2"]
+[node name="Max" type="Label" parent="OngoingTransferViz/TransferViz/HBoxContainer2"]
 layout_mode = 2
 text = "Max"
 label_settings = ExtResource("2_iyao1")
 vertical_alignment = 1
 
-[node name="DiRegistration" type="DiRegistration" parent="TransferViz/HBoxContainer2/Max"]
+[node name="DiRegistration" type="DiRegistration" parent="OngoingTransferViz/TransferViz/HBoxContainer2/Max"]
 id = "max"
 
-[node name="ButtonRow" type="Control" parent="TransferViz"]
+[node name="ButtonRow" type="Control" parent="OngoingTransferViz/TransferViz"]
 anchors_preset = 0
 offset_top = 432.0
 offset_right = 960.0
@@ -179,7 +189,7 @@ script = ExtResource("3_jw7y5")
 top_margin = Vector2(0, 0.8)
 height = Vector2(0, 0.1)
 
-[node name="Accept" type="Button" parent="TransferViz/ButtonRow"]
+[node name="Accept" type="Button" parent="OngoingTransferViz/TransferViz/ButtonRow"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.25
@@ -187,7 +197,7 @@ anchor_right = 0.4
 anchor_bottom = 1.0
 text = "Accept"
 
-[node name="Cancel" type="Button" parent="TransferViz/ButtonRow"]
+[node name="Cancel" type="Button" parent="OngoingTransferViz/TransferViz/ButtonRow"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6
@@ -195,7 +205,7 @@ anchor_right = 0.75
 anchor_bottom = 1.0
 text = "Cancel"
 
-[node name="FailedToFinish" type="Control" parent="."]
+[node name="FailedToFinish" type="Control" parent="OngoingTransferViz"]
 visible = false
 layout_mode = 1
 anchor_left = 0.25
@@ -203,13 +213,13 @@ anchor_top = 0.25
 anchor_right = 0.75
 anchor_bottom = 0.75
 
-[node name="DiRegistration" type="DiRegistration" parent="FailedToFinish"]
+[node name="DiRegistration" type="DiRegistration" parent="OngoingTransferViz/FailedToFinish"]
 id = "failed_to_finish_popup"
 
-[node name="DiContext" type="DiContext" parent="FailedToFinish"]
+[node name="DiContext" type="DiContext" parent="OngoingTransferViz/FailedToFinish"]
 verbose_logging_name = "TransferViz"
 
-[node name="BlockInteractions" type="Control" parent="FailedToFinish" node_paths=PackedStringArray("reference_node")]
+[node name="BlockInteractions" type="Control" parent="OngoingTransferViz/FailedToFinish" node_paths=PackedStringArray("reference_node")]
 layout_mode = 3
 anchors_preset = 0
 offset_left = -480.0
@@ -217,10 +227,10 @@ offset_top = -270.0
 offset_right = 1440.0
 offset_bottom = 810.0
 script = ExtResource("3_jw7y5")
-reference_node = NodePath("../..")
+reference_node = NodePath("../../..")
 position_at_relative = true
 
-[node name="ColorRect" type="ColorRect" parent="FailedToFinish"]
+[node name="ColorRect" type="ColorRect" parent="OngoingTransferViz/FailedToFinish"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -229,7 +239,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 0.839216, 1, 1)
 
-[node name="Title" type="Label" parent="FailedToFinish"]
+[node name="Title" type="Label" parent="OngoingTransferViz/FailedToFinish"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -240,7 +250,7 @@ grow_horizontal = 2
 text = "Failed to finish transfering"
 label_settings = ExtResource("2_iyao1")
 
-[node name="Accept" type="Button" parent="FailedToFinish"]
+[node name="Accept" type="Button" parent="OngoingTransferViz/FailedToFinish"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.4
@@ -249,7 +259,7 @@ anchor_right = 0.6
 anchor_bottom = 0.8
 text = "Okay"
 
-[node name="Finish" type="Button" parent="."]
+[node name="Finish" type="Button" parent="OngoingTransferViz"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.45
@@ -258,8 +268,8 @@ anchor_right = 0.55
 anchor_bottom = 0.975
 text = "Finish"
 
-[connection signal="value_changed" from="TransferViz/HBoxContainer2/SelectSlider" to="TransferViz" method="set_amount"]
-[connection signal="pressed" from="TransferViz/ButtonRow/Accept" to="TransferViz" method="apply"]
-[connection signal="pressed" from="TransferViz/ButtonRow/Cancel" to="TransferViz" method="cancel"]
-[connection signal="pressed" from="FailedToFinish/Accept" to="FailedToFinish" method="set_visible" binds= [false]]
-[connection signal="pressed" from="Finish" to="." method="finish"]
+[connection signal="value_changed" from="OngoingTransferViz/TransferViz/HBoxContainer2/SelectSlider" to="OngoingTransferViz/TransferViz" method="set_amount"]
+[connection signal="pressed" from="OngoingTransferViz/TransferViz/ButtonRow/Accept" to="OngoingTransferViz/TransferViz" method="apply"]
+[connection signal="pressed" from="OngoingTransferViz/TransferViz/ButtonRow/Cancel" to="OngoingTransferViz/TransferViz" method="cancel"]
+[connection signal="pressed" from="OngoingTransferViz/FailedToFinish/Accept" to="OngoingTransferViz/FailedToFinish" method="set_visible" binds= [false]]
+[connection signal="pressed" from="OngoingTransferViz/Finish" to="OngoingTransferViz" method="finish"]
